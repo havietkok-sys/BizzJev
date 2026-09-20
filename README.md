@@ -127,6 +127,29 @@ The purpose is to demonstrate:
 - gate versioning with immutable history
 - full pipeline transparency (Technical View)
 
+## How this project was built
+
+BizzJev was developed as an AI-assisted experimental project.
+
+The development workflow combined several tools with different roles:
+
+- **TypeSafe Jev / TypeSafe AI skill** — used to understand and work with Jev's API, typed semantic judgments, and recommended integration patterns.
+- **ZCode with GLM-5.3 Flash** — used as the primary coding environment and coding agent for most of the implementation, refactoring, testing, and iteration.
+- **OpenAI Codex** — used for some implementation work, repository preparation, code review, and GitHub-related tasks.
+- **ChatGPT** — used mainly as a design and reasoning partner for system architecture, semantic gate design, evaluation strategy, business-policy separation, experiment design, and interpreting results.
+- **Human direction and evaluation** — the system design, business framing, gate concepts, experiments, trade-offs, and final decisions were iteratively directed and reviewed by the project author.
+
+The project was built experimentally rather than from a fixed specification. Many of the design principles documented in this repository emerged from testing Jev on ambiguous and multi-concept text, examining failure cases, refining semantic boundaries, and rerunning evaluations.
+
+In particular, this process led to several recurring design principles:
+
+- preserve multiple semantic signals instead of forcing one label when several meanings may coexist;
+- separate Jev's semantic signal from business policy and thresholds;
+- design gates to be broad inside the intended concept but sharp against neighboring concepts;
+- treat prompt definitions as versioned business logic that should be tested and regression-checked.
+
+AI tools were used heavily for implementation, testing, analysis, and formalizing ideas. The project direction, interpretation of results, semantic definitions, business framing, and final design decisions remained human-led.
+
 ## Documentation
 
 | Document | Purpose |
