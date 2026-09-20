@@ -4,6 +4,7 @@ $ErrorActionPreference = "Continue"
 $Root = Split-Path -Parent $PSScriptRoot
 $Url = "http://localhost:5099"
 $Project = Join-Path $Root "src\BizzJev.Lab\BizzJev.Lab.csproj"
+Set-Location -LiteralPath $Root
 
 Write-Host ""
 Write-Host "Semantic Operations Lab" -ForegroundColor Cyan
@@ -20,7 +21,11 @@ if (-not $dotnet) {
     Write-Host "Then run START_DEMO.bat again."
     exit 1
 }
-$sdkVersion = (dotnet --version 2>$null)
+$sdkVersion = dotnet --version
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR: No compatible .NET SDK. Install the version specified in global.json." -ForegroundColor Red
+    exit 1
+}
 Write-Host "  .NET SDK $sdkVersion found." -ForegroundColor Green
 
 # --- 2. Check API key ---
@@ -50,7 +55,7 @@ if (-not $hasKey) {
 }
 Write-Host "  API key configured." -ForegroundColor Green
 
-# --- 3. Stop any existing instance on our port ---
+# --- 3. Stop any existing instance before rebuilding ---
 $existing = Get-NetTCPConnection -LocalPort 5099 -ErrorAction SilentlyContinue
 if ($existing) {
     Write-Host "  Stopping previous instance on port 5099..." -ForegroundColor Yellow
@@ -58,17 +63,28 @@ if ($existing) {
     Start-Sleep -Seconds 2
 }
 
-# --- 4. Start backend (serves both API and pre-built frontend) ---
+# --- 4. Build before starting (a fresh clone has no bin/obj directories) ---
+Write-Host "Building backend (first run may download dependencies)..." -ForegroundColor Yellow
+dotnet build $Project --nologo
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "ERROR: Backend build failed. See the build error above." -ForegroundColor Red
+    exit 1
+}
+$LogDir = Join-Path $Root "data\lab"
+New-Item -ItemType Directory -Path $LogDir -Force -ErrorAction Stop | Out-Null
+if (-not $env:LAB_DATA_DIR) { $env:LAB_DATA_DIR = $LogDir }
+
+# --- 5. Start backend (serves both API and pre-built frontend) ---
 Write-Host ""
 Write-Host "Starting backend..." -ForegroundColor Yellow
 $backend = Start-Process -FilePath "dotnet" `
-    -ArgumentList "run","--project",$Project,"--no-build","--","--urls",$Url `
+    -ArgumentList ('run --project "{0}" --no-build --no-restore -- --urls {1}' -f $Project, $Url) `
     -WorkingDirectory $Root `
-    -PassThru -WindowStyle Minimized `
+    -PassThru -WindowStyle Hidden -ErrorAction Stop `
     -RedirectStandardOutput (Join-Path $Root "data\lab\backend.log") `
     -RedirectStandardError (Join-Path $Root "data\lab\backend.err.log")
 
-# --- 5. Wait for readiness ---
+# --- 6. Wait for readiness ---
 Write-Host "Waiting for services..." -ForegroundColor Yellow
 $ready = $false
 for ($i = 0; $i -lt 30; $i++) {
@@ -91,7 +107,7 @@ if (-not $ready) {
 
 Write-Host "  Backend ready." -ForegroundColor Green
 
-# --- 6. Open browser ---
+# --- 7. Open browser ---
 Write-Host ""
 Write-Host "Ready." -ForegroundColor Green
 Write-Host ""

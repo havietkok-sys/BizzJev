@@ -84,10 +84,12 @@ START_DEMO.bat
 This single script:
 1. Checks that .NET SDK is installed
 2. Checks that an API key is configured (offers first-run setup if not)
-3. Stops any previous instance on port 5099
-4. Starts the backend (which also serves the pre-built frontend)
-5. Waits for readiness
-6. Opens http://localhost:5099 in your browser
+3. Stops any previous instance on port 5099 before rebuilding
+4. Builds the backend, restoring dependencies if needed (the first run can take longer)
+5. Creates the local `data/lab` directory for logs and runtime data
+6. Starts the backend (which also serves the pre-built frontend)
+7. Waits for readiness
+8. Opens http://localhost:5099 in your browser
 
 ### Manual developer method
 
@@ -140,6 +142,8 @@ ERROR: .NET SDK not found.
 
 Install .NET SDK 10.0 from https://dotnet.microsoft.com/download/dotnet/10.0 and run `START_DEMO.bat` again.
 
+If the launcher reports **No compatible .NET SDK**, run `dotnet --list-sdks` and compare it with `global.json`. The project currently requires SDK **10.0.201 or a later 10.0.2xx patch**; installing only the .NET runtime or a different SDK feature band does not satisfy this requirement.
+
 ### API key missing
 
 ```
@@ -166,7 +170,7 @@ Then open http://localhost:5100 instead.
 
 Check `data\lab\backend.log` and `data\lab\backend.err.log` for the full error output. Common causes:
 - .NET SDK version mismatch (the project targets net10.0)
-- Missing build output (run `dotnet build src/BizzJev.Lab` first if you skipped the launcher)
+- An older launcher that skipped the build or assumed the log directory already existed: update your clone with `git pull`, then run `START_DEMO.bat` again. The current launcher builds the backend and creates `data/lab` automatically.
 - Corrupted NuGet cache (try `dotnet nuget locals all --clear`)
 
 ### Jev / API request fails
