@@ -2,12 +2,15 @@
 
 This guide assumes you have never seen the project before.
 
+> **You must supply your own TypeSafe API key to run live Jev analysis.** Get one from [TypeSafe's API keys page](https://console.typesafe.ai/keys). No API key or API credits are bundled with BizzJev.
+
 ## What You Need
 
 | Dependency | Version | Check |
 |---|---|---|
 | .NET SDK | 10.0.201 or later (same feature band) | `dotnet --version` |
-| TypeSafe/Jev API key | free development key | https://console.typesafe.ai/ |
+| TypeSafe/Jev API key | your own valid key | [Create/manage API keys](https://console.typesafe.ai/keys) |
+| Internet connection | access to TypeSafe's hosted API | Live analysis sends text to `https://api.typesafe.ai/v1/systemone` |
 | Web browser | any modern browser | — |
 
 Node.js / npm are **not** required to run the demo — the React frontend is pre-built and served by the backend. You only need Node.js if you want to modify the frontend source (`web/lab/`).
@@ -21,7 +24,7 @@ Works on Windows 10/11. The launcher is a `.bat` file; on other platforms, see t
 1. **Clone the repository:**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/havietkok-sys/BizzJev.git
    cd BizzJev
    ```
 
@@ -32,7 +35,7 @@ Works on Windows 10/11. The launcher is a `.bat` file; on other platforms, see t
    ```
 
 3. **If prompted for an API key** (first run only):
-   - Get a free development key at https://console.typesafe.ai/
+   - Sign in to the [TypeSafe Console](https://console.typesafe.ai/keys) and create an API key
    - Paste it into the launcher's masked prompt
    - The key is stored in .NET User Secrets on your machine only — never in Git, never in the browser, never shown in the UI
 
@@ -42,10 +45,23 @@ Works on Windows 10/11. The launcher is a `.bat` file; on other platforms, see t
 
 ## API Key
 
+### Get a key and configure it
+
+1. Open [TypeSafe Console → API keys](https://console.typesafe.ai/keys) and sign in or create an account.
+2. Create an API key for your use of Jev. Check the console for your account's access and usage limits, and see [models and pricing](https://docs.typesafe.ai/models) for current published prices.
+3. In the BizzJev folder, run `SET_API_KEY.bat` and paste the key into the masked prompt. This configures `TYPESAFE_API_KEY` in .NET User Secrets.
+4. Run `START_DEMO.bat` and submit one of the demo messages to make a live analysis request.
+
+The key authenticates requests to TypeSafe; you do not download or run the Jev model locally. Although BizzJev's web application runs on your computer, analysis sends the submitted text and gate definitions to TypeSafe. You can read the saved results and documentation without making API calls.
+
+For background on Jev, Noul/Choice/Score, and how this project uses them, see [TypeSafe and Jev in the README](../README.md#what-are-typesafe-and-jev). TypeSafe's [quick start](https://docs.typesafe.ai/introduction/quickstart), [Playground](https://console.typesafe.ai/playground), and [API reference](https://docs.typesafe.ai/api) are useful next steps.
+
+### Where the key is stored
+
 The TypeSafe/Jev API key:
 
-- **Conceptually** lives in .NET User Secrets (`dotnet user-secrets`), scoped to the `src/BizzJev.Lab` project
-- **Stays local** — User Secrets are stored under your user profile, outside the repository
+- **Is configured locally** in .NET User Secrets (`dotnet user-secrets`), scoped to the `src/BizzJev.Lab` project
+- **Is stored outside Git** — User Secrets are stored under your user profile, outside the repository; the backend sends the key to TypeSafe for authentication over HTTPS
 - **Is backend-only** — the frontend never receives the key; it only calls the backend API
 - **Never appears in Technical View** — the request payload shown there is the JSON body, which contains no authorization headers (those live in server-side HTTP headers)
 
@@ -130,7 +146,7 @@ Install .NET SDK 10.0 from https://dotnet.microsoft.com/download/dotnet/10.0 and
 API key not configured.
 ```
 
-Run `SET_API_KEY.bat`, paste your key, then run `START_DEMO.bat` again. If you don't have a key, get a free one at https://console.typesafe.ai/.
+Run `SET_API_KEY.bat`, paste your key, then run `START_DEMO.bat` again. If you don't have a key, create one in the [TypeSafe Console](https://console.typesafe.ai/keys).
 
 ### Port already in use
 
@@ -156,7 +172,7 @@ Check `data\lab\backend.log` and `data\lab\backend.err.log` for the full error o
 ### Jev / API request fails
 
 The Analyze screen shows per-gate failure status. Common causes:
-- API key expired or revoked — regenerate at https://console.typesafe.ai/
+- API key expired or revoked — create a replacement in the [TypeSafe Console](https://console.typesafe.ai/keys), then run `SET_API_KEY.bat` again
 - Network connectivity issue
 - Rate limiting — wait a moment and retry
 
