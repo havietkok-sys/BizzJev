@@ -1,0 +1,33 @@
+# Build outputs
+**/bin/
+**/obj/
+web/lab/dist/
+web/lab/node_modules/
+web/lab/tsconfig.tsbuildinfo
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Agent / tool-specific local state (not needed by the demo)
+.zcode/
+.agents/
+.claude/
+skills-lock.json
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+**/secrets.json
+**/appsettings.Local.json
+
+# Runtime / local experiment data (baseline config lives in src/BizzJev.Lab/config/, always committed)
+data/raw/
+data/lab/
+
+# Test artifacts
+TestResults/

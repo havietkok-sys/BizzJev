@@ -1,0 +1,14 @@
+{
+  "frozen_before_run_utc": "2026-09-20",
+  "gate_definitions_sha256": "9ff5ae7dda62958bc5786077bd78b1f835097fdc776617b5e03de948d623dc51",
+  "gold_annotations_csv_sha256": "23797893f345f73fe0572f5f40a05e6347471c00b728adbb04245d96b3a090cd",
+  "run_input_csv_sha256": "ddc60dacfebf8fc1e5d5f13c5b4299921558718cd2899adeb42443d3154181e9",
+  "run_input_rows": 72,
+  "note": "gates and blind gold written before any API call; sealed_reference unsealed only after gold was written",
+  "technical_incident": {
+    "what": "attempt 1 of the run returned HTTP 422 on all 72 requests (1,296 gate rows, zero noul values)",
+    "cause": "noul criteria was serialized as a plain string; the TypeSafe API requires noul criteria as an object with true/false descriptions (Choice-style string criteria is not valid for noul)",
+    "fix": "schema-only conversion of each criteria string into {true,false} halves split from its own YES/NO wording; instructions and all semantics unchanged; no responses had been received, so no test-set information influenced anything",
+    "attempt1_output_preserved_as": "raw_predictions_attempt1_all_422.csv"
+  }
+}

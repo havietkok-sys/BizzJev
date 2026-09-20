@@ -1,0 +1,120 @@
+
+===== ID 23753407 =====
+[V1] stored=Took or threatened to take negative or legal action | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Seized or attempted to seize your property
+NARRATIVE_FULL:
+XXXX XXXX lies XXXX me XXXX sign up for solar panels in my house me XXXX my husband with sunnova when in bankruptcy. Now sunstrong want take money from me something i don't understand XXXX refuse XXXX respect the contract.
+
+===== ID 23754104 =====
+[V1] stored=Written notification about debt | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Didn't receive enough information to verify debt
+NARRATIVE_FULL:
+I am submitting this complaint to dispute a medical debt that is currently being reported on my credit report. I believe this account is inaccurate, invalid, and should be deleted. The reported medical debt is invalid because the treatment associated with this account was never completed. Additionally, I paid for the medical services that I actually received. Therefore, I do not owe the balance that is being reported. Furthermore, the company that purchased or is attempting to collect this alleged debt has failed to provide adequate verification of the debt despite my request. To date, I have not received documentation establishing that I legally owe the amount being reported, including documentation showing the basis for the debt, the amount claimed, or evidence that the collector has the legal authority to collect it. Without proper verification, there is no basis for continuing to report this account as a valid debt. Reporting this account as an outstanding debt is inaccurate and does not fairly reflect my financial obligations. I request that the furnisher and the credit reporting agencies conduct a reasonable investigation by reviewing all relevant medical billing records, payment records, and documentation supporting the validity of this alleged debt. Pursuant to my rights under the Fair Credit Reporting Act ( FCRA ), 15 U.S.C. 1681 et seq., I request that any information that can not be verified as complete and accurate be deleted from my credit reports. If the furnisher can not provide competent evidence demonstrating that I legally owe the reported balance, the account must be removed. To the extent applicable, I also request that this matter be reviewed for compliance with the Fair Debt Collection Practices Act ( FDCPA ), 15 U.S.C. 1692 et seq., including the requirements concerning debt validation and the prohibition against false, deceptive, or misleading representations regarding the character, amount, or legal status of a debt. Accordingly, I respectfully request that : A thorough investigation be conducted into this disputed account. The furnisher and debt collector provide competent documentation verifying that the debt is valid, accurate, and legally enforceable. Documentation be provided establishing that the reported balance is owed despite the treatment not being completed and despite payment for the services that were actually rendered. If the debt can not be fully verified with competent evidence, the account be permanently deleted from all consumer reporting agencies. I receive written confirmation of the investigation results and any corrective actions taken.
+
+===== ID 23754932 =====
+[V1] stored=False statements or representation | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Attempted to collect wrong amount
+NARRATIVE_FULL:
+Issue : Incorrect debt / Attempting to collect debt not owed / Credit reporting Complaint Narrative I am filing this complaint regarding a disputed collection account reported by Hunter Warfield on behalf of XXXX XXXX XXXX, XXXX. This collection arises from a disputed security deposit claim related to my former rental property located at XXXX XXXX XXXX XXXX, XXXX, NC XXXX. On XX/XX/year>, XXXX XXXX XXXX issued a Security Deposit Statement claiming additional charges totaling {$2700.00} after retaining my entire {$1600.00} security deposit. They alleged I owed an additional balance of {$1100.00}. I immediately disputed the charges and repeatedly requested documentation, including : Receipts Paid invoices XXXX XXXX statements Proof of actual damages Proof of actual costs incurred XXXX XXXX XXXX failed to provide this documentation despite multiple requests. It was not until I sought assistance through the North Carolina Department of Justice Consumer Protection Division that XXXX XXXX XXXX produced any records. Even then, the documents were submitted to the Consumer Protection Division rather than directly to me. The records provided raise significant concerns because many of the invoices and work orders are dated months after the XX/XX/year> XXXX XXXX XXXX. The records include substantial make-ready renovations, upgrades, flooring replacement, painting, landscaping, pressure washing, and other property improvement costs that appear unrelated to tenant-caused damages. I also possess documentation showing that : I paid for professional move-out cleaning. I paid for carpet cleaning. Some of the conditions for which I was charged existed prior to my tenancy and were documented during move-in. The documents provided do not connect the deductions taken from my security deposit to actual expenses incurred. The debt remains disputed and unverified. Despite the lack of validation, Hunter Warfield reported and/or attempted to collect this debt. The continued reporting of this account has caused significant hardship. I have been unable to secure housing because of this collection account and have been forced to extend my current lease, resulting in additional housing expenses exceeding {$1000.00}. I am requesting : Immediate investigation of this account. Verification that the debt is accurate and supported by competent evidence. Removal of the collection account if it can not be fully validated. Correction of any inaccurate information being reported to consumer reporting agencies. I believe it is unfair to continue reporting or collecting this debt when the charges remain unsupported, disputed, and inadequately documented.
+
+===== ID 23755727 =====
+[V1] stored=Took or threatened to take negative or legal action | jev=Written notification about debt | agree=False
+sub-issue (stored): Threatened or suggested your credit would be damaged
+NARRATIVE_FULL:
+A collection agency ( XX/XX/XXXX ) is reporting a XXXX account on my credit report. XXXX has permanently shut down global operations and is no longer in existence. Because the original creditor is dissolved, XXXX XXXX can not legally validate the debt. What happened : I disputed the account with the credit bureaus. XXXX XXXX provided incomplete validation that does not include original documentation. They can not produce a signed contract, billing statements, itemized charges, XXXX, or payment history because the original creditor is dissolved. Law violated : FCRA XXXX ( a ) unverifiable information must be deleted FCRA XXXX ( b ) maximum possible accuracy FCRA XXXX furnisher must maintain accurate records
+
+===== ID 23784965 =====
+[V1] stored=Written notification about debt | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Didn't receive enough information to verify debt
+NARRATIVE_FULL:
+I am requesting that this account be investigated for inaccurate and incomplete reporting. The company failed to provide documentation showing the actual date the account was closed. Instead, they only submitted documents related to the original contract from XXXX. The account is being reported as having been closed in XXXX, yet they have not provided any evidence to support that reporting or account termination. In addition, this is a third-party company, and they have not provided documentation demonstrating that they have the legal right to collect, own, or report this alleged debt. They have failed to produce any assignment, bill of sale, transfer agreement, or other evidence establishing that the account was legally transferred to them. Under the Fair Credit Reporting Act ( FCRA ), information furnished to consumer reporting agencies must be complete, accurate, and verifiable. Because the company has not provided documentation verifying the reported account closure date or its legal authority to report this account, I dispute the accuracy of this tradeline. I respectfully request that the Consumer Financial Protection Bureau require the company to provide competent evidence supporting its reporting. If the company can not produce documentation verifying the account closure date and its legal ownership or authority to report the account, I request that the inaccurate tradeline be removed from my consumer credit reports.
+
+===== ID 23786554 =====
+[V1] stored=Attempts to collect debt not owed | jev=Written notification about debt | agree=False
+sub-issue (stored): Debt is not yours
+NARRATIVE_FULL:
+To whom it may concern, Please note that this is not a refusal to pay off the account but a notice sent as per the Fair Debt Collection Practices Act ( F.D.C.P.A. ), 15 U.S.C. S 1692 ( G ) Section 809 ( B ). This notice states that your claim is disputed and validation of the account is required. This notice is not a request for verification of the account or proof of my mailing address but a request for validation made pursuant to the F D.C.P A. laws. I humbly request that your agency/ office sends me valid proof of claim that I am legally obligated to pay you. Please provide me with the below mentioned items : * The amount you claim the respondent owes you * An explanation showing me how you have computed the amount. * Copies of any documents that prove I agreed to pay the alleged amount * The identity of the original creditor * Confirmation that the account has not crossed the statute of limitation ( SOL ) period * Evidence that you are a licensed debt collector * Evidence of your license numbers and your registered agent. * Chain of Title of ownership of the debt * Error & Omissions Insurance
+
+===== ID 23790729 =====
+[V1] stored=False statements or representation | jev=Written notification about debt | agree=False
+sub-issue (stored): Impersonated attorney, law enforcement, or government official
+NARRATIVE_FULL:
+I received a collection letter identifying the collector as Renton Collections LLC. Public business records and other materials appear to identify the company as Renton Collections , Inc. I dispute this debt and request written clarification of the exact legal name, license number, business entity type, registered agent, creditor, account number, amount claimed, and authority to collect this alleged debt. Because the collection letter appears to misidentify the collectors legal entity, I also request that Renton Collections preserve a copy of the letter, envelope, account notes, collection notices, call logs, credit reporting records, and all documents related to this account.
+
+===== ID 23802255 =====
+[V1] stored=Written notification about debt | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Didn't receive enough information to verify debt
+NARRATIVE_FULL:
+I am disputing a debt of {$8300.00} being collected by Aldous & Associates on behalf of XXXX, a student housing complex in XXXX, Ohio. I never resided at this property. I do not recall ever executing a housing agreement, and I have found no executed agreement in my records. The correspondence I do have from XXXX, dated around XXXX, consists of emails asking me to complete a financial backing requirement ( guarantor, self-guarantor, or third-party guaranty ), including an email from an XXXX housing consultant stating that my " spot is not secured '' until that requirement was finalized. I never completed that requirement, never received keys, and never took possession of any unit. An account statement from XXXX dated XX/XX/year> shows the unit field blank no unit was ever assigned to me. I disputed this account with XXXX, and it was returned " verified as accurate '' without any documentation being provided to me.
+
+===== ID 23815177 =====
+[V1] stored=Attempts to collect debt not owed | jev=Written notification about debt | agree=False
+sub-issue (stored): Debt is not yours
+NARRATIVE_FULL:
+To whom it may concern, Please note that this is not a refusal to pay off the account but a notice sent as per the Fair Debt Collection Practices Act ( F.D.C.P.A. ), 15 U.S.C. S 1692 ( G ) Section 809 ( B ). This notice states that your claim is disputed and validation of the account is required. This notice is not a request for verification of the account or proof of my mailing address but a request for validation made pursuant to the F D.C.P A. laws. I humbly request that your agency/ office sends me valid proof of claim that I am legally obligated to pay you. Please provide me with the below mentioned items XXXX XXXX The amount you claim the respondent owes you XXXX An explanation showing me how you have computed the amount. XXXX Copies of any documents that prove I agreed to pay the alleged amount XXXX The identity of the original creditor XXXX Confirmation that the account has not crossed the statute of limitation ( XXXX ) period XXXX Evidence that you are a licensed debt collector XXXX Evidence of your license numbers and your registered agent. XXXX Chain of Title of ownership of the debt * XXXX & XXXX XXXX
+
+===== ID 23886008 =====
+[V1] stored=Took or threatened to take negative or legal action | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Threatened or suggested your credit would be damaged
+NARRATIVE_FULL:
+said balance is {$6200.00}. but original balance is {$4800.00}. Date open XX/XX/year> XX/XX/year> went into collection account XXXX acc type is Debt buyer. ( XXXX ) XXXX is calling me harassing about a contract I didn't sign with them. Original creditor is XXXX XXXX XXXX
+
+===== ID 23888120 =====
+[V1] stored=False statements or representation | jev=Written notification about debt | agree=False
+sub-issue (stored): Attempted to collect wrong amount
+NARRATIVE_FULL:
+I continue to dispute the accuracy and substantiation of the rental collection account being reported by National Credit Systems , Inc. ( NCS ). In response to my previous CFPB complaint, NCS provided a lease agreement, a resident ledger, and related account records. I acknowledge that my name and signature appear on the lease agreement. However, those documents do not provide the supporting documentation I requested for the individual charges comprising the reported balance. The resident ledger also appears to be maintained under the name " XXXX XXXX, '' and it does not clearly explain how the reported balance was specifically attributed to me or how the balance was calculated. On XX/XX/year>, XXXX received my certified letter requesting additional documentation. In that correspondence, I requested itemized invoices, contractor and vendor invoices, receipts, photographs, move-in and move-out inspection reports, documentation supporting each individual damage charge, documentation showing how the reported balance was calculated, and documentation establishing the basis for reporting the balance to my consumer credit file. As of the date of this complaint, I have not received any response to my certified correspondence or any of the supporting documentation I requested. I continue to dispute the reported balance because I have not been provided documentation substantiating the individual charges being reported. The lease agreement and resident ledger are not the same as invoices, contractor bills, receipts, photographs, inspection reports, or other records supporting the specific charges that make up the reported balance. I respectfully request that NCS conduct a reasonable investigation, provide the requested supporting documentation supporting the reported balance, and correct or remove any information that can not be verified as accurate, complete, and properly substantiated.
+
+===== ID 23896552 =====
+[V1] stored=False statements or representation | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Attempted to collect wrong amount
+NARRATIVE_FULL:
+I discovered a XXXX XXXX collection account on my credit reports that I do not owe. On XX/XX/year>, I sent IC System a written dispute requesting full validation of the alleged debt. They did not respond with any validation. On XX/XX/year>, I contacted IC System by phone to inquire about the status of the dispute. Their representative stated the alleged balance is {$160.00}, but IC System is reporting {$160.00} to the credit bureaus. This inconsistency demonstrates that the information they are furnishing is inaccurate and unverified. I also have an active XXXX XXXX account, which contradicts the claim that this debt is owed. IC System has failed to investigate, validate, or correct the inaccurate information as required by federal law. Their continued reporting of inconsistent and unverified information is harming my credit profile.
+
+===== ID 23909590 =====
+[V1] stored=Took or threatened to take negative or legal action | jev=False statements or representation | agree=False
+sub-issue (stored): Threatened or suggested your credit would be damaged
+NARRATIVE_FULL:
+Received a text message from Valor intelligent processing LLC on behalf of XXXX XXXX stating that a I owed them {$110.00}. The parking lot in question has no way to pay and doesn't clearly state rates or how you will can pay, does not provide a ticket / recepit showing time in out or how much owed. I believe that the first 30 minutes are free. When i called the number provided in the text message the woman stated that I parked there in XXXX of 2026 and was there for approx. 40 minutes and was charged {$110.00} ; approx. {$48.00} of the {$110.00} was a " Notice Fee ''. They knocked it down to {$16.00} and i paid the fee.
+
+===== ID 23925909 =====
+[V1] stored=Attempts to collect debt not owed | jev=Written notification about debt | agree=False
+sub-issue (stored): Debt is not yours
+NARRATIVE_FULL:
+XXXX XXXX XXXX XXXX XXXX XXXX Apt XXXX XXXX Louisiana XXXX Louisiana NATIONAL CREDIT ADJUST XXXX XXXX XXXX XXXX XXXX, KS XXXX XX/XX/year> Account Number : XXXX Amount : NATIONAL CREDIT ADJUST - XXXX : {$400.00} To whom it may concern, Please note that this is not a refusal to pay off the account but a notice sent as per the Fair Debt Collection Practices Act ( F.D.C.P.A. ), 15 U.S.C. S 1692 ( G ) Section 809 ( B ). This notice states that your claim is disputed and validation of the account is required. This notice is not a request for verification of the account or proof of my mailing address but a request for validation made pursuant to the F D.C.P A. laws. I humbly request that your agency/ office sends me valid proof of claim that I am legally obligated to pay you. Please provide me with the below mentioned items : * The amount you claim the respondent owes you * An explanation showing me how you have computed the amount. * Copies of any documents that prove I agreed to pay the alleged amount * The identity of the original creditor * Confirmation that the account has not crossed the statute of limitation ( SOL ) period * Evidence that you are a licensed debt collector * Evidence of your license numbers and your registered agent. * Chain of Title of ownership of the debt * XXXX & XXXX XXXX
+
+===== ID 24123458 =====
+[V1] stored=False statements or representation | jev=Written notification about debt | agree=False
+sub-issue (stored): Attempted to collect wrong amount
+NARRATIVE_FULL:
+Jefferson Capital claimed verification on XX/XX/XXXX, just XXXX days after my XX/XX/XXXX XXXX dispute. This timeline proves no real investigation occurred. I demand a complete validation of this debt, including the original assignment chain, full payment history, and a breakdown of late fees. Rubber-stamping data without documentation violates the FDCPA. Delete the account if it can not be verified.
+
+===== ID 24174946 =====
+[V1] stored=Attempts to collect debt not owed | jev=Written notification about debt | agree=False
+sub-issue (stored): Debt is not yours
+NARRATIVE_FULL:
+TransUnion is reporting an account and I send debt validation and they send it back as accurate and they dont send me proved they dont send me the verification method they used if it was a ai or a robot not a person Report Created On : XX/XX/year> File Identification Number : XXXX Provided by TransUnion Consumer Relations
+
+===== ID 24206598 =====
+[V1] stored=False statements or representation | jev=Attempts to collect debt not owed | agree=False
+sub-issue (stored): Attempted to collect wrong amount
+NARRATIVE_FULL:
+I recently discovered a {$990.00} collection account on my credit report that I did not recognize and had no knowledge of. I immediately contacted XXXX XXXX XXXX to inquire about the account. After providing my personal information, the representative informed me that they have no account or records associated with my name. They advised me to contact the collection agency reporting the account. I then contacted the collection agency, and I was similarly informed that they had no information or account associated with my name. Based on these conversations, I believe this account does not belong to me and may be the result of identity theft or inaccurate reporting.
+
+===== ID 24382663 =====
+[V1] stored=Attempts to collect debt not owed | jev=Written notification about debt | agree=False
+sub-issue (stored): Debt was result of identity theft
+NARRATIVE_FULL:
+Harris & Harris is reporting two separate collection accounts on my credit reports that I dispute. I requested that the accounts be validated and that documentation be provided showing I am legally responsible for the alleged debts. I have not received sufficient documentation verifying the accounts. I request that Harris & Harris conduct a reasonable investigation, provide all supporting documentation for both accounts, and correct or remove any information that can not be verified.
+
+===== ID 24395184 =====
+[V1] stored=Attempts to collect debt not owed | jev=Written notification about debt | agree=False
+sub-issue (stored): Debt is not yours
+NARRATIVE_FULL:
+I am filing a formal complaint against IC Systems for willful violations of the Fair Debt Collection Practices Act ( FDCPA ) and the Fair Credit Reporting Act ( FCRA ). On XX/XX/2026, I sent a formal debt validation request via email to IC Systems regarding an alleged balance of {$170.00}. IC Systems completely ignored my legal request and failed to provide any verification or original contractual documentation within the 30-day statutory period. Despite failing to validate the debt as required by law, they are willfully continuing to report this unverified and inaccurate negative collection on my credit reports, causing ongoing damage to my credit score. Since they failed to verify the debt within the legal timeframe, I demand that IC Systems immediately delete this collection account entirely from all of my credit profiles.
+
+===== ID 24637449 =====
+[V1] stored=False statements or representation | jev=Written notification about debt | agree=False
+sub-issue (stored): Attempted to collect wrong amount
+NARRATIVE_FULL:
+I am submitting this complaint regarding a collection account that is currently appearing on my credit report. I am requesting that this collection be removed from my credit file because I believe it is inaccurate, unverifiable, or being reported incorrectly. I have reviewed my credit report and noticed this collection account listed. I am requesting that the company investigate this matter, provide verification of the debt, and remove the collection from my credit report if they can not validate that the information being reported is accurate and complete.

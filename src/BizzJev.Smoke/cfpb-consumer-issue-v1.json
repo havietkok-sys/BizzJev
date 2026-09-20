@@ -1,0 +1,51 @@
+{
+  "consumerSelectedIssue": {
+    "type": "choice",
+    "instructions": "When this consumer submitted their complaint, the CFPB web form asked: 'What type of problem are you having? Select the one that best describes your complaint.' The consumer selected exactly one Issue from the Debt collection list before writing the narrative. Read `narrative` and predict which of these four CFPB Issue options the consumer most likely selected when answering that question. Judge only what the consumer alleges, not whether it is legally or factually established. Many narratives plausibly match more than one Issue; the form gave the consumer no priority rule and none is applied here: weigh the options against the whole narrative, return the best overall fit, and let the probabilities express any remaining uncertainty. Do not use any of the following as evidence for a particular Issue: legal citations or boilerplate/template phrases; the order in which problems are mentioned; the company's name or identity; generic credit-report language by itself, which appears in complaints of every category; generic validation-request language by itself, which also appears in every category. Each option's cfpbSubIssues come from the CFPB form and define its span; boundary states when a neighboring option fits instead.",
+    "criteria": {
+      "Attempts to collect debt not owed": {
+        "cfpbSubIssues": [
+          "Debt is not yours",
+          "Debt was result of identity theft",
+          "Debt was paid",
+          "Debt was already discharged in bankruptcy and is no longer owed"
+        ],
+        "recognize": "The consumer's assertion is that the money being collected is not lawfully theirs to pay: the debt belongs to someone else, arose from identity theft or fraud, was already paid or settled, or was discharged in bankruptcy.",
+        "boundary": "Use when the debt itself is being denied. If the consumer does not deny owing the debt but complains that required written notices, validation information, or dispute rights were missing, 'Written notification about debt' fits. If the complaint is an affirmative false claim - a wrong amount, false status, or claimed authority or identity - 'False statements or representation' fits. Describing a disputed account as present on a credit report is common here and is not by itself 'Took or threatened to take negative or legal action'."
+      },
+      "Written notification about debt": {
+        "cfpbSubIssues": [
+          "Didn't receive enough information to verify debt",
+          "Didn't receive notice of right to dispute",
+          "Notification didn't disclose it was an attempt to collect a debt"
+        ],
+        "recognize": "The consumer's complaint is missing, late, or inadequate written information about the debt: no adequate validation or verification information, no notice of the right to dispute, or collection communications or disclosures that were never properly made - including learning of a debt only when it appeared on a credit report.",
+        "boundary": "'Attempts to collect debt not owed' asserts the debt is not owed; this option concerns missing, late, or inadequate required information about the debt. Consumers often deny a debt and request validation in the same narrative: when both readings are supported, treat both options as plausible and let the probabilities reflect that. Distinguish from 'False statements or representation' by absence or insufficiency of information rather than an affirmative false statement."
+      },
+      "False statements or representation": {
+        "cfpbSubIssues": [
+          "Attempted to collect wrong amount",
+          "Indicated you were committing crime by not paying debt",
+          "Impersonated attorney, law enforcement, or government official",
+          "Told you not to respond to a lawsuit they filed against you"
+        ],
+        "recognize": "The consumer's complaint is an affirmative false or misleading representation: demanding more than the correct amount, misstating the character, amount, or legal status of the debt, falsely presenting the collector as an attorney, law enforcement, or government official (or as the original creditor), accusing the consumer of committing a crime by not paying, or telling the consumer not to respond to a lawsuit that was filed.",
+        "boundary": "A denial that the debt is owed at all fits 'Attempts to collect debt not owed'. Missing paperwork fits 'Written notification about debt'. A specific threatened or completed adverse action fits 'Took or threatened to take negative or legal action'. The CFPB structure places accusing the consumer of committing a crime HERE, while threatening arrest or jail belongs to 'Took or threatened to take negative or legal action'."
+      },
+      "Took or threatened to take negative or legal action": {
+        "cfpbSubIssues": [
+          "Threatened or suggested your credit would be damaged",
+          "Threatened to sue you for very old debt",
+          "Sued you without properly notifying you of lawsuit",
+          "Collected or attempted to collect exempt funds",
+          "Threatened to arrest you or take you to jail if you do not pay",
+          "Seized or attempted to seize your property",
+          "Sued you in a state where you do not live or did not sign for the debt",
+          "Threatened to turn you in to immigration or deport you"
+        ],
+        "recognize": "The consumer's complaint is a concrete adverse action taken or threatened to pressure payment: damaging or threatening damage to credit; suing or threatening to sue - including over time-barred debt, without proper notice of the suit, or in the wrong state; garnishing or attempting to collect legally exempt funds such as Social Security or VA benefits; seizing property; threatening arrest or jail; or threatening immigration consequences.",
+        "boundary": "The threatened or completed action is the complaint, not a description of the debt. A collection account merely being described as present on a credit report appears in every category and is not by itself this option. Lawsuits and their service or garnishment mechanics belong here even though they involve notices: CFPB places 'Sued you without properly notifying you of lawsuit' under this Issue, not under 'Written notification about debt'."
+      }
+    }
+  }
+}

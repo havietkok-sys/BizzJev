@@ -1,0 +1,248 @@
+{
+  "_meta": {
+    "primitive": "noul",
+    "model": "jev-1.13.0",
+    "frozen_before_run": "2026-09-20, before any API call in this experiment",
+    "variants": {
+      "A": "narrow/literal - plausible but overly literal formulation",
+      "B": "broad/loose - covers the concept with weak boundaries against neighbors",
+      "C": "broad inside / sharp edge - full interior incl. paraphrases and indirect expressions, with explicit nearest-neighbor exclusions"
+    }
+  },
+  "gates": [
+    {
+      "id": "identity_theft__A",
+      "concept": "identity_theft",
+      "variant": "A",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative explicitly state that the debt resulted from identity theft, using explicit words to that effect (for example 'identity theft', 'someone stole my identity', or a referenced identity theft report)?",
+        "criteria": {
+          "true": "YES only when the narrative explicitly names identity theft or a stolen identity as the source of the debt",
+          "false": "NO when the narrative contains no such explicit statement."
+        }
+      }
+    },
+    {
+      "id": "identity_theft__B",
+      "concept": "identity_theft",
+      "variant": "B",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative indicate any dispute by the consumer that the debt might be fraudulent, mistaken, unfamiliar, or somehow not truly theirs?",
+        "criteria": {
+          "true": "YES if the consumer questions whether the debt is really theirs in any way, including unfamiliarity, mistakes, or possible fraud",
+          "false": "NO when the narrative expresses nothing of this kind."
+        }
+      }
+    },
+    {
+      "id": "identity_theft__C",
+      "concept": "identity_theft",
+      "variant": "C",
+      "question": {
+        "type": "noul",
+        "instructions": "Is the semantic meaning expressed in `narrative` that the alleged debt arose from someone using the consumer's identity or personal information without authorization? Include direct statements, paraphrases, and indirect but clear expressions: accounts opened or transactions made without the consumer's knowledge or consent, charges the consumer says they never made, reference to an FTC identity theft report or police report for fraud, being treated as someone else through fraudulent use of their details, or a mixed/stolen file. Do not rely on keywords; judge the meaning. Exclude: simply denying that a debt is owed without any claim of unauthorized use of identity; debts claimed already paid, settled, or discharged; disputes only about the amount of an acknowledged account; and credit-report errors that do not claim the underlying account was fraudulently opened or used.",
+        "criteria": {
+          "true": "YES when the meaning expressed is unauthorized use of the consumer's identity as the origin of the debt",
+          "false": "NO for mere denial of owing, paid/settled/discharged debts, amount disputes on acknowledged debts, and reporting-accuracy complaints without fraud claims."
+        }
+      }
+    },
+    {
+      "id": "insufficient_validation__A",
+      "concept": "insufficient_validation",
+      "variant": "A",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative explicitly state that the consumer requested debt validation or verification and did not receive it, in those explicit terms?",
+        "criteria": {
+          "true": "YES only when an explicit statement of requesting validation/verification and receiving nothing is present",
+          "false": "NO when the narrative contains no such explicit statement."
+        }
+      }
+    },
+    {
+      "id": "insufficient_validation__B",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative indicate the consumer wanted or asked for any information, documents, or explanation about the debt?",
+        "criteria": {
+          "true": "YES if the consumer expresses any desire or request for information about the debt",
+          "false": "NO when the narrative expresses nothing of this kind."
+        }
+      }
+    },
+    {
+      "id": "insufficient_validation__C",
+      "concept": "insufficient_validation",
+      "variant": "C",
+      "question": {
+        "type": "noul",
+        "instructions": "Is the semantic meaning expressed in `narrative` that information the consumer needs to verify the debt was requested or owed but was not provided, or was provided inadequately? Include direct statements, paraphrases, and indirect but clear expressions: ignored or unanswered validation requests; responses that contained only statements or printouts rather than the underlying agreement, itemization, or proof of ownership; demands for documents describing what was already sent and found insufficient; being told information would not be provided. Do not rely on keywords; judge the meaning. Exclude: pure anticipatory demand letters that only request future validation without describing any missing, refused, or inadequate information; outright denial that the debt is owed with no complaint about missing information; amount disputes where the grievance is the size of the balance rather than missing documentation.",
+        "criteria": {
+          "true": "YES when missing or inadequate debt-verification information is the expressed grievance or a clearly expressed part of it",
+          "false": "NO for forward-looking demands only, pure denial of owing, and pure amount disputes."
+        }
+      }
+    },
+    {
+      "id": "wrong_amount__A",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative explicitly state that the balance being collected is incorrect by naming two conflicting figures or explicitly calling the amount wrong, inflated, or overcharged?",
+        "criteria": {
+          "true": "YES only when an explicit statement that the amount is wrong appears, ideally with figures",
+          "false": "NO when the narrative contains no such explicit statement."
+        }
+      }
+    },
+    {
+      "id": "wrong_amount__B",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative indicate any dispute or dissatisfaction concerning the balance, charges, fees, interest, or amounts related to the debt?",
+        "criteria": {
+          "true": "YES if the consumer disputes or is unhappy about any charge or balance related to the debt",
+          "false": "NO when the narrative expresses nothing of this kind."
+        }
+      }
+    },
+    {
+      "id": "wrong_amount__C",
+      "concept": "wrong_amount",
+      "variant": "C",
+      "question": {
+        "type": "noul",
+        "instructions": "Is the semantic meaning expressed in `narrative` that the collector is pursuing an amount that is larger or otherwise different from what the consumer says is correct, on a debt whose existence is acknowledged or partially acknowledged? Include direct statements, paraphrases, and indirect but clear expressions: balances exceeding the correct figure; unauthorized or unexplained fees, interest, or additions; inconsistent balances given across bureaus, letters, or calls; charges for services never rendered or products never received; payments made but not credited; amounts that should be zero because the debt was paid or settled; duplicate reporting of the same balance. Do not rely on keywords; judge the meaning. Exclude: total denial that any debt is owed (identity theft, 'not my debt', discharged in bankruptcy) with no conceded correct amount; grievances only about missing documents; and threats or legal actions that do not assert an incorrect amount.",
+        "criteria": {
+          "true": "YES when an asserted mismatch between the collected amount and the correct amount is expressed",
+          "false": "NO for total denial of the debt, pure documentation complaints, and adverse actions without an amount claim."
+        }
+      }
+    },
+    {
+      "id": "credit_damage_threat__A",
+      "concept": "credit_damage_threat",
+      "variant": "A",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative explicitly quote or state a threat that the consumer's credit report or credit score will be damaged or that the debt will be reported to credit bureaus if payment is not made?",
+        "criteria": {
+          "true": "YES only when an explicit future threat of credit damage or credit reporting conditioned on payment is stated",
+          "false": "NO when the narrative contains no such explicit statement."
+        }
+      }
+    },
+    {
+      "id": "credit_damage_threat__B",
+      "concept": "credit_damage_threat",
+      "variant": "B",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative mention the consumer's credit report, credit score, or credit standing in any negative connection to the debt?",
+        "criteria": {
+          "true": "YES if credit reporting or credit standing is mentioned negatively in relation to the debt",
+          "false": "NO when the narrative expresses nothing of this kind."
+        }
+      }
+    },
+    {
+      "id": "credit_damage_threat__C",
+      "concept": "credit_damage_threat",
+      "variant": "C",
+      "question": {
+        "type": "noul",
+        "instructions": "Is the semantic meaning expressed in `narrative` that the collector threatened or clearly suggested future damage to the consumer's credit as pressure or consequence related to the debt? Include direct statements, paraphrases, and indirect but clear expressions: warnings that nonpayment will ruin or further damage credit; statements that the account will be (re-)reported to bureaus unless payment is made; suggestions that the consumer's credit standing will suffer from noncooperation. Do not rely on keywords; judge the meaning. Exclude: an account simply being described as already present on a credit report or a score already having dropped (realized harm without a threatened or suggested further consequence); requests that reporting be corrected or removed; threats of lawsuits, garnishment, arrest, seizure, or other non-credit actions; and the consumer's own threats to sue.",
+        "criteria": {
+          "true": "YES when a threatened or clearly suggested future credit consequence tied to the debt is expressed",
+          "false": "NO for realized reporting harm alone, correction requests, non-credit threats, and consumer-side legal threats."
+        }
+      }
+    },
+    {
+      "id": "arrest_threat__A",
+      "concept": "arrest_threat",
+      "variant": "A",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative explicitly state that the collector threatened the consumer with arrest or jail for not paying the debt?",
+        "criteria": {
+          "true": "YES only when an explicit threat of arrest or jail is stated in connection with nonpayment",
+          "false": "NO when the narrative contains no such explicit statement."
+        }
+      }
+    },
+    {
+      "id": "arrest_threat__B",
+      "concept": "arrest_threat",
+      "variant": "B",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative indicate the collector used police, criminal, or law-enforcement pressure or intimidation of any kind against the consumer?",
+        "criteria": {
+          "true": "YES if police, criminal, or law-enforcement pressure or intimidation is involved",
+          "false": "NO when the narrative expresses nothing of this kind."
+        }
+      }
+    },
+    {
+      "id": "arrest_threat__C",
+      "concept": "arrest_threat",
+      "variant": "C",
+      "question": {
+        "type": "noul",
+        "instructions": "Is the semantic meaning expressed in `narrative` that the consumer's liberty was threatened over the debt — an expressed threat or clear suggestion of arrest, jail, imprisonment, being 'locked up', or police coming for the consumer because of the debt or nonpayment? Include direct statements, paraphrases, and indirect but clear expressions, including secondhand reports of such threats made to family members. Do not rely on keywords; judge the meaning. Exclude: civil lawsuits, court dates, or being sued (no liberty threat); threats limited to credit reporting, wage garnishment, or property seizure; generic intimidation, hostility, or profanity with no threat to liberty; accusations that the consumer committed a crime; collectors merely claiming or impersonating law-enforcement affiliation; and immigration or deportation threats.",
+        "criteria": {
+          "true": "YES when a threat to the consumer's liberty tied to the debt is expressed",
+          "false": "NO for civil legal threats, credit/garnishment/seizure threats, abuse without a liberty threat, crime accusations, impersonation claims, and immigration threats."
+        }
+      }
+    },
+    {
+      "id": "sued_no_notice__A",
+      "concept": "sued_no_notice",
+      "variant": "A",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative explicitly state that a lawsuit was filed against the consumer and that the consumer was never served or never received notice of it?",
+        "criteria": {
+          "true": "YES only when both an actual lawsuit and the absence of service/notice are explicitly stated",
+          "false": "NO when the narrative contains no such explicit statement."
+        }
+      }
+    },
+    {
+      "id": "sued_no_notice__B",
+      "concept": "sued_no_notice",
+      "variant": "B",
+      "question": {
+        "type": "noul",
+        "instructions": "Does the narrative involve any lawsuit, court case, judgment, or legal process problems related to the debt?",
+        "criteria": {
+          "true": "YES if any lawsuit or court process related to the debt is mentioned",
+          "false": "NO when the narrative expresses nothing of this kind."
+        }
+      }
+    },
+    {
+      "id": "sued_no_notice__C",
+      "concept": "sued_no_notice",
+      "variant": "C",
+      "question": {
+        "type": "noul",
+        "instructions": "Is the semantic meaning expressed in `narrative` that a lawsuit was actually filed against the consumer over the debt and the consumer was not properly notified of it? Include direct statements, paraphrases, and indirect but clear expressions: never served or served at the wrong address or on the wrong person; learning of the suit only from a default judgment, garnishment, or seized tax refund; sewered or defective service; no notice of hearings. Do not rely on keywords; judge the meaning. Exclude: mere threats of future lawsuits or legal action; lawsuits the consumer knew about and participated in; the consumer's own lawsuits against the collector; garnishment or seizure complaints that do not mention lacking notice of the underlying suit; and arbitration or pre-legal notices.",
+        "criteria": {
+          "true": "YES when a filed lawsuit plus defective or absent notice to the consumer is expressed",
+          "false": "NO for suit threats, known/participated suits, consumer-initiated suits, and enforcement actions without a notice complaint."
+        }
+      }
+    }
+  ]
+}

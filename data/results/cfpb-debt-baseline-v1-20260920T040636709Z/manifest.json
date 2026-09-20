@@ -1,0 +1,12 @@
+{
+  "name": "CFPB Debt Collection Baseline v1",
+  "benchmarkSha256": "380911efa458a467a0a08ead125b3f06d500e1e50ef8f4c0263fd3ae144f18f6",
+  "judgmentSha256": "0ef0f1cf784ee2243cf2ba6324482a3d57e48e35c73875c78945d9ee80e1c757",
+  "model": "jev-1.13.0",
+  "metric": "Agreement with CFPB consumer-selected Issue",
+  "cases": 100,
+  "retries": 0,
+  "timeoutSeconds": 60,
+  "startedUtc": "2026-09-20T04:06:36.7191028Z",
+  "latencyDefinition": "HTTP request through complete response body; milliseconds; excludes local validation and disk writes"
+}

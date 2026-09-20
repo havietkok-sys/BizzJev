@@ -1,0 +1,98 @@
+{
+  "metric": "Agreement with consumer-selected CFPB Issue",
+  "total": 810,
+  "completed": 805,
+  "agreement": 467,
+  "agreementPercentage": 57.65,
+  "perLabel": [
+    {
+      "label": "Attempts to collect debt not owed",
+      "agreement": 289,
+      "total": 432,
+      "percentage": 66.9
+    },
+    {
+      "label": "Written notification about debt",
+      "agreement": 110,
+      "total": 164,
+      "percentage": 67.1
+    },
+    {
+      "label": "False statements or representation",
+      "agreement": 39,
+      "total": 139,
+      "percentage": 28.1
+    },
+    {
+      "label": "Took or threatened to take negative or legal action",
+      "agreement": 29,
+      "total": 75,
+      "percentage": 38.7
+    }
+  ],
+  "confusionMatrixLabels": [
+    "Attempts to collect debt not owed",
+    "Written notification about debt",
+    "False statements or representation",
+    "Took or threatened to take negative or legal action"
+  ],
+  "confusionMatrixRows": "CFPB consumer-selected Issue",
+  "confusionMatrixColumns": "Jev Choice",
+  "confusionMatrix": [
+    [
+      289,
+      108,
+      21,
+      13
+    ],
+    [
+      42,
+      110,
+      3,
+      7
+    ],
+    [
+      30,
+      60,
+      39,
+      9
+    ],
+    [
+      23,
+      16,
+      6,
+      29
+    ]
+  ],
+  "averageConfidenceOverall": 0.7986708074534169,
+  "averageConfidenceAgreements": 0.8584796573875817,
+  "averageConfidenceDisagreements": 0.7160355029585799,
+  "probabilityMarginFirstMinusSecond": {
+    "overall": {
+      "mean": 0.7331925465838519,
+      "median": 0.8500000000000001,
+      "p10": 0.19999999999999996,
+      "p90": 1
+    },
+    "agreements": {
+      "mean": 0.8108993576017132,
+      "median": 0.94,
+      "p10": 0.36000000000000004,
+      "p90": 1
+    },
+    "disagreements": {
+      "mean": 0.6258284023668639,
+      "median": 0.7,
+      "p10": 0.12000000000000005,
+      "p90": 0.98
+    }
+  },
+  "totalInputTokens": 1461142,
+  "totalOutputTokens": 61062,
+  "averageLatencyMs": 299.07652633540334,
+  "medianLatencyMs": 290.9899,
+  "totalLatencyMs": 242217.79009999975,
+  "apiFailureCount": 5,
+  "retryAttempts": 0,
+  "note": "Failures remain in the 810-case denominator; no predicted label or agreement is fabricated. The metric is agreement with the consumer\u0027s single CFPB intake selection, not semantic ground-truth accuracy. Confidence means and margins use validated responses only."
+}

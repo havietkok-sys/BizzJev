@@ -1,0 +1,35 @@
+complaint_id,concept,variant,error_type,noul,failure_category,note
+23873613,identity_theft,A,FN,0.06,wording_too_literal,'police report for fraud' lacks the words identity theft
+24178505,identity_theft,A,FN,0.1,wording_too_literal,"'disputed as fraud / never applied' is a paraphrase, no explicit term"
+24116142,identity_theft,B,FP,0.84,generic_language_mistaken,resolved-debt dispute read as unfamiliarity
+23935982,identity_theft,B,FP,0.76,generic_language_mistaken,'information is inaccurate' read as possible fraud/unfamiliarity
+23877075,identity_theft,B,FP,0.6,shared_vocab_different_meaning,"fraud accusations against collector's conduct, consumer never disputes owning debt"
+23787349,insufficient_validation,A,FN,0.1,wording_too_literal,'refusal to verify' lacks requested-and-not-received phrasing
+24524886,insufficient_validation,A,FN,0.26,information_distributed,"verification mailed only weeks after litigation, stated across sentences"
+23775448,insufficient_validation,A,FN,0.14,wording_too_literal,'response insufficient / failed to provide competent evidence' never uses validation wording
+24120907,insufficient_validation,B,FP,0.9,shared_vocab_different_meaning,'why are payments valid' - validity of payments vs debt validation
+23804701,insufficient_validation,B,FP,0.82,generic_language_mistaken,billing adjustment request read as debt-information request
+23899303,insufficient_validation,B,FP,0.53,shared_vocab_different_meaning,"information requested was about repairs, not debt verification"
+23768219,insufficient_validation,B,FN,0.43,information_distributed,verification failure buried in multi-statute letter led by identity theft
+23948431,insufficient_validation,B,FN,0.37,unknown_model_error,explicit 'failing to provide proper validation details' scored 0.37 by the broad gate
+23821925,insufficient_validation,B,FN,0.26,information_distributed,missing written validation embedded in exempt-funds narrative
+23978568,insufficient_validation,C,FN,0.28,ambiguous_annotation_and_indirect,promised settlement letter/receipt never provided; gold judgment call
+23924892,wrong_amount,A,FN,0.35,information_distributed,predatory charges/interest buried mid-narrative
+23760406,wrong_amount,A,FN,0.06,wording_too_literal,services-never-rendered with no figures or wrong-amount wording
+23926646,wrong_amount,A,FN,0.11,indirect_semantic_expression,'cannot be required to pay for services never rendered'
+23832990,wrong_amount,B,FP,0.65,generic_language_mistaken,listed balances on unrecognized accounts read as amount dispute
+24441403,wrong_amount,B,FP,0.52,generic_language_mistaken,'might or might not be mine' + figure read as amount dispute
+24207294,wrong_amount,B,FP,0.58,generic_language_mistaken,'information of the debt is inaccurate' read as amount dispute
+23994280,wrong_amount,B,FN,0.26,indirect_semantic_expression,duplicate tradelines 'artificial inflation' missed even by broad gate
+23899303,wrong_amount,C,FN,0.38,ambiguous_human_annotation,court-ruled zero balance: wrong-amount vs total-denial is a graded boundary
+23994280,wrong_amount,C,FN,0.46,information_distributed,duplicate-reporting interior present in C but missed in long litigation narrative
+23926646,wrong_amount,C,FN,0.43,ambiguous_human_annotation,"denial-framed services-not-rendered; gold said wrong-amount, gate said denial"
+23748025,credit_damage_threat,B,FP,0.98,generic_language_mistaken,realized 'already hurt my credit score' treated as threat; no realized/threat boundary in B
+23888383,credit_damage_threat,B,FP,0.97,generic_language_mistaken,credit-reporting accuracy complaints treated as threat
+24196342,credit_damage_threat,B,FP,0.99,generic_language_mistaken,'tanking my credit score' realized harm; boundary also annotation-sensitive
+23956564,credit_damage_threat,B,FN,0.27,indirect_semantic_expression,'would report the account again' is a thin paraphrase of a credit threat
+23872749,arrest_threat,B,FP,0.78,neighboring_concept_crossed_boundary,enforcement-visit/seizure threats read as law-enforcement liberty pressure
+24149347,sued_no_notice,A,FN,0.1,wording_too_literal,defective service described without the word lawsuit or explicit never-served
+23896462,sued_no_notice,B,FP,0.76,shared_vocab_different_meaning,garbled 'letters demanding that I sue in court'
+24023145,sued_no_notice,B,FP,0.82,neighboring_concept_crossed_boundary,"'I was going to be sued' threat, no suit filed"
+23877075,sued_no_notice,B,FP,0.63,neighboring_concept_crossed_boundary,'facing legal action' threat read as filed suit

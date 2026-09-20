@@ -1,0 +1,482 @@
+{
+  "validated_cases": 805,
+  "confusion": {
+    "Attempts to collect debt not owed": {
+      "Attempts to collect debt not owed": 289,
+      "Took or threatened to take negative or legal action": 13,
+      "Written notification about debt": 108,
+      "False statements or representation": 21
+    },
+    "Written notification about debt": {
+      "Written notification about debt": 110,
+      "Attempts to collect debt not owed": 42,
+      "Took or threatened to take negative or legal action": 7,
+      "False statements or representation": 3
+    },
+    "False statements or representation": {
+      "Attempts to collect debt not owed": 30,
+      "Written notification about debt": 60,
+      "False statements or representation": 39,
+      "Took or threatened to take negative or legal action": 9
+    },
+    "Took or threatened to take negative or legal action": {
+      "Took or threatened to take negative or legal action": 29,
+      "Written notification about debt": 16,
+      "Attempts to collect debt not owed": 23,
+      "False statements or representation": 6
+    }
+  },
+  "directions_sorted": [
+    {
+      "from": "Attempts to collect debt not owed",
+      "to": "Written notification about debt",
+      "n": 108
+    },
+    {
+      "from": "False statements or representation",
+      "to": "Written notification about debt",
+      "n": 60
+    },
+    {
+      "from": "Written notification about debt",
+      "to": "Attempts to collect debt not owed",
+      "n": 42
+    },
+    {
+      "from": "False statements or representation",
+      "to": "Attempts to collect debt not owed",
+      "n": 30
+    },
+    {
+      "from": "Took or threatened to take negative or legal action",
+      "to": "Attempts to collect debt not owed",
+      "n": 23
+    },
+    {
+      "from": "Attempts to collect debt not owed",
+      "to": "False statements or representation",
+      "n": 21
+    },
+    {
+      "from": "Took or threatened to take negative or legal action",
+      "to": "Written notification about debt",
+      "n": 16
+    },
+    {
+      "from": "Attempts to collect debt not owed",
+      "to": "Took or threatened to take negative or legal action",
+      "n": 13
+    },
+    {
+      "from": "False statements or representation",
+      "to": "Took or threatened to take negative or legal action",
+      "n": 9
+    },
+    {
+      "from": "Written notification about debt",
+      "to": "Took or threatened to take negative or legal action",
+      "n": 7
+    },
+    {
+      "from": "Took or threatened to take negative or legal action",
+      "to": "False statements or representation",
+      "n": 6
+    },
+    {
+      "from": "Written notification about debt",
+      "to": "False statements or representation",
+      "n": 3
+    }
+  ],
+  "correlations": {
+    "spearman_margin_vs_agree": 0.351,
+    "spearman_confidence_vs_agree": 0.354
+  },
+  "bands": [
+    {
+      "measure": "margin",
+      "band": "0.00-0.10",
+      "n": 39,
+      "agreement_pct": 30.8
+    },
+    {
+      "measure": "margin",
+      "band": "0.10-0.25",
+      "n": 51,
+      "agreement_pct": 43.1
+    },
+    {
+      "measure": "margin",
+      "band": "0.25-0.50",
+      "n": 93,
+      "agreement_pct": 36.6
+    },
+    {
+      "measure": "margin",
+      "band": "0.50-0.75",
+      "n": 116,
+      "agreement_pct": 44.8
+    },
+    {
+      "measure": "margin",
+      "band": "0.75-0.90",
+      "n": 167,
+      "agreement_pct": 49.7
+    },
+    {
+      "measure": "margin",
+      "band": "0.90-1.00",
+      "n": 339,
+      "agreement_pct": 77.9
+    },
+    {
+      "measure": "conf",
+      "band": "0.00-0.10",
+      "n": 0,
+      "agreement_pct": null
+    },
+    {
+      "measure": "conf",
+      "band": "0.10-0.25",
+      "n": 19,
+      "agreement_pct": 21.1
+    },
+    {
+      "measure": "conf",
+      "band": "0.25-0.50",
+      "n": 90,
+      "agreement_pct": 40.0
+    },
+    {
+      "measure": "conf",
+      "band": "0.50-0.75",
+      "n": 139,
+      "agreement_pct": 39.6
+    },
+    {
+      "measure": "conf",
+      "band": "0.75-0.90",
+      "n": 159,
+      "agreement_pct": 50.9
+    },
+    {
+      "measure": "conf",
+      "band": "0.90-1.00",
+      "n": 398,
+      "agreement_pct": 73.1
+    }
+  ],
+  "subissue_rows": [
+    {
+      "issue": "Attempts to collect debt not owed",
+      "sub_issue": "Debt is not yours",
+      "n": 238,
+      "agree": 122,
+      "agreement_pct": 51.3,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 95,
+      "mean_conf": 0.801,
+      "median_conf": 0.9,
+      "mean_margin": 0.736,
+      "median_margin": 0.86
+    },
+    {
+      "issue": "Attempts to collect debt not owed",
+      "sub_issue": "Debt was already discharged in bankruptcy and is no longer owed",
+      "n": 14,
+      "agree": 10,
+      "agreement_pct": 71.4,
+      "most_common_jev_when_disagreeing": "False statements or representation",
+      "disagree_count_to_that": 2,
+      "mean_conf": 0.829,
+      "median_conf": 0.92,
+      "mean_margin": 0.758,
+      "median_margin": 0.895
+    },
+    {
+      "issue": "Attempts to collect debt not owed",
+      "sub_issue": "Debt was paid",
+      "n": 61,
+      "agree": 49,
+      "agreement_pct": 80.3,
+      "most_common_jev_when_disagreeing": "False statements or representation",
+      "disagree_count_to_that": 6,
+      "mean_conf": 0.817,
+      "median_conf": 0.89,
+      "mean_margin": 0.753,
+      "median_margin": 0.84
+    },
+    {
+      "issue": "Attempts to collect debt not owed",
+      "sub_issue": "Debt was result of identity theft",
+      "n": 118,
+      "agree": 108,
+      "agreement_pct": 91.5,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 8,
+      "mean_conf": 0.885,
+      "median_conf": 0.99,
+      "mean_margin": 0.854,
+      "median_margin": 0.98
+    },
+    {
+      "issue": "Written notification about debt",
+      "sub_issue": "Didn't receive enough information to verify debt",
+      "n": 116,
+      "agree": 86,
+      "agreement_pct": 74.1,
+      "most_common_jev_when_disagreeing": "Attempts to collect debt not owed",
+      "disagree_count_to_that": 26,
+      "mean_conf": 0.833,
+      "median_conf": 0.925,
+      "mean_margin": 0.775,
+      "median_margin": 0.905
+    },
+    {
+      "issue": "Written notification about debt",
+      "sub_issue": "Didn't receive notice of right to dispute",
+      "n": 37,
+      "agree": 22,
+      "agreement_pct": 59.5,
+      "most_common_jev_when_disagreeing": "Attempts to collect debt not owed",
+      "disagree_count_to_that": 11,
+      "mean_conf": 0.73,
+      "median_conf": 0.75,
+      "mean_margin": 0.627,
+      "median_margin": 0.62
+    },
+    {
+      "issue": "Written notification about debt",
+      "sub_issue": "Notification didn't disclose it was an attempt to collect a debt",
+      "n": 9,
+      "agree": 2,
+      "agreement_pct": 22.2,
+      "most_common_jev_when_disagreeing": "Attempts to collect debt not owed",
+      "disagree_count_to_that": 5,
+      "mean_conf": 0.534,
+      "median_conf": 0.38,
+      "mean_margin": 0.46,
+      "median_margin": 0.3
+    },
+    {
+      "issue": "False statements or representation",
+      "sub_issue": "Attempted to collect wrong amount",
+      "n": 124,
+      "agree": 36,
+      "agreement_pct": 29.0,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 55,
+      "mean_conf": 0.707,
+      "median_conf": 0.715,
+      "mean_margin": 0.613,
+      "median_margin": 0.62
+    },
+    {
+      "issue": "False statements or representation",
+      "sub_issue": "Impersonated attorney, law enforcement, or government official",
+      "n": 5,
+      "agree": 2,
+      "agreement_pct": 40.0,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 2,
+      "mean_conf": 0.682,
+      "median_conf": 0.67,
+      "mean_margin": 0.538,
+      "median_margin": 0.5
+    },
+    {
+      "issue": "False statements or representation",
+      "sub_issue": "Indicated you were committing crime by not paying debt",
+      "n": 5,
+      "agree": 0,
+      "agreement_pct": 0.0,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 3,
+      "mean_conf": 0.79,
+      "median_conf": 0.77,
+      "mean_margin": 0.706,
+      "median_margin": 0.73
+    },
+    {
+      "issue": "False statements or representation",
+      "sub_issue": "Told you not to respond to a lawsuit they filed against you",
+      "n": 4,
+      "agree": 1,
+      "agreement_pct": 25.0,
+      "most_common_jev_when_disagreeing": "Took or threatened to take negative or legal action",
+      "disagree_count_to_that": 2,
+      "mean_conf": 0.802,
+      "median_conf": 0.82,
+      "mean_margin": 0.738,
+      "median_margin": 0.755
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Collected or attempted to collect exempt funds",
+      "n": 7,
+      "agree": 5,
+      "agreement_pct": 71.4,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 2,
+      "mean_conf": 0.809,
+      "median_conf": 0.98,
+      "mean_margin": 0.757,
+      "median_margin": 0.98
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Seized or attempted to seize your property",
+      "n": 5,
+      "agree": 3,
+      "agreement_pct": 60.0,
+      "most_common_jev_when_disagreeing": "Attempts to collect debt not owed",
+      "disagree_count_to_that": 1,
+      "mean_conf": 0.726,
+      "median_conf": 0.79,
+      "mean_margin": 0.63,
+      "median_margin": 0.71
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Sued you in a state where you do not live or did not sign for the debt",
+      "n": 2,
+      "agree": 1,
+      "agreement_pct": 50.0,
+      "most_common_jev_when_disagreeing": "Attempts to collect debt not owed",
+      "disagree_count_to_that": 1,
+      "mean_conf": 0.98,
+      "median_conf": 0.98,
+      "mean_margin": 0.97,
+      "median_margin": 0.97
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Sued you without properly notifying you of lawsuit",
+      "n": 8,
+      "agree": 5,
+      "agreement_pct": 62.5,
+      "most_common_jev_when_disagreeing": "Attempts to collect debt not owed",
+      "disagree_count_to_that": 2,
+      "mean_conf": 0.804,
+      "median_conf": 0.895,
+      "mean_margin": 0.741,
+      "median_margin": 0.88
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Threatened or suggested your credit would be damaged",
+      "n": 37,
+      "agree": 5,
+      "agreement_pct": 13.5,
+      "most_common_jev_when_disagreeing": "Attempts to collect debt not owed",
+      "disagree_count_to_that": 19,
+      "mean_conf": 0.788,
+      "median_conf": 0.86,
+      "mean_margin": 0.72,
+      "median_margin": 0.79
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Threatened to arrest you or take you to jail if you do not pay",
+      "n": 4,
+      "agree": 3,
+      "agreement_pct": 75.0,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 1,
+      "mean_conf": 0.858,
+      "median_conf": 1.0,
+      "mean_margin": 0.838,
+      "median_margin": 1.0
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Threatened to sue you for very old debt",
+      "n": 10,
+      "agree": 7,
+      "agreement_pct": 70.0,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 3,
+      "mean_conf": 0.89,
+      "median_conf": 0.955,
+      "mean_margin": 0.863,
+      "median_margin": 0.945
+    },
+    {
+      "issue": "Took or threatened to take negative or legal action",
+      "sub_issue": "Threatened to turn you in to immigration or deport you",
+      "n": 1,
+      "agree": 0,
+      "agreement_pct": 0.0,
+      "most_common_jev_when_disagreeing": "Written notification about debt",
+      "disagree_count_to_that": 1,
+      "mean_conf": 0.69,
+      "median_conf": 0.69,
+      "mean_margin": 0.56,
+      "median_margin": 0.56
+    }
+  ],
+  "multiissue": [
+    {
+      "bucket": "none_detected",
+      "n_total": 118,
+      "pct_of_all": 14.7,
+      "n_agree": 75,
+      "n_disagree": 43,
+      "agreement_pct_within_bucket": 63.6
+    },
+    {
+      "bucket": "single_cluster",
+      "n_total": 289,
+      "pct_of_all": 35.9,
+      "n_agree": 145,
+      "n_disagree": 144,
+      "agreement_pct_within_bucket": 50.2
+    },
+    {
+      "bucket": "two_or_more",
+      "n_total": 398,
+      "pct_of_all": 49.4,
+      "n_agree": 247,
+      "n_disagree": 151,
+      "agreement_pct_within_bucket": 62.1
+    }
+  ],
+  "failures": [
+    {
+      "id": "23914640",
+      "sum": 0.99,
+      "choice": "Attempts to collect debt not owed",
+      "expected": "Written notification about debt"
+    },
+    {
+      "id": "23945831",
+      "sum": 0.99,
+      "choice": "Attempts to collect debt not owed",
+      "expected": "Took or threatened to take negative or legal action"
+    },
+    {
+      "id": "24014932",
+      "sum": 0.99,
+      "choice": "Attempts to collect debt not owed",
+      "expected": "Attempts to collect debt not owed"
+    },
+    {
+      "id": "24113435",
+      "sum": 0.99,
+      "choice": "Written notification about debt",
+      "expected": "False statements or representation"
+    },
+    {
+      "id": "24159831",
+      "sum": 0.99,
+      "choice": "Written notification about debt",
+      "expected": "Written notification about debt"
+    }
+  ],
+  "strata_sizes": {
+    "A_high_conf_agree": 347,
+    "B_low_conf_agree": 34,
+    "C_high_conf_disagree": 159,
+    "D_low_conf_disagree": 56
+  }
+}

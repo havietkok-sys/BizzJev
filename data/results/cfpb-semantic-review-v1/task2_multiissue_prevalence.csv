@@ -1,0 +1,41 @@
+complaint_id,stored_cfpb_issue,stored_sub_issue,attempts_yes,written_yes,false_yes,took_yes,n_clear_yes,n_unclear,stored_concept_expressed,v1_choice,v1_agree,sg_choice,sg_agree
+23748025,Attempts to collect debt not owed,Debt was already discharged in bankruptcy and is no longer owed,YES,NO,NO,YES,2,0,YES,Attempts to collect debt not owed,True,Took or threatened to take negative or legal action,False
+23753407,Took or threatened to take negative or legal action,Seized or attempted to seize your property,UNCLEAR,NO,UNCLEAR,UNCLEAR,0,3,UNCLEAR,Attempts to collect debt not owed,False,Attempts to collect debt not owed,False
+23754342,Written notification about debt,Didn't receive enough information to verify debt,YES,YES,NO,NO,2,0,YES,Attempts to collect debt not owed,False,Attempts to collect debt not owed,False
+23755795,Attempts to collect debt not owed,Debt is not yours,NO,YES,YES,NO,2,0,NO,Written notification about debt,False,False statements or representation,False
+23757648,False statements or representation,Attempted to collect wrong amount,YES,YES,YES,YES,4,0,YES,Written notification about debt,False,Attempts to collect debt not owed,False
+23789089,Written notification about debt,Didn't receive enough information to verify debt,NO,YES,UNCLEAR,NO,1,1,YES,Written notification about debt,True,Took or threatened to take negative or legal action,False
+23791426,Attempts to collect debt not owed,Debt is not yours,NO,NO,UNCLEAR,NO,0,1,NO,Took or threatened to take negative or legal action,False,Took or threatened to take negative or legal action,False
+23794756,Written notification about debt,Didn't receive enough information to verify debt,UNCLEAR,YES,NO,UNCLEAR,1,2,YES,Written notification about debt,True,Attempts to collect debt not owed,False
+23803268,Attempts to collect debt not owed,Debt is not yours,UNCLEAR,YES,NO,NO,1,1,UNCLEAR,Written notification about debt,False,Attempts to collect debt not owed,True
+23812315,Attempts to collect debt not owed,Debt was result of identity theft,YES,NO,NO,NO,1,0,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+23819878,Written notification about debt,Didn't receive enough information to verify debt,YES,YES,YES,NO,3,0,YES,Attempts to collect debt not owed,False,Attempts to collect debt not owed,False
+23821597,Attempts to collect debt not owed,Debt is not yours,YES,YES,UNCLEAR,NO,2,1,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+23873114,Attempts to collect debt not owed,Debt was result of identity theft,YES,NO,NO,NO,1,0,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+23881883,Written notification about debt,Didn't receive enough information to verify debt,NO,YES,NO,NO,1,0,YES,Written notification about debt,True,Took or threatened to take negative or legal action,False
+23882464,False statements or representation,Attempted to collect wrong amount,YES,NO,UNCLEAR,NO,1,1,UNCLEAR,False statements or representation,True,False statements or representation,True
+23884342,Attempts to collect debt not owed,Debt is not yours,YES,YES,YES,YES,4,0,YES,Attempts to collect debt not owed,True,False statements or representation,False
+23886008,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged,YES,NO,YES,NO,2,0,NO,Attempts to collect debt not owed,False,Attempts to collect debt not owed,False
+23893183,Attempts to collect debt not owed,Debt is not yours,UNCLEAR,YES,NO,NO,1,1,UNCLEAR,Written notification about debt,False,Attempts to collect debt not owed,True
+23908558,Written notification about debt,Didn't receive enough information to verify debt,NO,YES,YES,NO,2,0,YES,Written notification about debt,True,Written notification about debt,True
+23909597,False statements or representation,Attempted to collect wrong amount,NO,YES,UNCLEAR,NO,1,1,UNCLEAR,Written notification about debt,False,Took or threatened to take negative or legal action,False
+23949395,Attempts to collect debt not owed,Debt is not yours,YES,YES,NO,NO,2,0,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+23996693,False statements or representation,Attempted to collect wrong amount,YES,YES,YES,NO,3,0,YES,False statements or representation,True,Attempts to collect debt not owed,False
+23997415,Attempts to collect debt not owed,Debt was result of identity theft,YES,NO,YES,NO,2,0,YES,Attempts to collect debt not owed,True,False statements or representation,False
+24028636,False statements or representation,Attempted to collect wrong amount,NO,YES,NO,NO,1,0,NO,Written notification about debt,False,Written notification about debt,False
+24130669,False statements or representation,Attempted to collect wrong amount,YES,NO,YES,NO,2,0,YES,Attempts to collect debt not owed,False,False statements or representation,True
+24156695,False statements or representation,Attempted to collect wrong amount,YES,YES,YES,NO,3,0,YES,Attempts to collect debt not owed,False,Attempts to collect debt not owed,False
+24161859,False statements or representation,Attempted to collect wrong amount,YES,UNCLEAR,UNCLEAR,YES,2,2,UNCLEAR,Took or threatened to take negative or legal action,False,Took or threatened to take negative or legal action,False
+24178505,Attempts to collect debt not owed,Debt was result of identity theft,YES,NO,NO,UNCLEAR,1,1,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+24178563,False statements or representation,Attempted to collect wrong amount,YES,NO,YES,NO,2,0,YES,Attempts to collect debt not owed,False,Attempts to collect debt not owed,False
+24185499,Written notification about debt,Didn't receive enough information to verify debt,NO,YES,NO,YES,2,0,YES,Written notification about debt,True,Written notification about debt,True
+24206965,Attempts to collect debt not owed,Debt was result of identity theft,YES,NO,NO,NO,1,0,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+24210221,Attempts to collect debt not owed,Debt is not yours,YES,YES,YES,YES,4,0,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+24255127,Attempts to collect debt not owed,Debt was result of identity theft,YES,NO,YES,NO,2,0,YES,Attempts to collect debt not owed,True,False statements or representation,False
+24380027,Written notification about debt,Didn't receive enough information to verify debt,NO,YES,UNCLEAR,NO,1,1,YES,Written notification about debt,True,Written notification about debt,True
+24384681,False statements or representation,Attempted to collect wrong amount,YES,YES,YES,NO,3,0,YES,Attempts to collect debt not owed,False,Attempts to collect debt not owed,False
+24420860,Written notification about debt,Didn't receive enough information to verify debt,UNCLEAR,YES,NO,NO,1,1,YES,Written notification about debt,True,Written notification about debt,True
+24470856,Attempts to collect debt not owed,Debt was paid,YES,NO,YES,UNCLEAR,2,1,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True
+24473030,False statements or representation,Attempted to collect wrong amount,YES,NO,YES,YES,3,0,YES,False statements or representation,True,Took or threatened to take negative or legal action,False
+24474608,Written notification about debt,Notification didn't disclose it was an attempt to collect a debt,NO,UNCLEAR,UNCLEAR,NO,0,2,UNCLEAR,Attempts to collect debt not owed,False,False statements or representation,False
+24620160,Attempts to collect debt not owed,Debt is not yours,YES,UNCLEAR,NO,NO,1,1,YES,Attempts to collect debt not owed,True,Attempts to collect debt not owed,True

@@ -1,0 +1,12 @@
+{
+  "name": "CFPB Consumer-Selected Issue Prediction v1",
+  "testCsvSha256": "97a79e10a513bd5737a350e6b33024b1087ea9657db1f85f17c1c52aef516706",
+  "judgmentSha256": "f4bd1e56a59db4e1f46d3cc8450c604a64f89249ade1629bfbe49aef32acbca6",
+  "model": "jev-1.13.0",
+  "metric": "Agreement with consumer-selected CFPB Issue",
+  "cases": 810,
+  "retryPolicy": "Up to 3 attempts per case for transient failures only (HttpRequestException, TaskCanceledException, HTTP 408/429/5xx); identical frozen judgment re-sent verbatim; every attempt logged per case",
+  "timeoutSeconds": 60,
+  "startedUtc": "2026-09-20T05:33:37.5225325Z",
+  "latencyDefinition": "Final attempt\u0027s HTTP request through complete response body; milliseconds; excludes local validation, disk writes and backoff waits"
+}

@@ -1,0 +1,265 @@
+{
+  "experiment": "consumer-issue-prediction-v1",
+  "created_utc": "2026-09-20T05:10:29.522672+00:00",
+  "purpose": "Predict which CFPB Issue the consumer selected, from inference-time information only. Metric name: 'Agreement with consumer-selected CFPB Issue'.",
+  "source": {
+    "file": "data\\raw\\cfpb\\CCDB_Export_20_July_2026.csv",
+    "sha256": "beb05a0a61e1ccfe186ad1f7c6ab062bc7a089f7bda28adfe7e6c4c9ccefa57c"
+  },
+  "frozen_labels": [
+    "Attempts to collect debt not owed",
+    "Written notification about debt",
+    "False statements or representation",
+    "Took or threatened to take negative or legal action"
+  ],
+  "seed": 42,
+  "filter_funnel": {
+    "dc_rows": 24649,
+    "after narrative+issue+subissue filters": 2483,
+    "conflicting-label narratives excluded": 3,
+    "rows dropped as conflicting": 6,
+    "rows after conflict exclusion": 2477,
+    "exact-duplicate rows removed": 456,
+    "eligible unique cases": 2021
+  },
+  "eligibility_rules": [
+    "Product == Debt collection",
+    "non-empty Consumer complaint narrative (after whitespace trim)",
+    "Issue in the four frozen labels",
+    "non-empty Sub-issue (defensive; removed 0 rows in this source)",
+    "narratives whose exact text appears under more than one Issue are excluded entirely",
+    "exact-duplicate narratives deduplicated to the smallest Complaint ID",
+    "narrative text never modified"
+  ],
+  "split_rule": {
+    "stratification": "by (Issue, Sub-issue)",
+    "design_fraction_target": 0.6,
+    "rule": "n==1 -> DESIGN; n>=2 -> design_k = clamp(round(0.6*n), 1, n-1)",
+    "sampling": "random.Random(42).sample over Complaint-ID-sorted group members",
+    "output_order": "both CSVs sorted by Complaint ID (numeric)"
+  },
+  "counts": {
+    "eligible_total": 2021,
+    "eligible_per_issue": {
+      "Attempts to collect debt not owed": 1078,
+      "Written notification about debt": 408,
+      "False statements or representation": 349,
+      "Took or threatened to take negative or legal action": 186
+    },
+    "eligible_per_subissue": {
+      "Attempts to collect debt not owed | Debt is not yours": 595,
+      "Attempts to collect debt not owed | Debt was already discharged in bankruptcy and is no longer owed": 34,
+      "Attempts to collect debt not owed | Debt was paid": 154,
+      "Attempts to collect debt not owed | Debt was result of identity theft": 295,
+      "False statements or representation | Attempted to collect wrong amount": 313,
+      "False statements or representation | Impersonated attorney, law enforcement, or government official": 13,
+      "False statements or representation | Indicated you were committing crime by not paying debt": 13,
+      "False statements or representation | Told you not to respond to a lawsuit they filed against you": 10,
+      "Took or threatened to take negative or legal action | Collected or attempted to collect exempt funds": 17,
+      "Took or threatened to take negative or legal action | Seized or attempted to seize your property": 12,
+      "Took or threatened to take negative or legal action | Sued you in a state where you do not live or did not sign for the debt": 7,
+      "Took or threatened to take negative or legal action | Sued you without properly notifying you of lawsuit": 20,
+      "Took or threatened to take negative or legal action | Threatened or suggested your credit would be damaged": 93,
+      "Took or threatened to take negative or legal action | Threatened to arrest you or take you to jail if you do not pay": 10,
+      "Took or threatened to take negative or legal action | Threatened to sue you for very old debt": 25,
+      "Took or threatened to take negative or legal action | Threatened to turn you in to immigration or deport you": 2,
+      "Written notification about debt | Didn't receive enough information to verify debt": 294,
+      "Written notification about debt | Didn't receive notice of right to dispute": 92,
+      "Written notification about debt | Notification didn't disclose it was an attempt to collect a debt": 22
+    },
+    "design_total": 1211,
+    "test_total": 810,
+    "design_per_issue": {
+      "Attempts to collect debt not owed": 646,
+      "Written notification about debt": 244,
+      "False statements or representation": 210,
+      "Took or threatened to take negative or legal action": 111
+    },
+    "test_per_issue": {
+      "Attempts to collect debt not owed": 432,
+      "Written notification about debt": 164,
+      "False statements or representation": 139,
+      "Took or threatened to take negative or legal action": 75
+    },
+    "allocation_per_subissue": {
+      "Attempts to collect debt not owed | Debt is not yours": {
+        "eligible": 595,
+        "design": 357,
+        "test": 238
+      },
+      "Attempts to collect debt not owed | Debt was already discharged in bankruptcy and is no longer owed": {
+        "eligible": 34,
+        "design": 20,
+        "test": 14
+      },
+      "Attempts to collect debt not owed | Debt was paid": {
+        "eligible": 154,
+        "design": 92,
+        "test": 62
+      },
+      "Attempts to collect debt not owed | Debt was result of identity theft": {
+        "eligible": 295,
+        "design": 177,
+        "test": 118
+      },
+      "Written notification about debt | Didn't receive enough information to verify debt": {
+        "eligible": 294,
+        "design": 176,
+        "test": 118
+      },
+      "Written notification about debt | Didn't receive notice of right to dispute": {
+        "eligible": 92,
+        "design": 55,
+        "test": 37
+      },
+      "Written notification about debt | Notification didn't disclose it was an attempt to collect a debt": {
+        "eligible": 22,
+        "design": 13,
+        "test": 9
+      },
+      "False statements or representation | Attempted to collect wrong amount": {
+        "eligible": 313,
+        "design": 188,
+        "test": 125
+      },
+      "False statements or representation | Impersonated attorney, law enforcement, or government official": {
+        "eligible": 13,
+        "design": 8,
+        "test": 5
+      },
+      "False statements or representation | Indicated you were committing crime by not paying debt": {
+        "eligible": 13,
+        "design": 8,
+        "test": 5
+      },
+      "False statements or representation | Told you not to respond to a lawsuit they filed against you": {
+        "eligible": 10,
+        "design": 6,
+        "test": 4
+      },
+      "Took or threatened to take negative or legal action | Collected or attempted to collect exempt funds": {
+        "eligible": 17,
+        "design": 10,
+        "test": 7
+      },
+      "Took or threatened to take negative or legal action | Seized or attempted to seize your property": {
+        "eligible": 12,
+        "design": 7,
+        "test": 5
+      },
+      "Took or threatened to take negative or legal action | Sued you in a state where you do not live or did not sign for the debt": {
+        "eligible": 7,
+        "design": 4,
+        "test": 3
+      },
+      "Took or threatened to take negative or legal action | Sued you without properly notifying you of lawsuit": {
+        "eligible": 20,
+        "design": 12,
+        "test": 8
+      },
+      "Took or threatened to take negative or legal action | Threatened or suggested your credit would be damaged": {
+        "eligible": 93,
+        "design": 56,
+        "test": 37
+      },
+      "Took or threatened to take negative or legal action | Threatened to arrest you or take you to jail if you do not pay": {
+        "eligible": 10,
+        "design": 6,
+        "test": 4
+      },
+      "Took or threatened to take negative or legal action | Threatened to sue you for very old debt": {
+        "eligible": 25,
+        "design": 15,
+        "test": 10
+      },
+      "Took or threatened to take negative or legal action | Threatened to turn you in to immigration or deport you": {
+        "eligible": 2,
+        "design": 1,
+        "test": 1
+      }
+    }
+  },
+  "leakage_checks": {
+    "exact narrative overlap design-test": 0,
+    "duplicate complaint IDs design-test": 0,
+    "conflicting-label narratives remaining in either split": 0,
+    "narratives unique within design": true,
+    "narratives unique within test": true
+  },
+  "sub_issues_missing_in_design": [],
+  "sub_issues_missing_in_test": [],
+  "template_risk_report_only": {
+    "definition": "narratives sharing an identical first 200 normalized chars across BOTH splits (mechanical proxy only)",
+    "groups_spanning_splits_ge3_total": 9,
+    "top_groups": [
+      {
+        "opener": "to whom it may concern, please note that this is not a refusal to pay off the account but ",
+        "design": 9,
+        "test": 7
+      },
+      {
+        "opener": "this debt collector has done unjustifiable practices of the fdcpa which it prohibits. they",
+        "design": 4,
+        "test": 4
+      },
+      {
+        "opener": "jefferson capital ll is falsely reporting on my credit. i have never had any accounts with",
+        "design": 6,
+        "test": 1
+      },
+      {
+        "opener": "ic system inc is falsely reporting on my credit. i have never had any accounts with them. ",
+        "design": 2,
+        "test": 2
+      },
+      {
+        "opener": "i am writing to file a formal complaint regarding serious violations if my rights under th",
+        "design": 2,
+        "test": 1
+      },
+      {
+        "opener": "midland credit managem is falsely reporting on my credit. i have never had any accounts wi",
+        "design": 2,
+        "test": 1
+      },
+      {
+        "opener": "i am formally disputing the validity of the alleged collection and charge-off account bein",
+        "design": 1,
+        "test": 2
+      },
+      {
+        "opener": "portfolio recov assoc is falsely reporting on my credit. i have never had any accounts wit",
+        "design": 1,
+        "test": 2
+      },
+      {
+        "opener": "midland credit xxxx is falsely reporting on my credit. i have never had any accounts with ",
+        "design": 2,
+        "test": 1
+      }
+    ]
+  },
+  "overlap_with_previous_100_benchmark": {
+    "old_benchmark_ids": 100,
+    "now_in_design": 59,
+    "now_in_test": 41
+  },
+  "files": {
+    "eligible.csv": {
+      "path": "data\\prepared\\cfpb\\consumer-issue-prediction-v1\\eligible.csv",
+      "sha256": "895688bdac1c61c08d72ab93fa5e8ef48ae7d918a1d02b9b431773146bf5885e",
+      "rows": 2021
+    },
+    "design.csv": {
+      "path": "data\\prepared\\cfpb\\consumer-issue-prediction-v1\\design.csv",
+      "sha256": "c762d5f24cb2c18ad1c8b5dfd9f4d3588e196dda7e3ea37abc8805b961d4cbbc",
+      "rows": 1211
+    },
+    "test.csv": {
+      "path": "data\\prepared\\cfpb\\consumer-issue-prediction-v1\\test.csv",
+      "sha256": "97a79e10a513bd5737a350e6b33024b1087ea9657db1f85f17c1c52aef516706",
+      "rows": 810
+    }
+  },
+  "test_set_policy": "TEST narratives must not be inspected case-by-case while designing the judgment. Aggregate counts only. One evaluation run after the judgment is frozen."
+}

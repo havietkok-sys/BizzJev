@@ -1,0 +1,416 @@
+[
+  {
+    "concept": "identity_theft",
+    "variant": "A",
+    "n_yes": 7,
+    "n_no": 53,
+    "n_unclear": 12,
+    "yes_min_q1_med_q3_max": [
+      0.06,
+      0.91,
+      0.95,
+      0.99,
+      0.99
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.02,
+      0.03,
+      0.03,
+      0.04
+    ],
+    "unclear_median": 0.03,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "identity_theft",
+    "variant": "B",
+    "n_yes": 7,
+    "n_no": 53,
+    "n_unclear": 12,
+    "yes_min_q1_med_q3_max": [
+      0.99,
+      0.99,
+      0.99,
+      0.99,
+      0.99
+    ],
+    "no_min_q1_med_q3_max": [
+      0.04,
+      0.12,
+      0.27,
+      0.57,
+      0.98
+    ],
+    "unclear_median": 0.97,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "identity_theft",
+    "variant": "C",
+    "n_yes": 7,
+    "n_no": 53,
+    "n_unclear": 12,
+    "yes_min_q1_med_q3_max": [
+      0.82,
+      0.93,
+      0.97,
+      0.98,
+      0.99
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.02,
+      0.03,
+      0.04,
+      0.24
+    ],
+    "unclear_median": 0.17,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "insufficient_validation",
+    "variant": "A",
+    "n_yes": 21,
+    "n_no": 35,
+    "n_unclear": 16,
+    "yes_min_q1_med_q3_max": [
+      0.03,
+      0.1,
+      0.31,
+      0.69,
+      0.93
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.03,
+      0.03,
+      0.03,
+      0.06
+    ],
+    "unclear_median": 0.055,
+    "roc_auc": 0.975
+  },
+  {
+    "concept": "insufficient_validation",
+    "variant": "B",
+    "n_yes": 21,
+    "n_no": 35,
+    "n_unclear": 16,
+    "yes_min_q1_med_q3_max": [
+      0.18,
+      0.65,
+      0.98,
+      0.99,
+      0.99
+    ],
+    "no_min_q1_med_q3_max": [
+      0.04,
+      0.07,
+      0.1,
+      0.27,
+      0.9
+    ],
+    "unclear_median": 0.84,
+    "roc_auc": 0.952
+  },
+  {
+    "concept": "insufficient_validation",
+    "variant": "C",
+    "n_yes": 21,
+    "n_no": 35,
+    "n_unclear": 16,
+    "yes_min_q1_med_q3_max": [
+      0.28,
+      0.88,
+      0.92,
+      0.96,
+      0.98
+    ],
+    "no_min_q1_med_q3_max": [
+      0.03,
+      0.07,
+      0.11,
+      0.27,
+      0.41
+    ],
+    "unclear_median": 0.255,
+    "roc_auc": 0.99
+  },
+  {
+    "concept": "wrong_amount",
+    "variant": "A",
+    "n_yes": 16,
+    "n_no": 46,
+    "n_unclear": 10,
+    "yes_min_q1_med_q3_max": [
+      0.05,
+      0.11,
+      0.315,
+      0.78,
+      0.98
+    ],
+    "no_min_q1_med_q3_max": [
+      0.03,
+      0.04,
+      0.04,
+      0.05,
+      0.37
+    ],
+    "unclear_median": 0.08,
+    "roc_auc": 0.951
+  },
+  {
+    "concept": "wrong_amount",
+    "variant": "B",
+    "n_yes": 16,
+    "n_no": 46,
+    "n_unclear": 10,
+    "yes_min_q1_med_q3_max": [
+      0.26,
+      0.93,
+      0.96,
+      0.99,
+      0.99
+    ],
+    "no_min_q1_med_q3_max": [
+      0.04,
+      0.15,
+      0.445,
+      0.71,
+      0.98
+    ],
+    "unclear_median": 0.91,
+    "roc_auc": 0.91
+  },
+  {
+    "concept": "wrong_amount",
+    "variant": "C",
+    "n_yes": 16,
+    "n_no": 46,
+    "n_unclear": 10,
+    "yes_min_q1_med_q3_max": [
+      0.38,
+      0.62,
+      0.69,
+      0.85,
+      0.97
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.04,
+      0.04,
+      0.06,
+      0.14
+    ],
+    "unclear_median": 0.27,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "credit_damage_threat",
+    "variant": "A",
+    "n_yes": 2,
+    "n_no": 68,
+    "n_unclear": 2,
+    "yes_min_q1_med_q3_max": [
+      0.58,
+      0.58,
+      0.745,
+      0.91,
+      0.91
+    ],
+    "no_min_q1_med_q3_max": [
+      0.03,
+      0.04,
+      0.04,
+      0.05,
+      0.12
+    ],
+    "unclear_median": 0.175,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "credit_damage_threat",
+    "variant": "B",
+    "n_yes": 2,
+    "n_no": 68,
+    "n_unclear": 2,
+    "yes_min_q1_med_q3_max": [
+      0.27,
+      0.27,
+      0.62,
+      0.97,
+      0.97
+    ],
+    "no_min_q1_med_q3_max": [
+      0.03,
+      0.05,
+      0.665,
+      0.95,
+      0.99
+    ],
+    "unclear_median": 0.975,
+    "roc_auc": 0.658
+  },
+  {
+    "concept": "credit_damage_threat",
+    "variant": "C",
+    "n_yes": 2,
+    "n_no": 68,
+    "n_unclear": 2,
+    "yes_min_q1_med_q3_max": [
+      0.84,
+      0.84,
+      0.9,
+      0.96,
+      0.96
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.03,
+      0.03,
+      0.04,
+      0.23
+    ],
+    "unclear_median": 0.28,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "arrest_threat",
+    "variant": "A",
+    "n_yes": 3,
+    "n_no": 69,
+    "n_unclear": 0,
+    "yes_min_q1_med_q3_max": [
+      0.66,
+      0.66,
+      0.7,
+      0.97,
+      0.97
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.03,
+      0.03,
+      0.03,
+      0.05
+    ],
+    "unclear_median": null,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "arrest_threat",
+    "variant": "B",
+    "n_yes": 3,
+    "n_no": 69,
+    "n_unclear": 0,
+    "yes_min_q1_med_q3_max": [
+      0.66,
+      0.66,
+      0.76,
+      0.89,
+      0.89
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.02,
+      0.03,
+      0.03,
+      0.78
+    ],
+    "unclear_median": null,
+    "roc_auc": 0.99
+  },
+  {
+    "concept": "arrest_threat",
+    "variant": "C",
+    "n_yes": 3,
+    "n_no": 69,
+    "n_unclear": 0,
+    "yes_min_q1_med_q3_max": [
+      0.9,
+      0.9,
+      0.93,
+      0.96,
+      0.96
+    ],
+    "no_min_q1_med_q3_max": [
+      0.01,
+      0.02,
+      0.02,
+      0.02,
+      0.19
+    ],
+    "unclear_median": null,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "sued_no_notice",
+    "variant": "A",
+    "n_yes": 4,
+    "n_no": 68,
+    "n_unclear": 0,
+    "yes_min_q1_med_q3_max": [
+      0.1,
+      0.95,
+      0.95,
+      0.95,
+      0.98
+    ],
+    "no_min_q1_med_q3_max": [
+      0.02,
+      0.02,
+      0.03,
+      0.03,
+      0.05
+    ],
+    "unclear_median": null,
+    "roc_auc": 1.0
+  },
+  {
+    "concept": "sued_no_notice",
+    "variant": "B",
+    "n_yes": 4,
+    "n_no": 68,
+    "n_unclear": 0,
+    "yes_min_q1_med_q3_max": [
+      0.92,
+      0.99,
+      0.99,
+      0.99,
+      1.0
+    ],
+    "no_min_q1_med_q3_max": [
+      0.03,
+      0.06,
+      0.09,
+      0.44,
+      0.99
+    ],
+    "unclear_median": null,
+    "roc_auc": 0.963
+  },
+  {
+    "concept": "sued_no_notice",
+    "variant": "C",
+    "n_yes": 4,
+    "n_no": 68,
+    "n_unclear": 0,
+    "yes_min_q1_med_q3_max": [
+      0.74,
+      0.93,
+      0.935,
+      0.94,
+      0.98
+    ],
+    "no_min_q1_med_q3_max": [
+      0.01,
+      0.01,
+      0.02,
+      0.02,
+      0.15
+    ],
+    "unclear_median": null,
+    "roc_auc": 1.0
+  }
+]

@@ -1,0 +1,39 @@
+complaint_id,concept,variant,error_type,noul,failure_category,note
+24000267,identity_theft,A,FN,0.04,wording_too_literal,"'never opened, requested, authorized... do not recognize' paraphrase"
+23799909,identity_theft,A,FN,0.03,wording_too_literal,'never authorized these charges / no knowledge' without the words identity theft
+23751836,identity_theft,B,FP,0.88,generic_language_mistaken,unrecognized account read as possible identity misuse (designed B behavior)
+23981310,identity_theft,B,FP,0.59,generic_language_mistaken,validation dispute boilerplate read as unfamiliarity
+23751113,identity_theft,C,FP,0.73,neighboring_concept_crossed_boundary,mere non-recognition admitted; C interior leak on the unfamiliarity boundary
+24273439,identity_theft,C,FP,0.61,shared_vocab_different_meaning,'identity confusion' in litigation narrative read as identity misuse
+23885354,insufficient_validation,A,FN,0.15,wording_too_literal,'provide competent evidence' request paraphrase
+23843558,insufficient_validation,A,FN,0.05,wording_too_literal,ten-item validation listing without explicit requested-and-received-nothing phrasing (adj. YES)
+24273439,insufficient_validation,B,FP,0.67,shared_vocab_different_meaning,the FIRM's debt verification request (not the consumer's) read as missing validation
+24229587,insufficient_validation,B,FP,0.93,generic_language_mistaken,pay-for-delete recollection/records request read as validation
+23751836,insufficient_validation,B,FN,0.47,unusual_paraphrase,arbitration/wet-signature niche information request missed by broad gate
+24195781,insufficient_validation,B,FN,0.15,unknown_model_error,contradictory-data complaint (0 vs 550 balance) scored 0.15 despite info frame
+23992726,insufficient_validation,C,FP,0.84,graded_definitional_boundary,"dispute answered with rejected receipt; C read as info-insufficiency, gold NO"
+23749812,insufficient_validation,C,FP,0.81,generic_language_mistaken,'they did not respond' (about apartment video) read as validation failure
+23751113,insufficient_validation,C,FN,0.26,graded_definitional_boundary,"arbitration/wet-signature demand; gold YES, C's anticipatory-demand exclusion fired"
+23781005,insufficient_validation,C,FN,0.14,graded_definitional_boundary,"dispute+demand+delete-if-unverifiable letter; adjudicated YES, C excludes anticipatory demands (definitional clash)"
+23769743,wrong_amount,A,FP,0.66,neighboring_concept_crossed_boundary,total denial with a figure ('$940') read as amount dispute
+24117666,wrong_amount,A,FP,0.54,neighboring_concept_crossed_boundary,identity-theft denial with balance listed read as amount dispute
+24234244,wrong_amount,A,FN,0.18,wording_too_literal,insurance share-of-cost billing error without explicit wrong-amount wording
+24695585,wrong_amount,A,FN,0.05,indirect_semantic_expression,contradictory statements/fictitious timelines imply amount/timeline fabrication
+23753228,wrong_amount,B,FP,0.76,generic_language_mistaken,documentation/suit/garnishment narrative read as amount dispute
+23918008,wrong_amount,B,FP,0.93,generic_language_mistaken,debt-parking validation letter with balance figure read as amount dispute
+23993378,wrong_amount,B,FN,0.36,unknown_model_error,paid-in-full still shown unpaid; clear status/amount error scored 0.36 by broad gate
+24014932,wrong_amount,C,FP,0.58,graded_definitional_boundary,paid-off account still negative - status vs amount boundary
+24116329,wrong_amount,C,FN,0.33,indirect_semantic_expression,refund never asked for must be repaid - 'charge for something never ordered' paraphrase missed
+24131786,wrong_amount,C,FN,0.06,graded_definitional_boundary,forced payoff-to-zero then new collection; denial/validation/amount frames blur
+24208206,credit_damage_threat,A,FN,0.43,wording_too_literal,grace-period sentence ('will not submit a negative credit report until...') is an indirect conditional credit consequence
+23742973,credit_damage_threat,B,FP,0.56,generic_language_mistaken,third-party contact story with no credit threat scored 0.56
+23843672,credit_damage_threat,B,FP,0.98,generic_language_mistaken,"breached promise not to report treated as threat (realized/relational, not pressure)"
+24204993,credit_damage_threat,C,FP,0.61,ambiguous_boundary,'demanded payment for credit to still be jacked up' - mangled phrasing; gold itself delicate
+24208206,credit_damage_threat,C,FN,0.28,indirect_semantic_expression,C missed the conditional future-reporting meaning of the quoted grace-period sentence
+23952121,arrest_threat,A,FN,0.07,wording_too_literal,'threatened with the police' is an indirect liberty threat without arrest/jail wording
+23806029,arrest_threat,B,FP,0.97,neighboring_concept_crossed_boundary,DA-impersonation and contact threats read as law-enforcement liberty pressure
+24273439,sued_no_notice,A,FN,0.07,wording_too_literal,response withheld + fraudulent default judgment; no explicit never-served wording
+23885496,sued_no_notice,B,FP,0.98,shared_vocab_different_meaning,'standing to pursue collection'/legal terms in validation letter read as lawsuit
+23769743,sued_no_notice,B,FP,0.67,unknown_model_error,no court content in narrative; broad gate fired 0.67
+23935113,sued_no_notice,C,FP,0.58,ambiguous_human_annotation,narrative states sued + people delivering court letters + no warning/letter; gold NO is itself questionable
+24273439,sued_no_notice,C,FN,0.43,indirect_semantic_expression,procedural-fraud notice failure expressed indirectly; C at 0.43

@@ -1,0 +1,273 @@
+{
+  "seed": 42,
+  "threshold": 0.5,
+  "rule": "up to 2 FPs and 2 FNs per concept-variant at t=0.50, ID-sorted pools, Random(42).sample",
+  "items": [
+    {
+      "complaint_id": "24000267",
+      "concept": "identity_theft",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.04
+    },
+    {
+      "complaint_id": "23799909",
+      "concept": "identity_theft",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.03
+    },
+    {
+      "complaint_id": "23751836",
+      "concept": "identity_theft",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.88
+    },
+    {
+      "complaint_id": "23981310",
+      "concept": "identity_theft",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.59
+    },
+    {
+      "complaint_id": "23751113",
+      "concept": "identity_theft",
+      "variant": "C",
+      "error_type": "FP",
+      "noul": 0.73
+    },
+    {
+      "complaint_id": "24273439",
+      "concept": "identity_theft",
+      "variant": "C",
+      "error_type": "FP",
+      "noul": 0.61
+    },
+    {
+      "complaint_id": "23885354",
+      "concept": "insufficient_validation",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.15
+    },
+    {
+      "complaint_id": "23843558",
+      "concept": "insufficient_validation",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.05
+    },
+    {
+      "complaint_id": "24273439",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.67
+    },
+    {
+      "complaint_id": "24229587",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.93
+    },
+    {
+      "complaint_id": "23751836",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.47
+    },
+    {
+      "complaint_id": "24195781",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.15
+    },
+    {
+      "complaint_id": "23992726",
+      "concept": "insufficient_validation",
+      "variant": "C",
+      "error_type": "FP",
+      "noul": 0.84
+    },
+    {
+      "complaint_id": "23749812",
+      "concept": "insufficient_validation",
+      "variant": "C",
+      "error_type": "FP",
+      "noul": 0.81
+    },
+    {
+      "complaint_id": "23751113",
+      "concept": "insufficient_validation",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.26
+    },
+    {
+      "complaint_id": "23781005",
+      "concept": "insufficient_validation",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.14
+    },
+    {
+      "complaint_id": "23769743",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "error_type": "FP",
+      "noul": 0.66
+    },
+    {
+      "complaint_id": "24117666",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "error_type": "FP",
+      "noul": 0.54
+    },
+    {
+      "complaint_id": "24234244",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.18
+    },
+    {
+      "complaint_id": "24695585",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.05
+    },
+    {
+      "complaint_id": "23753228",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.76
+    },
+    {
+      "complaint_id": "23918008",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.93
+    },
+    {
+      "complaint_id": "23993378",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.36
+    },
+    {
+      "complaint_id": "24014932",
+      "concept": "wrong_amount",
+      "variant": "C",
+      "error_type": "FP",
+      "noul": 0.58
+    },
+    {
+      "complaint_id": "24116329",
+      "concept": "wrong_amount",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.33
+    },
+    {
+      "complaint_id": "24131786",
+      "concept": "wrong_amount",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.06
+    },
+    {
+      "complaint_id": "24208206",
+      "concept": "credit_damage_threat",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.43
+    },
+    {
+      "complaint_id": "23742973",
+      "concept": "credit_damage_threat",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.56
+    },
+    {
+      "complaint_id": "23843672",
+      "concept": "credit_damage_threat",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.98
+    },
+    {
+      "complaint_id": "24204993",
+      "concept": "credit_damage_threat",
+      "variant": "C",
+      "error_type": "FP",
+      "noul": 0.61
+    },
+    {
+      "complaint_id": "24208206",
+      "concept": "credit_damage_threat",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.28
+    },
+    {
+      "complaint_id": "23952121",
+      "concept": "arrest_threat",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.07
+    },
+    {
+      "complaint_id": "23806029",
+      "concept": "arrest_threat",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.97
+    },
+    {
+      "complaint_id": "24273439",
+      "concept": "sued_no_notice",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.07
+    },
+    {
+      "complaint_id": "23885496",
+      "concept": "sued_no_notice",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.98
+    },
+    {
+      "complaint_id": "23769743",
+      "concept": "sued_no_notice",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.67
+    },
+    {
+      "complaint_id": "23935113",
+      "concept": "sued_no_notice",
+      "variant": "C",
+      "error_type": "FP",
+      "noul": 0.58
+    },
+    {
+      "complaint_id": "24273439",
+      "concept": "sued_no_notice",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.43
+    }
+  ]
+}

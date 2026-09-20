@@ -1,0 +1,77 @@
+[
+  {
+    "id": "23914640",
+    "expected": "Written notification about debt",
+    "http": 200,
+    "choice": "Attempts to collect debt not owed",
+    "confidence": 0.56,
+    "probabilities": {
+      "Written notification about debt": 0.05,
+      "Attempts to collect debt not owed": 0.67,
+      "False statements or representation": 0.26,
+      "Took or threatened to take negative or legal action": 0.01
+    },
+    "sum": 0.99,
+    "values_have_2_decimals": true
+  },
+  {
+    "id": "23945831",
+    "expected": "Took or threatened to take negative or legal action",
+    "http": 200,
+    "choice": "Attempts to collect debt not owed",
+    "confidence": 0.39,
+    "probabilities": {
+      "Attempts to collect debt not owed": 0.54,
+      "Written notification about debt": 0.05,
+      "False statements or representation": 0.0,
+      "Took or threatened to take negative or legal action": 0.4
+    },
+    "sum": 0.99,
+    "values_have_2_decimals": true
+  },
+  {
+    "id": "24014932",
+    "expected": "Attempts to collect debt not owed",
+    "http": 200,
+    "choice": "Attempts to collect debt not owed",
+    "confidence": 0.75,
+    "probabilities": {
+      "False statements or representation": 0.17,
+      "Attempts to collect debt not owed": 0.81,
+      "Written notification about debt": 0.0,
+      "Took or threatened to take negative or legal action": 0.01
+    },
+    "sum": 0.99,
+    "values_have_2_decimals": true
+  },
+  {
+    "id": "24113435",
+    "expected": "False statements or representation",
+    "http": 200,
+    "choice": "Written notification about debt",
+    "confidence": 0.58,
+    "probabilities": {
+      "Took or threatened to take negative or legal action": 0.17,
+      "False statements or representation": 0.01,
+      "Attempts to collect debt not owed": 0.13,
+      "Written notification about debt": 0.68
+    },
+    "sum": 0.99,
+    "values_have_2_decimals": true
+  },
+  {
+    "id": "24159831",
+    "expected": "Written notification about debt",
+    "http": 200,
+    "choice": "Written notification about debt",
+    "confidence": 0.91,
+    "probabilities": {
+      "Took or threatened to take negative or legal action": 0.0,
+      "Written notification about debt": 0.93,
+      "Attempts to collect debt not owed": 0.04,
+      "False statements or representation": 0.02
+    },
+    "sum": 0.99,
+    "values_have_2_decimals": true
+  }
+]

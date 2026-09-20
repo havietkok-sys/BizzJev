@@ -1,0 +1,13 @@
+{
+  "name": "CFPB Single Semantic Gate Experiment (post-test architecture comparison)",
+  "resultLabel": "EXPERIMENTAL / POST-TEST ARCHITECTURE COMPARISON - TEST set previously inspected during V1 post-test analysis; NOT a held-out generalization result",
+  "testCsvSha256": "97a79e10a513bd5737a350e6b33024b1087ea9657db1f85f17c1c52aef516706",
+  "judgmentSha256": "c4f0623046210ed03dcaea787955aac5917ca59eb66bbacd997bac03b0bba724",
+  "model": "jev-1.13.0",
+  "metric": "Agreement with consumer-selected CFPB Issue",
+  "cases": 810,
+  "retryPolicy": "Up to 3 attempts per case for transient failures only (HttpRequestException, TaskCanceledException, HTTP 408/429/5xx); identical frozen judgment re-sent verbatim; every attempt logged per case",
+  "timeoutSeconds": 60,
+  "startedUtc": "2026-09-20T09:02:03.3880997Z",
+  "latencyDefinition": "Final attempt\u0027s HTTP request through complete response body; milliseconds; excludes local validation, disk writes and backoff waits"
+}

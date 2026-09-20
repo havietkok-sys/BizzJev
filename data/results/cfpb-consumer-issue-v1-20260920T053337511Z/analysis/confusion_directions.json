@@ -1,0 +1,148 @@
+{
+  "directions": [
+    {
+      "from": "Attempts to collect debt not owed",
+      "to": "Written notification about debt",
+      "n": 108
+    },
+    {
+      "from": "False statements or representation",
+      "to": "Written notification about debt",
+      "n": 60
+    },
+    {
+      "from": "Written notification about debt",
+      "to": "Attempts to collect debt not owed",
+      "n": 42
+    },
+    {
+      "from": "False statements or representation",
+      "to": "Attempts to collect debt not owed",
+      "n": 30
+    },
+    {
+      "from": "Took or threatened to take negative or legal action",
+      "to": "Attempts to collect debt not owed",
+      "n": 23
+    },
+    {
+      "from": "Attempts to collect debt not owed",
+      "to": "False statements or representation",
+      "n": 21
+    },
+    {
+      "from": "Took or threatened to take negative or legal action",
+      "to": "Written notification about debt",
+      "n": 16
+    },
+    {
+      "from": "Attempts to collect debt not owed",
+      "to": "Took or threatened to take negative or legal action",
+      "n": 13
+    },
+    {
+      "from": "False statements or representation",
+      "to": "Took or threatened to take negative or legal action",
+      "n": 9
+    },
+    {
+      "from": "Written notification about debt",
+      "to": "Took or threatened to take negative or legal action",
+      "n": 7
+    },
+    {
+      "from": "Took or threatened to take negative or legal action",
+      "to": "False statements or representation",
+      "n": 6
+    },
+    {
+      "from": "Written notification about debt",
+      "to": "False statements or representation",
+      "n": 3
+    }
+  ],
+  "sampled_ids_per_direction": {
+    "Attempts to collect debt not owed -> Written notification about debt": [
+      "24184831",
+      "23806058",
+      "23763736",
+      "24244017",
+      "23888100"
+    ],
+    "False statements or representation -> Written notification about debt": [
+      "23838578",
+      "23827731",
+      "23784190",
+      "24122542",
+      "23775609"
+    ],
+    "Written notification about debt -> Attempts to collect debt not owed": [
+      "24176231",
+      "23759552",
+      "24397468",
+      "24118686",
+      "23753305"
+    ],
+    "False statements or representation -> Attempts to collect debt not owed": [
+      "23741698",
+      "23754932",
+      "23822920",
+      "23873613",
+      "24118097"
+    ],
+    "Took or threatened to take negative or legal action -> Attempts to collect debt not owed": [
+      "24441403",
+      "23753407",
+      "24192612",
+      "23930758",
+      "24632637"
+    ],
+    "Attempts to collect debt not owed -> False statements or representation": [
+      "24732656",
+      "24467868",
+      "24239444",
+      "24136480",
+      "24278036"
+    ],
+    "Took or threatened to take negative or legal action -> Written notification about debt": [
+      "23895274",
+      "24200674",
+      "24401387",
+      "23752486",
+      "23755727"
+    ],
+    "Attempts to collect debt not owed -> Took or threatened to take negative or legal action": [
+      "24173646",
+      "23894551",
+      "23840155",
+      "23791426",
+      "23770695"
+    ],
+    "False statements or representation -> Took or threatened to take negative or legal action": [
+      "23910289",
+      "24161857",
+      "23750178",
+      "24161859",
+      "24270276"
+    ],
+    "Written notification about debt -> Took or threatened to take negative or legal action": [
+      "23761300",
+      "23992474",
+      "24288201",
+      "24183782",
+      "24388352"
+    ],
+    "Took or threatened to take negative or legal action -> False statements or representation": [
+      "24376446",
+      "23999861",
+      "23872749",
+      "23909590",
+      "24142376"
+    ],
+    "Written notification about debt -> False statements or representation": [
+      "23874226",
+      "23844694",
+      "23768274"
+    ]
+  }
+}

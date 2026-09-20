@@ -1,0 +1,75 @@
+{
+  "metric": "Agreement with CFPB consumer-selected Issue",
+  "total": 100,
+  "agreement": 39,
+  "agreementPercentage": 39,
+  "perLabel": [
+    {
+      "label": "Attempts to collect debt not owed",
+      "agreement": 9,
+      "total": 25,
+      "percentage": 36
+    },
+    {
+      "label": "Written notification about debt",
+      "agreement": 15,
+      "total": 25,
+      "percentage": 60
+    },
+    {
+      "label": "False statements or representation",
+      "agreement": 8,
+      "total": 25,
+      "percentage": 32
+    },
+    {
+      "label": "Took or threatened to take negative or legal action",
+      "agreement": 7,
+      "total": 25,
+      "percentage": 28
+    }
+  ],
+  "confusionMatrixLabels": [
+    "Attempts to collect debt not owed",
+    "Written notification about debt",
+    "False statements or representation",
+    "Took or threatened to take negative or legal action"
+  ],
+  "confusionMatrixRows": "CFPB consumer-selected Issue",
+  "confusionMatrixColumns": "Jev Choice",
+  "confusionMatrix": [
+    [
+      9,
+      6,
+      8,
+      2
+    ],
+    [
+      2,
+      15,
+      3,
+      5
+    ],
+    [
+      9,
+      3,
+      8,
+      5
+    ],
+    [
+      11,
+      4,
+      3,
+      7
+    ]
+  ],
+  "averageConfidenceOverall": 0.6888999999999997,
+  "averageConfidenceAgreements": 0.7779487179487179,
+  "averageConfidenceDisagreements": 0.6319672131147542,
+  "totalInputTokens": 100085,
+  "totalOutputTokens": 7276,
+  "averageLatencyMs": 305.499058,
+  "totalLatencyMs": 30549.9058,
+  "apiFailureCount": 0,
+  "note": "Failures remain in the 100-case denominator; no predicted label or agreement is fabricated. Confidence means use validated responses only; tokens reflect reported usage only."
+}

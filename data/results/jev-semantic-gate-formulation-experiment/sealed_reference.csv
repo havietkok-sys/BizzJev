@@ -1,0 +1,73 @@
+complaint_id,stratum,stored_issue,stored_sub_issue
+23748025,stored_neighbor_identity_theft,Attempts to collect debt not owed,Debt was already discharged in bankruptcy and is no longer owed
+23753432,stored_positive_wrong_amount,False statements or representation,Attempted to collect wrong amount
+23760406,random,Attempts to collect debt not owed,Debt is not yours
+23763510,stored_positive_credit_damage_threat,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+23766823,stored_positive_identity_theft,Attempts to collect debt not owed,Debt was result of identity theft
+23768219,stored_positive_arrest_threat,Took or threatened to take negative or legal action,Threatened to arrest you or take you to jail if you do not pay
+23770695,random,Attempts to collect debt not owed,Debt was paid
+23775448,stored_far,Attempts to collect debt not owed,Debt was paid
+23775479,random,False statements or representation,Attempted to collect wrong amount
+23780919,stored_neighbor_sued_no_notice,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+23787349,stored_neighbor_credit_damage_threat,Took or threatened to take negative or legal action,Sued you without properly notifying you of lawsuit
+23792431,stored_neighbor_credit_damage_threat,Took or threatened to take negative or legal action,Threatened to arrest you or take you to jail if you do not pay
+23801363,stored_far,Attempts to collect debt not owed,Debt is not yours
+23804701,stored_positive_wrong_amount,False statements or representation,Attempted to collect wrong amount
+23815786,stored_neighbor_insufficient_validation,Written notification about debt,Notification didn't disclose it was an attempt to collect a debt
+23816642,stored_positive_insufficient_validation,Written notification about debt,Didn't receive enough information to verify debt
+23821925,stored_neighbor_arrest_threat,Took or threatened to take negative or legal action,Collected or attempted to collect exempt funds
+23830833,stored_positive_identity_theft,Attempts to collect debt not owed,Debt was result of identity theft
+23832990,random,Attempts to collect debt not owed,Debt is not yours
+23840232,stored_neighbor_wrong_amount,False statements or representation,Indicated you were committing crime by not paying debt
+23851326,stored_positive_insufficient_validation,Written notification about debt,Didn't receive enough information to verify debt
+23872749,random,Took or threatened to take negative or legal action,Seized or attempted to seize your property
+23873613,random,False statements or representation,Attempted to collect wrong amount
+23873633,stored_positive_credit_damage_threat,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+23877075,stored_positive_arrest_threat,Took or threatened to take negative or legal action,Threatened to arrest you or take you to jail if you do not pay
+23888383,stored_far,Attempts to collect debt not owed,Debt is not yours
+23896462,stored_positive_sued_no_notice,Took or threatened to take negative or legal action,Sued you without properly notifying you of lawsuit
+23899303,random,Attempts to collect debt not owed,Debt is not yours
+23924892,stored_neighbor_identity_theft,Attempts to collect debt not owed,Debt is not yours
+23926646,stored_far,Attempts to collect debt not owed,Debt is not yours
+23935982,stored_neighbor_wrong_amount,False statements or representation,Told you not to respond to a lawsuit they filed against you
+23935988,stored_far,Attempts to collect debt not owed,Debt is not yours
+23942703,stored_positive_insufficient_validation,Written notification about debt,Didn't receive enough information to verify debt
+23945303,stored_positive_credit_damage_threat,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+23948431,stored_positive_credit_damage_threat,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+23948616,stored_neighbor_credit_damage_threat,Took or threatened to take negative or legal action,Collected or attempted to collect exempt funds
+23956564,stored_positive_arrest_threat,Took or threatened to take negative or legal action,Threatened to arrest you or take you to jail if you do not pay
+23957033,stored_positive_identity_theft,Attempts to collect debt not owed,Debt was result of identity theft
+23978568,stored_neighbor_insufficient_validation,Written notification about debt,Didn't receive notice of right to dispute
+23981817,stored_positive_identity_theft,Attempts to collect debt not owed,Debt was result of identity theft
+23982105,stored_neighbor_sued_no_notice,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+23994280,stored_neighbor_credit_damage_threat,Took or threatened to take negative or legal action,Collected or attempted to collect exempt funds
+23997770,stored_neighbor_wrong_amount,False statements or representation,Indicated you were committing crime by not paying debt
+24023145,stored_neighbor_arrest_threat,Took or threatened to take negative or legal action,Threatened to sue you for very old debt
+24029514,stored_neighbor_arrest_threat,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+24101262,stored_positive_sued_no_notice,Took or threatened to take negative or legal action,Sued you without properly notifying you of lawsuit
+24116142,stored_far,Attempts to collect debt not owed,Debt was paid
+24120907,stored_positive_sued_no_notice,Took or threatened to take negative or legal action,Sued you without properly notifying you of lawsuit
+24122007,random,Written notification about debt,Didn't receive enough information to verify debt
+24146762,stored_positive_wrong_amount,False statements or representation,Attempted to collect wrong amount
+24146843,stored_positive_sued_no_notice,Took or threatened to take negative or legal action,Sued you without properly notifying you of lawsuit
+24147232,stored_far,Attempts to collect debt not owed,Debt is not yours
+24149347,stored_far,False statements or representation,"Impersonated attorney, law enforcement, or government official"
+24154895,stored_neighbor_wrong_amount,False statements or representation,"Impersonated attorney, law enforcement, or government official"
+24157666,random,Written notification about debt,Didn't receive enough information to verify debt
+24157762,stored_positive_arrest_threat,Took or threatened to take negative or legal action,Threatened to arrest you or take you to jail if you do not pay
+24178505,random,Attempts to collect debt not owed,Debt was result of identity theft
+24196342,stored_neighbor_sued_no_notice,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+24199424,stored_neighbor_identity_theft,Attempts to collect debt not owed,Debt is not yours
+24207269,stored_neighbor_insufficient_validation,Written notification about debt,Didn't receive notice of right to dispute
+24207294,random,Attempts to collect debt not owed,Debt is not yours
+24363888,stored_far,Attempts to collect debt not owed,Debt was already discharged in bankruptcy and is no longer owed
+24402391,random,Attempts to collect debt not owed,Debt is not yours
+24432150,stored_far,Attempts to collect debt not owed,Debt is not yours
+24441403,stored_neighbor_sued_no_notice,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+24482149,stored_neighbor_insufficient_validation,Written notification about debt,Didn't receive notice of right to dispute
+24506985,stored_neighbor_arrest_threat,Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged
+24507687,stored_far,Attempts to collect debt not owed,Debt is not yours
+24524886,stored_positive_wrong_amount,False statements or representation,Attempted to collect wrong amount
+24632105,stored_positive_insufficient_validation,Written notification about debt,Didn't receive enough information to verify debt
+24664069,stored_far,Attempts to collect debt not owed,Debt is not yours
+24732836,stored_neighbor_identity_theft,Attempts to collect debt not owed,Debt is not yours

@@ -1,0 +1,245 @@
+{
+  "seed": 42,
+  "threshold": 0.5,
+  "rule": "up to 3 FPs and 3 FNs per concept-variant at t=0.50, ID-sorted pools, Random(42).sample",
+  "items": [
+    {
+      "complaint_id": "23873613",
+      "concept": "identity_theft",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.06
+    },
+    {
+      "complaint_id": "24178505",
+      "concept": "identity_theft",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.1
+    },
+    {
+      "complaint_id": "24116142",
+      "concept": "identity_theft",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.84
+    },
+    {
+      "complaint_id": "23935982",
+      "concept": "identity_theft",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.76
+    },
+    {
+      "complaint_id": "23877075",
+      "concept": "identity_theft",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.6
+    },
+    {
+      "complaint_id": "23787349",
+      "concept": "insufficient_validation",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.1
+    },
+    {
+      "complaint_id": "24524886",
+      "concept": "insufficient_validation",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.26
+    },
+    {
+      "complaint_id": "23775448",
+      "concept": "insufficient_validation",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.14
+    },
+    {
+      "complaint_id": "24120907",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.9
+    },
+    {
+      "complaint_id": "23804701",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.82
+    },
+    {
+      "complaint_id": "23899303",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.53
+    },
+    {
+      "complaint_id": "23768219",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.43
+    },
+    {
+      "complaint_id": "23948431",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.37
+    },
+    {
+      "complaint_id": "23821925",
+      "concept": "insufficient_validation",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.26
+    },
+    {
+      "complaint_id": "23978568",
+      "concept": "insufficient_validation",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.28
+    },
+    {
+      "complaint_id": "23924892",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.35
+    },
+    {
+      "complaint_id": "23760406",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.06
+    },
+    {
+      "complaint_id": "23926646",
+      "concept": "wrong_amount",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.11
+    },
+    {
+      "complaint_id": "23832990",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.65
+    },
+    {
+      "complaint_id": "24441403",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.52
+    },
+    {
+      "complaint_id": "24207294",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.58
+    },
+    {
+      "complaint_id": "23994280",
+      "concept": "wrong_amount",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.26
+    },
+    {
+      "complaint_id": "23899303",
+      "concept": "wrong_amount",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.38
+    },
+    {
+      "complaint_id": "23994280",
+      "concept": "wrong_amount",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.46
+    },
+    {
+      "complaint_id": "23926646",
+      "concept": "wrong_amount",
+      "variant": "C",
+      "error_type": "FN",
+      "noul": 0.43
+    },
+    {
+      "complaint_id": "23748025",
+      "concept": "credit_damage_threat",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.98
+    },
+    {
+      "complaint_id": "23888383",
+      "concept": "credit_damage_threat",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.97
+    },
+    {
+      "complaint_id": "24196342",
+      "concept": "credit_damage_threat",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.99
+    },
+    {
+      "complaint_id": "23956564",
+      "concept": "credit_damage_threat",
+      "variant": "B",
+      "error_type": "FN",
+      "noul": 0.27
+    },
+    {
+      "complaint_id": "23872749",
+      "concept": "arrest_threat",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.78
+    },
+    {
+      "complaint_id": "24149347",
+      "concept": "sued_no_notice",
+      "variant": "A",
+      "error_type": "FN",
+      "noul": 0.1
+    },
+    {
+      "complaint_id": "23896462",
+      "concept": "sued_no_notice",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.76
+    },
+    {
+      "complaint_id": "24023145",
+      "concept": "sued_no_notice",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.82
+    },
+    {
+      "complaint_id": "23877075",
+      "concept": "sued_no_notice",
+      "variant": "B",
+      "error_type": "FP",
+      "noul": 0.63
+    }
+  ]
+}

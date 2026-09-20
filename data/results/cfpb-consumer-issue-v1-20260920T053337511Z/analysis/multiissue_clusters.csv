@@ -1,0 +1,4 @@
+bucket,n_total,pct_of_all,n_agree,n_disagree,agreement_pct_within_bucket
+none_detected,118,14.7,75,43,63.6
+single_cluster,289,35.9,145,144,50.2
+two_or_more,398,49.4,247,151,62.1

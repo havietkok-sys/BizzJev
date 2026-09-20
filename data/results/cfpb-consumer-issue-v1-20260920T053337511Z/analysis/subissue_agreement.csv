@@ -1,0 +1,20 @@
+issue,sub_issue,n,agree,agreement_pct,most_common_jev_when_disagreeing,disagree_count_to_that,mean_conf,median_conf,mean_margin,median_margin
+Attempts to collect debt not owed,Debt is not yours,238,122,51.3,Written notification about debt,95,0.801,0.9,0.736,0.86
+Attempts to collect debt not owed,Debt was already discharged in bankruptcy and is no longer owed,14,10,71.4,False statements or representation,2,0.829,0.92,0.758,0.895
+Attempts to collect debt not owed,Debt was paid,61,49,80.3,False statements or representation,6,0.817,0.89,0.753,0.84
+Attempts to collect debt not owed,Debt was result of identity theft,118,108,91.5,Written notification about debt,8,0.885,0.99,0.854,0.98
+Written notification about debt,Didn't receive enough information to verify debt,116,86,74.1,Attempts to collect debt not owed,26,0.833,0.925,0.775,0.905
+Written notification about debt,Didn't receive notice of right to dispute,37,22,59.5,Attempts to collect debt not owed,11,0.73,0.75,0.627,0.62
+Written notification about debt,Notification didn't disclose it was an attempt to collect a debt,9,2,22.2,Attempts to collect debt not owed,5,0.534,0.38,0.46,0.3
+False statements or representation,Attempted to collect wrong amount,124,36,29.0,Written notification about debt,55,0.707,0.715,0.613,0.62
+False statements or representation,"Impersonated attorney, law enforcement, or government official",5,2,40.0,Written notification about debt,2,0.682,0.67,0.538,0.5
+False statements or representation,Indicated you were committing crime by not paying debt,5,0,0.0,Written notification about debt,3,0.79,0.77,0.706,0.73
+False statements or representation,Told you not to respond to a lawsuit they filed against you,4,1,25.0,Took or threatened to take negative or legal action,2,0.802,0.82,0.738,0.755
+Took or threatened to take negative or legal action,Collected or attempted to collect exempt funds,7,5,71.4,Written notification about debt,2,0.809,0.98,0.757,0.98
+Took or threatened to take negative or legal action,Seized or attempted to seize your property,5,3,60.0,Attempts to collect debt not owed,1,0.726,0.79,0.63,0.71
+Took or threatened to take negative or legal action,Sued you in a state where you do not live or did not sign for the debt,2,1,50.0,Attempts to collect debt not owed,1,0.98,0.98,0.97,0.97
+Took or threatened to take negative or legal action,Sued you without properly notifying you of lawsuit,8,5,62.5,Attempts to collect debt not owed,2,0.804,0.895,0.741,0.88
+Took or threatened to take negative or legal action,Threatened or suggested your credit would be damaged,37,5,13.5,Attempts to collect debt not owed,19,0.788,0.86,0.72,0.79
+Took or threatened to take negative or legal action,Threatened to arrest you or take you to jail if you do not pay,4,3,75.0,Written notification about debt,1,0.858,1.0,0.838,1.0
+Took or threatened to take negative or legal action,Threatened to sue you for very old debt,10,7,70.0,Written notification about debt,3,0.89,0.955,0.863,0.945
+Took or threatened to take negative or legal action,Threatened to turn you in to immigration or deport you,1,0,0.0,Written notification about debt,1,0.69,0.69,0.56,0.56

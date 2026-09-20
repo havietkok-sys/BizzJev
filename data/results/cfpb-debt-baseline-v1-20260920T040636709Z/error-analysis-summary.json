@@ -1,0 +1,745 @@
+{
+  "title": "CFPB Debt Collection Baseline v1 - separate disagreement analysis",
+  "scope": "61 disagreements only; analytical annotations, not relabeling or revised accuracy. Source Issue is consumer-selected, not independently verified ground truth. No Jev calls or judgment changes.",
+  "method": "One qualitative assistant review against the frozen criteria. Categories are mutually exclusive primary descriptions. E takes precedence over C only in the four repeated notice/reporting-boundary examples and denotes a plausible criteria contribution, not established causation. D is reserved for missing decisive context; F includes a better third label or no clean four-label fit. C does not assert exactly equal strength. Explicit support can include contextual/background issues; multiple_issue_definitions_substantially_supported records substantial support for multiple definitions, including overlap describing one act. distinct_substantial_grievances is a narrower qualitative flag for at least two distinguishable complaint aspects (for example missing notice and subsequent reporting, not merely calling an unrecognized reported account false). These may concern the same debt and need not be independent incidents. Allegations are not adjudicated legal facts.",
+  "limitations": "No second reviewer or external adjudication. Original attachments and redacted details were not available. Membership in a reporting band is not calibration or a production policy. Current live docs were inaccessible; no new TypeSafe integration decisions were made.",
+  "source_sha256": {
+    "data\\prepared\\cfpb\\cfpb-debt-100.csv": "380911efa458a467a0a08ead125b3f06d500e1e50ef8f4c0263fd3ae144f18f6",
+    "data\\results\\cfpb-debt-baseline-v1-20260920T040636709Z\\raw.jsonl": "011800dfc16438fa3821cf6ccb26cfc01dd9574116b7d164c6cb6013ac059ee8",
+    "data\\results\\cfpb-debt-baseline-v1-20260920T040636709Z\\summary.json": "ea2a2d6b57b65d14b5bd1df3a3f8509d8c3ef861d144a04af3922d7bbd1cb0b4",
+    "data\\results\\cfpb-debt-baseline-v1-20260920T040636709Z\\judgment.json": "0ef0f1cf784ee2243cf2ba6324482a3d57e48e35c73875c78945d9ee80e1c757",
+    "data\\results\\cfpb-debt-baseline-v1-20260920T040636709Z\\manifest.json": "6ca0b9bcedc7034625b58e7ed41304ebb3c23dbeaf62881e4d952a2ecafecda8"
+  },
+  "frozen_judgment_sha256": "0ef0f1cf784ee2243cf2ba6324482a3d57e48e35c73875c78945d9ee80e1c757",
+  "label_legend": {
+    "L1": "Attempts to collect debt not owed",
+    "L2": "Written notification about debt",
+    "L3": "False statements or representation",
+    "L4": "Took or threatened to take negative or legal action"
+  },
+  "analysis_category_legend": {
+    "A": "CFPB label clearly better supported by the narrative",
+    "B": "Jev label clearly better supported by the narrative",
+    "C": "Both labels substantially supported / genuinely multi-issue",
+    "D": "Narrative underspecified or insufficient to distinguish them",
+    "E": "Frozen judgment criteria likely caused the disagreement",
+    "F": "Other / unclear"
+  },
+  "disagreement_count": 61,
+  "analysis_category_counts": {
+    "A": 7,
+    "B": 16,
+    "C": 24,
+    "D": 4,
+    "E": 4,
+    "F": 6
+  },
+  "confusion_pairs": {
+    "L1->L2": {
+      "count": 6,
+      "complaint_ids": [
+        "23770286",
+        "23935600",
+        "23822259",
+        "24288563",
+        "23815177",
+        "23970951"
+      ],
+      "analysis_category_counts": {
+        "B": 5,
+        "D": 1
+      },
+      "recurring_pattern": "Five narratives chiefly seek validation, records or written confirmation, often explicitly saying this is not refusal to pay. One short car-trade narrative supplies too little context. The distinction between disputing an alleged debt and denying liability is central."
+    },
+    "L1->L3": {
+      "count": 8,
+      "complaint_ids": [
+        "23766635",
+        "24208345",
+        "23952293",
+        "24000483",
+        "23897850",
+        "23879146",
+        "24003286",
+        "23953394"
+      ],
+      "analysis_category_counts": {
+        "B": 2,
+        "C": 6
+      },
+      "recurring_pattern": "Five close template variants combine never having an account with the collector and false credit reporting. Two other narratives focus on inaccurate payment/account information; one combines undelivered treatment and a broken removal promise. Collector-relationship denial and underlying debt denial are not necessarily identical."
+    },
+    "L1->L4": {
+      "count": 2,
+      "complaint_ids": [
+        "23750042",
+        "23951375"
+      ],
+      "analysis_category_counts": {
+        "C": 2
+      },
+      "recurring_pattern": "Both narratives describe actual lawsuits alongside disputed liability. The action and the alleged lack of obligation are jointly supported."
+    },
+    "L2->L1": {
+      "count": 2,
+      "complaint_ids": [
+        "23807686",
+        "24639191"
+      ],
+      "analysis_category_counts": {
+        "A": 1,
+        "C": 1
+      },
+      "recurring_pattern": "One narrative expressly denies owing money as well as requesting validation; the other is unfamiliar with the account but primarily requests proof of notice. Notice failure does not itself establish non-liability."
+    },
+    "L2->L3": {
+      "count": 3,
+      "complaint_ids": [
+        "24157666",
+        "23829611",
+        "23978568"
+      ],
+      "analysis_category_counts": {
+        "A": 1,
+        "C": 2
+      },
+      "recurring_pattern": "One challenges verification, one describes promised notice never arriving and suspected scam conduct, and one concerns a missing settlement letter plus a contradictory reported balance. Missing information and affirmative misrepresentation vary in strength."
+    },
+    "L2->L4": {
+      "count": 5,
+      "complaint_ids": [
+        "23978660",
+        "24117318",
+        "23880928",
+        "23789089",
+        "23967210"
+      ],
+      "analysis_category_counts": {
+        "E": 4,
+        "F": 1
+      },
+      "recurring_pattern": "Four closely patterned narratives tie reporting to absent validation/dispute opportunity; both frozen definitions cover the same episode. The fifth chiefly concerns settlement-portal access and failed contact after a summons, rather than a clean notice/action distinction."
+    },
+    "L3->L1": {
+      "count": 9,
+      "complaint_ids": [
+        "24220295",
+        "23918615",
+        "23951262",
+        "23775832",
+        "23884097",
+        "24144174",
+        "23757648",
+        "24463785",
+        "24702088"
+      ],
+      "analysis_category_counts": {
+        "A": 3,
+        "B": 2,
+        "C": 1,
+        "D": 1,
+        "F": 2
+      },
+      "recurring_pattern": "Rental-charge allegations, no-account/returned-equipment disputes, and validation letters are grouped together. Two concrete partial-balance cases favor the source false-amount definition; three validation letters favor a third category, L2. This pair is not one uniform error type."
+    },
+    "L3->L2": {
+      "count": 3,
+      "complaint_ids": [
+        "23807033",
+        "23775609",
+        "24005110"
+      ],
+      "analysis_category_counts": {
+        "B": 3
+      },
+      "recurring_pattern": "All three center on absent itemized bills or validation documents, without a comparably specific affirmative false debt statement."
+    },
+    "L3->L4": {
+      "count": 5,
+      "complaint_ids": [
+        "24402577",
+        "24027203",
+        "23947314",
+        "24022645",
+        "24524886"
+      ],
+      "analysis_category_counts": {
+        "B": 1,
+        "C": 4
+      },
+      "recurring_pattern": "Repossession, threatened judgment, inflated reporting and lawsuits commonly coexist with representation allegations. One letter has conditional false-information claims but concrete challenged reporting and missing validation."
+    },
+    "L4->L1": {
+      "count": 11,
+      "complaint_ids": [
+        "23923998",
+        "23917843",
+        "24441403",
+        "24192612",
+        "24522820",
+        "24016568",
+        "24000709",
+        "23779999",
+        "24403939",
+        "24166274",
+        "23975040"
+      ],
+      "analysis_category_counts": {
+        "A": 2,
+        "B": 1,
+        "C": 3,
+        "D": 2,
+        "F": 3
+      },
+      "recurring_pattern": "Several narratives combine disputed liability, missing validation and harmful reporting/litigation; others contain only sparse or generic allegations. A loan story centers current collectibility rather than historical litigation; a canceled-membership story centers unwanted contact outside the four definitions."
+    },
+    "L4->L2": {
+      "count": 4,
+      "complaint_ids": [
+        "24125478",
+        "24146786",
+        "23873483",
+        "24383812"
+      ],
+      "analysis_category_counts": {
+        "B": 1,
+        "C": 3
+      },
+      "recurring_pattern": "Three describe missing validation plus continued or renewed reporting, including the exact 0.50/0.50 tie. One describes only requests for account/contract evidence without a specific adverse action."
+    },
+    "L4->L3": {
+      "count": 3,
+      "complaint_ids": [
+        "23930758",
+        "23768655",
+        "23755855"
+      ],
+      "analysis_category_counts": {
+        "B": 1,
+        "C": 2
+      },
+      "recurring_pattern": "Two combine inaccurate reporting with actual litigation or credit/housing harm. The third explicitly alleges a false amount and repeated calls without a distinct action/threat."
+    }
+  },
+  "descriptive_groups": {
+    "substantial_source_probability": {
+      "descriptive_rule": "P(CFPB consumer-selected Issue) >= 0.20; an analysis-only reporting band, not a correctness or routing threshold",
+      "cases": [
+        {
+          "complaint_id": "24157666",
+          "confusion_pair": "L2->L3",
+          "jev_probability_for_cfpb_issue": 0.2,
+          "jev_probability_for_selected_issue": 0.72,
+          "confidence": 0.63,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23917843",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0.31,
+          "jev_probability_for_selected_issue": 0.35,
+          "confidence": 0.13,
+          "analysis_category": "A"
+        },
+        {
+          "complaint_id": "23978660",
+          "confusion_pair": "L2->L4",
+          "jev_probability_for_cfpb_issue": 0.42,
+          "jev_probability_for_selected_issue": 0.47,
+          "confidence": 0.3,
+          "analysis_category": "E"
+        },
+        {
+          "complaint_id": "23829611",
+          "confusion_pair": "L2->L3",
+          "jev_probability_for_cfpb_issue": 0.28,
+          "jev_probability_for_selected_issue": 0.6,
+          "confidence": 0.47,
+          "analysis_category": "A"
+        },
+        {
+          "complaint_id": "23768655",
+          "confusion_pair": "L4->L3",
+          "jev_probability_for_cfpb_issue": 0.27,
+          "jev_probability_for_selected_issue": 0.72,
+          "confidence": 0.63,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24146786",
+          "confusion_pair": "L4->L2",
+          "jev_probability_for_cfpb_issue": 0.33,
+          "jev_probability_for_selected_issue": 0.64,
+          "confidence": 0.52,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24027203",
+          "confusion_pair": "L3->L4",
+          "jev_probability_for_cfpb_issue": 0.22,
+          "jev_probability_for_selected_issue": 0.78,
+          "confidence": 0.69,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23897850",
+          "confusion_pair": "L1->L3",
+          "jev_probability_for_cfpb_issue": 0.23,
+          "jev_probability_for_selected_issue": 0.36,
+          "confidence": 0.14,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24000709",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0.21,
+          "jev_probability_for_selected_issue": 0.74,
+          "confidence": 0.65,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23873483",
+          "confusion_pair": "L4->L2",
+          "jev_probability_for_cfpb_issue": 0.28,
+          "jev_probability_for_selected_issue": 0.72,
+          "confidence": 0.62,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23880928",
+          "confusion_pair": "L2->L4",
+          "jev_probability_for_cfpb_issue": 0.43,
+          "jev_probability_for_selected_issue": 0.52,
+          "confidence": 0.35,
+          "analysis_category": "E"
+        },
+        {
+          "complaint_id": "24639191",
+          "confusion_pair": "L2->L1",
+          "jev_probability_for_cfpb_issue": 0.39,
+          "jev_probability_for_selected_issue": 0.53,
+          "confidence": 0.37,
+          "analysis_category": "A"
+        },
+        {
+          "complaint_id": "23789089",
+          "confusion_pair": "L2->L4",
+          "jev_probability_for_cfpb_issue": 0.36,
+          "jev_probability_for_selected_issue": 0.58,
+          "confidence": 0.44,
+          "analysis_category": "E"
+        },
+        {
+          "complaint_id": "23967210",
+          "confusion_pair": "L2->L4",
+          "jev_probability_for_cfpb_issue": 0.34,
+          "jev_probability_for_selected_issue": 0.51,
+          "confidence": 0.34,
+          "analysis_category": "E"
+        },
+        {
+          "complaint_id": "24383812",
+          "confusion_pair": "L4->L2",
+          "jev_probability_for_cfpb_issue": 0.5,
+          "jev_probability_for_selected_issue": 0.5,
+          "confidence": 0.33,
+          "analysis_category": "C"
+        }
+      ],
+      "count": 15
+    },
+    "high_confidence": {
+      "descriptive_rule": "Saved confidence >= 0.80; an analysis-only reporting band, not a correctness or routing threshold",
+      "cases": [
+        {
+          "complaint_id": "23807686",
+          "confusion_pair": "L2->L1",
+          "jev_probability_for_cfpb_issue": 0.01,
+          "jev_probability_for_selected_issue": 0.99,
+          "confidence": 0.99,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24125478",
+          "confusion_pair": "L4->L2",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 1,
+          "confidence": 1,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "23918615",
+          "confusion_pair": "L3->L1",
+          "jev_probability_for_cfpb_issue": 0.02,
+          "jev_probability_for_selected_issue": 0.97,
+          "confidence": 0.95,
+          "analysis_category": "A"
+        },
+        {
+          "complaint_id": "23951262",
+          "confusion_pair": "L3->L1",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.98,
+          "confidence": 0.98,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "23750042",
+          "confusion_pair": "L1->L4",
+          "jev_probability_for_cfpb_issue": 0.1,
+          "jev_probability_for_selected_issue": 0.89,
+          "confidence": 0.85,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24441403",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0.02,
+          "jev_probability_for_selected_issue": 0.98,
+          "confidence": 0.98,
+          "analysis_category": "D"
+        },
+        {
+          "complaint_id": "24192612",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.95,
+          "confidence": 0.93,
+          "analysis_category": "F"
+        },
+        {
+          "complaint_id": "23807033",
+          "confusion_pair": "L3->L2",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.93,
+          "confidence": 0.9,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "24402577",
+          "confusion_pair": "L3->L4",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 1,
+          "confidence": 1,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23884097",
+          "confusion_pair": "L3->L1",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.91,
+          "confidence": 0.88,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "23951375",
+          "confusion_pair": "L1->L4",
+          "jev_probability_for_cfpb_issue": 0.11,
+          "jev_probability_for_selected_issue": 0.89,
+          "confidence": 0.85,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24016568",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0.05,
+          "jev_probability_for_selected_issue": 0.93,
+          "confidence": 0.91,
+          "analysis_category": "D"
+        },
+        {
+          "complaint_id": "24005110",
+          "confusion_pair": "L3->L2",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.99,
+          "confidence": 0.99,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "24288563",
+          "confusion_pair": "L1->L2",
+          "jev_probability_for_cfpb_issue": 0.13,
+          "jev_probability_for_selected_issue": 0.87,
+          "confidence": 0.82,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "23978568",
+          "confusion_pair": "L2->L3",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.96,
+          "confidence": 0.95,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23757648",
+          "confusion_pair": "L3->L1",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.9,
+          "confidence": 0.87,
+          "analysis_category": "A"
+        },
+        {
+          "complaint_id": "23755855",
+          "confusion_pair": "L4->L3",
+          "jev_probability_for_cfpb_issue": 0.01,
+          "jev_probability_for_selected_issue": 0.97,
+          "confidence": 0.95,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "24403939",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 1,
+          "confidence": 1,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "24524886",
+          "confusion_pair": "L3->L4",
+          "jev_probability_for_cfpb_issue": 0.01,
+          "jev_probability_for_selected_issue": 0.95,
+          "confidence": 0.93,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23970951",
+          "confusion_pair": "L1->L2",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.92,
+          "confidence": 0.89,
+          "analysis_category": "B"
+        }
+      ],
+      "count": 20
+    },
+    "low_confidence": {
+      "descriptive_rule": "Saved confidence <= 0.40; an analysis-only reporting band, not a correctness or routing threshold",
+      "cases": [
+        {
+          "complaint_id": "23770286",
+          "confusion_pair": "L1->L2",
+          "jev_probability_for_cfpb_issue": 0.1,
+          "jev_probability_for_selected_issue": 0.54,
+          "confidence": 0.39,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "23766635",
+          "confusion_pair": "L1->L3",
+          "jev_probability_for_cfpb_issue": 0.04,
+          "jev_probability_for_selected_issue": 0.5,
+          "confidence": 0.33,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23917843",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0.31,
+          "jev_probability_for_selected_issue": 0.35,
+          "confidence": 0.13,
+          "analysis_category": "A"
+        },
+        {
+          "complaint_id": "23978660",
+          "confusion_pair": "L2->L4",
+          "jev_probability_for_cfpb_issue": 0.42,
+          "jev_probability_for_selected_issue": 0.47,
+          "confidence": 0.3,
+          "analysis_category": "E"
+        },
+        {
+          "complaint_id": "23952293",
+          "confusion_pair": "L1->L3",
+          "jev_probability_for_cfpb_issue": 0.07,
+          "jev_probability_for_selected_issue": 0.54,
+          "confidence": 0.38,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24000483",
+          "confusion_pair": "L1->L3",
+          "jev_probability_for_cfpb_issue": 0.07,
+          "jev_probability_for_selected_issue": 0.47,
+          "confidence": 0.3,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23897850",
+          "confusion_pair": "L1->L3",
+          "jev_probability_for_cfpb_issue": 0.23,
+          "jev_probability_for_selected_issue": 0.36,
+          "confidence": 0.14,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "23879146",
+          "confusion_pair": "L1->L3",
+          "jev_probability_for_cfpb_issue": 0.05,
+          "jev_probability_for_selected_issue": 0.53,
+          "confidence": 0.37,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24463785",
+          "confusion_pair": "L3->L1",
+          "jev_probability_for_cfpb_issue": 0,
+          "jev_probability_for_selected_issue": 0.55,
+          "confidence": 0.39,
+          "analysis_category": "F"
+        },
+        {
+          "complaint_id": "24022645",
+          "confusion_pair": "L3->L4",
+          "jev_probability_for_cfpb_issue": 0.05,
+          "jev_probability_for_selected_issue": 0.38,
+          "confidence": 0.17,
+          "analysis_category": "B"
+        },
+        {
+          "complaint_id": "23880928",
+          "confusion_pair": "L2->L4",
+          "jev_probability_for_cfpb_issue": 0.43,
+          "jev_probability_for_selected_issue": 0.52,
+          "confidence": 0.35,
+          "analysis_category": "E"
+        },
+        {
+          "complaint_id": "24166274",
+          "confusion_pair": "L4->L1",
+          "jev_probability_for_cfpb_issue": 0.11,
+          "jev_probability_for_selected_issue": 0.46,
+          "confidence": 0.27,
+          "analysis_category": "C"
+        },
+        {
+          "complaint_id": "24702088",
+          "confusion_pair": "L3->L1",
+          "jev_probability_for_cfpb_issue": 0.13,
+          "jev_probability_for_selected_issue": 0.53,
+          "confidence": 0.37,
+          "analysis_category": "D"
+        },
+        {
+          "complaint_id": "24639191",
+          "confusion_pair": "L2->L1",
+          "jev_probability_for_cfpb_issue": 0.39,
+          "jev_probability_for_selected_issue": 0.53,
+          "confidence": 0.37,
+          "analysis_category": "A"
+        },
+        {
+          "complaint_id": "23967210",
+          "confusion_pair": "L2->L4",
+          "jev_probability_for_cfpb_issue": 0.34,
+          "jev_probability_for_selected_issue": 0.51,
+          "confidence": 0.34,
+          "analysis_category": "E"
+        },
+        {
+          "complaint_id": "24383812",
+          "confusion_pair": "L4->L2",
+          "jev_probability_for_cfpb_issue": 0.5,
+          "jev_probability_for_selected_issue": 0.5,
+          "confidence": 0.33,
+          "analysis_category": "C"
+        }
+      ],
+      "count": 16
+    }
+  },
+  "confidence_range": [
+    0.13,
+    1
+  ],
+  "mean_disagreement_confidence": 0.631967213114754,
+  "exact_top_ties": [
+    "24383812"
+  ],
+  "multiple_issue_definitions_substantially_supported_count": 40,
+  "multiple_issue_definitions_substantially_supported_ids": [
+    "23807686",
+    "24220295",
+    "23766635",
+    "23918615",
+    "23951262",
+    "24157666",
+    "23923998",
+    "23917843",
+    "23750042",
+    "23978660",
+    "23930758",
+    "23829611",
+    "23768655",
+    "24402577",
+    "23884097",
+    "24146786",
+    "24522820",
+    "23951375",
+    "24208345",
+    "23952293",
+    "24027203",
+    "23947314",
+    "24000483",
+    "23897850",
+    "24144174",
+    "23879146",
+    "24000709",
+    "23978568",
+    "24003286",
+    "23779999",
+    "23757648",
+    "23873483",
+    "24022645",
+    "23880928",
+    "23953394",
+    "24524886",
+    "24166274",
+    "23789089",
+    "23967210",
+    "24383812"
+  ],
+  "distinct_substantial_grievances_count": 30,
+  "distinct_substantial_grievances_ids": [
+    "23807686",
+    "24220295",
+    "23918615",
+    "23951262",
+    "23923998",
+    "23917843",
+    "23750042",
+    "23978660",
+    "23930758",
+    "23829611",
+    "24402577",
+    "23884097",
+    "24146786",
+    "24027203",
+    "23947314",
+    "23897850",
+    "24144174",
+    "24000709",
+    "23978568",
+    "24003286",
+    "23779999",
+    "23757648",
+    "23873483",
+    "24022645",
+    "23880928",
+    "24524886",
+    "24166274",
+    "23789089",
+    "23967210",
+    "24383812"
+  ],
+  "systematic_observations": [
+    "Consumer-selected Issue and narrative central grievance are different measurement targets. Several source labels have little support in the narrative alone, but this does not establish that the consumer selected the wrong label or that unseen context would not support it.",
+    "The frozen definitions distinguish validation requests from debt denial; Jev sometimes observes that boundary and sometimes treats generic dispute/validation language as debt-not-owed. Three L3->L1 letters and one L4->L1 letter have L2 as the better analytical fit.",
+    "The inaccurate-amount versus denial boundary is strained by disputed rental charges. Two high-confidence L3->L1 selections (23918615, 23757648) overlook stronger source-label support under the frozen acknowledged-obligation/amount contrast.",
+    "Credit reporting is expressly included in adverse action while inaccurate reporting can be a false representation and reporting without notice a written-information issue. Four L2->L4 cases illustrate likely criteria overlap; other directions show the same collision. This is not evidence of a single causal priority used by Jev.",
+    "Five near-template L1->L3 cases combine never having an account with a collector and false reporting. Exact deduplication does not remove semantic template families, so their five observations are not five wholly different semantic situations.",
+    "Sparse, redacted and generic legal text sometimes receives concentrated distributions. Confidence does not establish evidentiary sufficiency, label correctness or actual legal validity.",
+    "A portal/communication problem and a cease-contact complaint do not fit the four operational categories cleanly. The required single selection still exists even where narrative coverage is weak."
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "frozen_utc": "2026-09-20 (before annotation, adjudication and any Jev run)",
+  "primary_hypothesis": "Broad-Inside/Sharp-Edge gates preserve broad-definition recall while substantially reducing neighboring-concept false positives.",
+  "predictions": {
+    "H1": "Variant C pooled recall > Variant A pooled recall (adjudicated YES as positives)",
+    "H2": "Variant C pooled precision > Variant B pooled precision",
+    "H3": "Variant C F1 >= max(A,B) F1 for at least 4 of 6 concepts (threshold 0.50)",
+    "H4": "Variant C pooled YES/NO ROC-AUC > A and > B",
+    "H5": "Failure signatures replicate: A misses paraphrases (FNs), B leaks neighbors/generic language (FPs), C residuals cluster on graded boundaries"
+  },
+  "annotators": "two independent isolated LLM annotator instances (clearly NOT human annotators; limitation documented) + third isolated adjudicator; all blind to gate definitions, Jev outputs and prior experiment annotations",
+  "circularity_controls": [
+    "neutral annotation guide written independently of Variant C wording (frozen before annotation)",
+    "annotators receive narratives only (stored CFPB labels sealed)",
+    "gates reused byte-identical from the pilot (hash recorded); no modifications permitted"
+  ],
+  "evaluation": "adjudicated YES/NO only for binary metrics; UNCLEAR kept separate; thresholds 0.30/0.50/0.70/0.90 plus ROC-AUC and average-precision (PR-AUC); per-concept reported alongside pooled",
+  "frozen_hashes": {
+    "gate_definitions_sha256": "9ff5ae7dda62958bc5786077bd78b1f835097fdc776617b5e03de948d623dc51",
+    "annotation_guide_sha256": "ad8569e3d02b7dbaa0bfdaac7136e5cdb945978dd99f0f3467d83c2505210c59",
+    "annotation_input_sha256": "ebc7b3806ccd0f3c8c545395ff9a56a1679f1ad0c080094e55ecefe2750ba889",
+    "sample_n": 162,
+    "adjudicated_gold_csv_sha256": "3e8413e23fc4e4569e392ea61acac1bf6a06718ba45061ff64e04013485df9e0",
+    "run_input_csv_sha256": "0726d6e7cbad2d56e9016a6fd9ea57680d6a7b9c0406c439e595f12f5d6a4fcd",
+    "run_input_rows": 162,
+    "gold_finalized_before_run": true
+  }
+}
