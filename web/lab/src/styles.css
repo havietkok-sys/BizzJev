@@ -123,3 +123,39 @@ details.tech-section.nested summary { display: flex; align-items: center; gap: 1
 .pill[data-disp='REVIEW'] { background: color-mix(in srgb, var(--review) 22%, transparent); color: var(--review); }
 .pill[data-disp='NO'] { background: color-mix(in srgb, var(--no) 22%, transparent); color: var(--dim); }
 @media (max-width: 720px) { .dp-cards { grid-template-columns: 1fr; } .dp-settings { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- Decision Pipeline: internal result tabs + help system ---------- */
+.dp-result { padding: 0; overflow: hidden; }
+.dp-subnav { display: flex; gap: 0; border-bottom: 1px solid var(--line); padding: 0 16px; background: var(--bg); }
+.dp-tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--dim); font-weight: 700; padding: 10px 14px; margin: 0; border-radius: 0; cursor: pointer; }
+.dp-tab.active { color: var(--text); border-bottom-color: var(--jev); }
+.dp-tab:focus-visible { outline: 2px solid var(--jev); outline-offset: -2px; }
+.dp-result > [role='tabpanel'] { padding: 14px 16px 4px; }
+.dp-tab-title { margin: 14px 0 8px; color: var(--dim); font-size: 13px; letter-spacing: .05em; text-transform: uppercase; }
+.dp-result h4 { margin: 12px 0 4px; color: var(--dim); font-size: 12px; }
+.dp-why { margin: 14px 0 8px; border: 1px dashed var(--line); border-radius: 8px; padding: 8px 12px; background: var(--bg); }
+.dp-why summary { cursor: pointer; color: var(--jev); font-size: 13px; }
+.dp-wire { margin: 10px 0; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.dp-wire summary { cursor: pointer; padding: 8px 12px; color: var(--jev); font-size: 13px; }
+.dp-pre { margin: 0; padding: 10px 12px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; line-height: 1.45; max-height: 70vh; overflow-y: auto; }
+.dp-tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+.dp-compare { margin: 10px 0 14px; }
+.dp-setting { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dp-setting-label { display: flex; flex-direction: column; gap: 0; }
+.dp-setting-hint { font-size: 11px; font-family: ui-monospace, Consolas, monospace; }
+.dp-setting input { width: 100%; }
+
+/* shared help indicator: hover/focus tooltip + click modal (HelpTerm) */
+.help-term-wrap { position: relative; display: inline-block; margin-left: 4px; vertical-align: baseline; }
+.help-term { background: none; border: 1px solid var(--line); color: var(--jev); border-radius: 50%; width: 20px; height: 20px; min-width: 20px; padding: 0; font-weight: 700; font-size: 12px; line-height: 1; cursor: help; margin: 0; vertical-align: middle; }
+.help-term:focus-visible { outline: 2px solid var(--jev); outline-offset: 1px; }
+.help-tip { display: none; position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 8px); width: max-content; max-width: 300px; background: #000; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; font-size: 12px; font-weight: 400; line-height: 1.45; z-index: 40; white-space: normal; text-align: left; }
+.help-term-wrap:hover .help-tip, .help-term-wrap:focus-within .help-tip { display: block; }
+.help-term-wrap:hover .help-tip::after, .help-term-wrap:focus-within .help-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--line); }
+.help-modal { max-width: 640px; max-height: 80vh; overflow-y: auto; text-align: left; }
+.help-modal h3 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.help-modal h3 .secondary { margin-left: auto; }
+.help-lead { color: var(--text); }
+.help-modal p { font-size: 13px; line-height: 1.55; margin: 8px 0; }
+.help-source { display: inline-block; font-size: 11px; color: var(--dim); border: 1px solid var(--line); border-radius: 10px; padding: 1px 8px; font-weight: 400; }
+@media (max-width: 720px) { .dp-tech-grid { grid-template-columns: 1fr; } .dp-subnav { padding: 0 8px; } .dp-result > [role='tabpanel'] { padding: 12px 10px 4px; } }
