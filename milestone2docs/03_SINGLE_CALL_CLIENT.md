@@ -43,9 +43,10 @@ Include exact decoded string round-trip checks for accepted whitespace, newlines
 
 ## Completion record
 
-- Status / owner:
-- Files and current API references checked:
-- Validation/tolerance decisions:
-- Commands run and observed request counts:
-- Documentation / limitations / live requests:
-- Orchestrator verification: verifier, revision/artifact versions, checked evidence and decision:
+- Status / owner: **DONE** (orchestrator-verified 2026-09-21). Implemented by the orchestrator agent in the implementation session; verification was a separate review pass against this task's acceptance list.
+- Files and current API references checked: `src/BizzJev.Lab/DecisionPipelineClient.cs`, `src/BizzJev.Lab.Tests/DecisionPipelineClientTests.cs` (new `CountingHandler`), `src/BizzJev.Lab.Tests/DelayingHandler` (inline). Live official references re-checked 2026-09-21: [HTTP API](https://docs.typesafe.ai/api) (`POST /v1/systemone`, request/response shapes, 401/422/429/529), [confidence](https://docs.typesafe.ai/confidence), [parallel questions cookbook](https://docs.typesafe.ai/cookbooks/parallel_questions) (independent questions, shared state). No wire field was invented.
+- Validation/tolerance decisions: distribution sum tolerance `1e-5` (existing smoke validator precedent); Score-vs-weighted-distribution agreement tolerance `1e-5`; exact decimals only (`invalid_number` for silently-rounded forms such as `1e-30` and >28-significant-digit values); selected Choice must be a maximum (ties allowed); legend must cover exactly levels 0–3 with non-empty text; confidence in [0,1] (Choice/Score only; Noul has none); unknown additive top-level fields ignored; missing model → envelope error with answers still visible; missing usage → unknown (null), invalid usage → envelope error.
+- Commands run and observed request counts: `dotnet build` success (0 warnings); `dotnet test` — **97/97 passed** (28 client tests + previous). Attempt counts asserted in tests: 1 on success, 1 on HTTP 429/500, 1 on transport failure, 1 on timeout, 0 on rejected input, 0 on pre-dispatch caller cancellation. No-retry proven structurally (no retry loop exists) and behaviorally (every failure path asserts exactly one attempt). Existing `JevGateClient` retry behavior untouched.
+- Notable finding fixed during verification: on .NET 10, `HttpClient` can complete a request whose cancellation token fired **without throwing** (reproduced with a probe). The client now checks `ct` explicitly before dispatch and after reading the response, so a cancelled call can never be reported as a successful result.
+- Documentation / limitations / live requests: [IMPLEMENTATION.md](IMPLEMENTATION.md) updated (wire shape, validation, failure categories, no-retry, cancellation). Zero live Jev requests (all fixtures fabricated; documented as such). Endpoint wiring is task 06's.
+- Orchestrator verification: verifier = ZCode orchestrator, separate pass; evidence = build/test outputs, code review against the acceptance list (one attempt/no retry, raw values intact, no fabricated zeros, no API key needed for tests, three questions in one captured body — asserted by `SendsExactlyThreeMixedQuestionsInOneRequestOverSharedState`); decision = task 03 **DONE**. Task 04 proceeds in parallel ownership (separate file).

@@ -23,7 +23,7 @@ This folder is the handoff package for implementation agents and the project own
 |---|---|---|---|
 | 01 | [Freeze semantics and acceptance contract](01_SEMANTIC_SPECIFICATION.md) | None | DONE |
 | 02 | [Define typed contracts and versioned configuration](02_TYPED_CONTRACTS.md) | 01 | DONE |
-| 03 | [Implement the single-call Jev client](03_SINGLE_CALL_CLIENT.md) | 02 | READY |
+| 03 | [Implement the single-call Jev client](03_SINGLE_CALL_CLIENT.md) | 02 | DONE |
 | 04 | [Implement deterministic decision policy](04_DECISION_POLICY.md) | 02 | READY |
 | 05 | [Prepare the synthetic evaluation dataset](05_EVALUATION_DATASET.md) | 01 | DONE |
 | 06 | [Integrate backend endpoints and policy replay](06_BACKEND_API.md) | 03, 04, 05 | WAITING |
