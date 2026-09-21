@@ -107,3 +107,19 @@ details.tech-section.nested summary { display: flex; align-items: center; gap: 1
 .section-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); margin: 0 0 10px; }
 .small-btn { font-size: 12px; padding: 5px 10px; }
 @media (max-width: 900px) { .studio-layout { grid-template-columns: 1fr; } .studio-list { position: static; } }
+
+/* ---------- Decision Pipeline (Milestone 2) ---------- */
+.dp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.dp-card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); min-width: 0; }
+.dp-card h3 { margin-top: 0; }
+.dp-rules { margin: 6px 0; padding-left: 18px; }
+.dp-rules li { margin: 4px 0; }
+.dp-rules code { color: var(--action); font-size: 12px; }
+.dp-settings { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; margin: 10px 0; }
+.dp-setting { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dp-setting input { width: 100%; }
+.analyzed-text { background: var(--bg); border: 1px dashed var(--line); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 6px 0; }
+.pill[data-disp='YES'] { background: color-mix(in srgb, var(--yes) 22%, transparent); color: var(--yes); }
+.pill[data-disp='REVIEW'] { background: color-mix(in srgb, var(--review) 22%, transparent); color: var(--review); }
+.pill[data-disp='NO'] { background: color-mix(in srgb, var(--no) 22%, transparent); color: var(--dim); }
+@media (max-width: 720px) { .dp-cards { grid-template-columns: 1fr; } .dp-settings { grid-template-columns: 1fr 1fr; } }

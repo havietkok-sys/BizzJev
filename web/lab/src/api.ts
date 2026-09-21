@@ -200,3 +200,148 @@ export const studioApi = {
     req<DraftEvalResult>(`/api/gates/${gateId}/draft-evaluate`, { method: 'POST', body: JSON.stringify({ draft }) }),
   resetLocal: () => req<{ status: string }>(`/api/gates/reset-local`, { method: 'POST', body: JSON.stringify({ confirm: true }) })
 };
+
+// ---------- Decision Pipeline (Milestone 2) ----------
+
+export interface PipelinePolicySettings {
+  routingConfidenceMin: number;
+  routingMarginMin: number;
+  urgencyConfidenceMin: number;
+  cancellationNoBelow: number;
+  cancellationYesAtLeast: number;
+  elevatedAtLeast: number;
+  urgentAtLeast: number;
+  urgentRiskAtLeast: number;
+}
+
+export interface ChoiceSlot {
+  raw: unknown | null;
+  valid: boolean;
+  error: string | null;
+  selected: string | null;
+  probabilities: Record<string, number> | null;
+  confidence: number | null;
+  margin: number | null;
+}
+
+export interface ScoreSlot {
+  raw: unknown | null;
+  valid: boolean;
+  error: string | null;
+  score: number | null;
+  probabilities: Record<string, number> | null;
+  legend: Record<string, string> | null;
+  confidence: number | null;
+}
+
+export interface NoulSlot {
+  raw: unknown | null;
+  valid: boolean;
+  error: string | null;
+  probability: number | null;
+}
+
+export interface PipelineAnswers {
+  routing: ChoiceSlot;
+  urgency: ScoreSlot;
+  cancellationRequested: NoulSlot;
+}
+
+export interface ReviewReason { code: string; detail: string }
+export interface ProposedActionRow { type: string; label: string }
+export interface PolicyExplanationRow { ruleId: string; text: string }
+export interface PipelineErrorRow { category: string; code: string; detail: string }
+
+export interface PipelineDecision {
+  pipelineStatus: 'ok' | 'failed';
+  proposedTeam: string | null;
+  routingReviewRequired: boolean;
+  proposedPriority: 'Normal' | 'Elevated' | 'Urgent' | null;
+  urgencyReviewRequired: boolean;
+  urgentRisk: boolean | null;
+  cancellationDisposition: 'NO' | 'REVIEW' | 'YES' | null;
+  overallDisposition: 'technical_failure' | 'human_review' | 'policy_eligible';
+  reviewReasons: ReviewReason[];
+  proposedActions: ProposedActionRow[];
+  matchedRuleIds: string[];
+  explanations: PolicyExplanationRow[];
+  errors: PipelineErrorRow[];
+}
+
+export interface PipelineDiagnostics {
+  semanticVersion: string;
+  policyVersion: string;
+  requestPayload: string;
+  rawResponse: string | null;
+  returnedModel: string | null;
+  elapsedMs: number;
+  outboundAttempts: number;
+  usage: { inputTokens: number; outputTokens: number } | null;
+}
+
+export interface PipelineExample { id: string; text: string; synthetic: boolean }
+
+export interface PipelineDefinition {
+  semanticVersion: string;
+  policyVersion: string;
+  model: string;
+  questions: unknown;
+  policyDefaults: PipelinePolicySettings;
+  routingCategories: string[];
+  scoreLevelDescriptions: string[];
+  examples: PipelineExample[];
+}
+
+export interface PipelineAnalyzeResponse {
+  semanticVersion: string;
+  policyVersion: string;
+  analyzedAtUtc: string;
+  returnedModel: string | null;
+  answers: PipelineAnswers;
+  decision: PipelineDecision;
+  diagnostics: PipelineDiagnostics | null;
+}
+
+export interface PipelineReplayResponse {
+  semanticVersion: string;
+  policyVersion: string;
+  replayedAtUtc: string;
+  model: string;
+  answers: PipelineAnswers;
+  decision: PipelineDecision;
+  policy: PipelinePolicySettings;
+  outboundAttempts: number;
+}
+
+/** Raw TypeSafe answer shapes rebuilt from validated values; null means the answer was unavailable. */
+export function replayAnswerBodies(answers: PipelineAnswers): {
+  routing: { type: 'choice'; choice: string; probabilities: Record<string, number>; confidence: number } | null;
+  urgency: { type: 'score'; score: number; legend: Record<string, string>; probabilities: Record<string, number>; confidence: number } | null;
+  cancellationRequested: { type: 'noul'; noul: number } | null;
+} {
+  return {
+    routing: answers.routing.valid && answers.routing.selected !== null && answers.routing.probabilities && answers.routing.confidence !== null
+      ? { type: 'choice', choice: answers.routing.selected, probabilities: answers.routing.probabilities, confidence: answers.routing.confidence }
+      : null,
+    urgency: answers.urgency.valid && answers.urgency.score !== null && answers.urgency.probabilities && answers.urgency.legend && answers.urgency.confidence !== null
+      ? { type: 'score', score: answers.urgency.score, legend: answers.urgency.legend, probabilities: answers.urgency.probabilities, confidence: answers.urgency.confidence }
+      : null,
+    cancellationRequested: answers.cancellationRequested.valid && answers.cancellationRequested.probability !== null
+      ? { type: 'noul', noul: answers.cancellationRequested.probability }
+      : null
+  };
+}
+
+export const pipelineApi = {
+  definition: () => req<PipelineDefinition>('/api/decision-pipeline/definition'),
+  analyze: (customerText: string) =>
+    req<PipelineAnalyzeResponse>('/api/decision-pipeline/analyze', { method: 'POST', body: JSON.stringify({ customerText }) }),
+  replay: (body: {
+    semanticVersion: string;
+    model: string;
+    routing: unknown;
+    urgency: unknown;
+    cancellationRequested: unknown;
+    policy?: PipelinePolicySettings;
+  }) => req<PipelineReplayResponse>('/api/decision-pipeline/replay', { method: 'POST', body: JSON.stringify(body) })
+};

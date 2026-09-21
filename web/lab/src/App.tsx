@@ -4,16 +4,18 @@ import { PolicyScale, InfoButton, Hover } from './PolicyScale';
 import { Overview } from './Overview';
 import { TechnicalView } from './TechnicalView';
 import { GateStudio } from './GateStudio';
+import { DecisionPipeline } from './DecisionPipeline';
 
-type Screen = 'overview' | 'analyze' | 'library' | 'studio';
+type Screen = 'overview' | 'analyze' | 'pipeline' | 'library' | 'studio';
 
 export default function App() {
   const route = (): Screen =>
     window.location.hash === '#/analyze' ? 'analyze'
+      : window.location.hash === '#/decision-pipeline' ? 'pipeline'
       : window.location.hash === '#/library' ? 'library'
       : window.location.hash === '#/studio' ? 'studio'
       : 'overview';
-  const [screen, setScreen] = useState<Screen>(route);
+  const [screen, setScreen] = useState<Screen>(route());
   useEffect(() => {
     const onHash = () => setScreen(route());
     window.addEventListener('hashchange', onHash);
@@ -26,13 +28,14 @@ export default function App() {
         <nav>
           <a href="#/" className={screen === 'overview' ? 'active' : ''}>Overview</a>
           <a href="#/analyze" className={screen === 'analyze' ? 'active' : ''}>Analyze</a>
+          <a href="#/decision-pipeline" className={screen === 'pipeline' ? 'active' : ''}>Decision Pipeline</a>
           <a href="#/studio" className={screen === 'studio' ? 'active' : ''}>Gate Studio</a>
           <a href="#/library" className={screen === 'library' ? 'active' : ''}>Evaluation Library</a>
         </nav>
         <span className="dim small">Jev semantic signal → policy → business action</span>
       </header>
       <main>
-        {screen === 'overview' ? <Overview /> : screen === 'analyze' ? <AnalyzeScreen /> : screen === 'studio' ? <GateStudio /> : <LibraryScreen />}
+        {screen === 'overview' ? <Overview /> : screen === 'analyze' ? <AnalyzeScreen /> : screen === 'pipeline' ? <DecisionPipeline /> : screen === 'studio' ? <GateStudio /> : <LibraryScreen />}
       </main>
     </>
   );

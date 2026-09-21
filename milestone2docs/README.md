@@ -1,6 +1,6 @@
 # Milestone 2 — Multi-primitive evaluation / single-call decision pipeline
 
-Status: **tasks 01-06 delivered and verified; tasks 07 and 08 are released and next; no live Jev requests consumed yet.**
+Status: **tasks 01-07 delivered and verified; task 08 is released and next; 1 of 1,000 live Jev requests consumed (task 07 UI verification).**
 
 The goal is a new **Decision Pipeline** tab in the existing Semantic Operations Lab. One customer message goes to Jev in one request containing Choice, Score and Noul questions. Typed answers become inputs to deterministic C# policy, with an explicit human fallback.
 
@@ -27,13 +27,13 @@ This folder is the handoff package for implementation agents and the project own
 | 04 | [Implement deterministic decision policy](04_DECISION_POLICY.md) | 02 | DONE |
 | 05 | [Prepare the synthetic evaluation dataset](05_EVALUATION_DATASET.md) | 01 | DONE |
 | 06 | [Integrate backend endpoints and policy replay](06_BACKEND_API.md) | 03, 04, 05 | DONE |
-| 07 | [Build the Decision Pipeline tab](07_DECISION_PIPELINE_UI.md) | 05, 06 | READY |
+| 07 | [Build the Decision Pipeline tab](07_DECISION_PIPELINE_UI.md) | 05, 06 | DONE |
 | 08 | [Implement and run the evaluation workflow](08_EVALUATION_RUNNER.md) | 05, 06 | READY |
 | 09 | [Integrate, document and verify the milestone](09_ACCEPTANCE_AND_DOCUMENTATION.md) | 07, 08 | WAITING |
 
 This is the authoritative task status table. The orchestrator updates it during implementation, not while merely reading the plan. Each task ends with a completion record template for evidence.
 
-Tasks 07 and 08 are dependency-ready (05, 06 verified); task 09 remains WAITING on 07 and 08. DONE reflects verified task delivery, not owner acceptance of the milestone or merge authorization.
+Task 08 is dependency-ready (05, 06 verified); task 09 remains WAITING on 08. DONE reflects verified task delivery, not owner acceptance of the milestone or merge authorization.
 
 ## Scope and decisions
 

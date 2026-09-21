@@ -13,10 +13,10 @@ This budget covers integration smoke checks, prompt refinement, DESIGN/TEST eval
 | Item | Requests |
 |---|---:|
 | Authorized ceiling | 1,000 |
-| Consumed or reserved | 0 |
-| Remaining | 1,000 |
+| Consumed or reserved | 1 |
+| Remaining | 999 |
 
-No live Jev calls have been issued for this milestone at the time this record was created. Earlier Milestone 1 experiments are outside this allowance. Reading documentation and offline tests do not consume it.
+Attempt 1 was consumed by the task 07 UI browser verification (a single live `analyze` of dataset case dp-d01 through the new tab at 2026-09-21 21:27 UTC; HTTP success, model `jev-1.13.0`, 839.9 ms, usage 1726 in / 89 out tokens, result Technical/urgency 2/cancellation NO matching the DESIGN expectation). No other live Jev calls have been issued for this milestone; Milestone 1 experiments are outside this allowance; reading documentation and offline tests do not consume it.
 
 ## Enforcement and ledger
 
@@ -30,6 +30,6 @@ Append ledger entries identifying the task/run, purpose, allocated attempt numbe
 
 | Task/run | Purpose | Reserved attempt numbers | Count | Outcome / evidence |
 |---|---|---|---:|---|
-| None | No execution started | None | 0 | Budget recorded only |
+| task 07 UI check | Single live analyze demonstration through the new tab (browser verification) | 1 | 1 | SUCCESS 2026-09-21 21:27 UTC — dp-d01 via `#/decision-pipeline`, Technical/2/NO as expected; evidence in task 07 completion record |
 
 The ceiling is an allowance, not a spending target. Preserve versioned results and reuse raw answers for policy-only changes. If exhausted, save partial evidence, report unrun work and continue independent offline tasks; request an increase only if more live execution is needed.

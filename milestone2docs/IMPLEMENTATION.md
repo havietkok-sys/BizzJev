@@ -16,7 +16,7 @@ Architectural boundary (frozen): **Jev owns semantic inference; application code
 | `src/BizzJev.Lab/DecisionPipelineEndpoints.cs` | 06 | `/api/decision-pipeline/definition`, `/analyze`, `/replay` handlers (internal, testable without a server) |
 | `src/BizzJev.Lab/DecisionPipelineEvaluation.cs` | 08 (planned) | Evaluation runner and metrics |
 | `src/BizzJev.Lab/config/decision-pipeline-cases.v1.json` | 05 (planned) | Frozen 40-case synthetic dataset |
-| `web/lab/src/DecisionPipeline.tsx` + API helpers | 07 (planned) | Decision Pipeline tab |
+| `web/lab/src/DecisionPipeline.tsx` + API helpers | 07 | Decision Pipeline tab (`#/decision-pipeline`) |
 
 Milestone 1 files (`Domain.cs`, `JevClient.cs`, `Program.cs` gates/analyze/evaluate endpoints, `config/gates.v1.json`, `config/testcases.v1.json`) are intentionally untouched by the new pipeline except for the minimal registration call in `Program.cs` planned for task 06.
 
@@ -72,6 +72,14 @@ Two replay examples (identical raw answers, different thresholds — from `TwoRe
 - `POST /api/decision-pipeline/replay` — the handler has **no client and no key parameter at all**: replay is structurally incapable of inference (asserted by a reflection test on its signature). `semanticVersion` mismatch → `400 semantic_version_mismatch`; blank `model` → `400 invalid_body`; supplied `policy` must contain all eight settings, structurally valid **and** within ranges/orderings (`400 invalid_policy_settings` listing every violation — range validation is run here, not only in the policy). Answers are revalidated by the same `DecisionPipelineClient.Validate*Answer` methods used for live responses, so an unavailable or semantically invalid answer reproduces the same `technical_failure` decision a live run would produce. Supplied settings mark the result `pipeline-policy-v1-custom` and are echoed in full; `outboundAttempts` is always `0`.
 
 Local run: `dotnet run --project src/BizzJev.Lab` (needs `TYPESAFE_API_KEY` in user secrets/environment only for `/analyze`; definition and replay work keyless). Evaluation routes are reserved for task 08 under `/api/decision-pipeline/evaluations`.
+
+## Frontend (task 07)
+
+`web/lab/src/DecisionPipeline.tsx` renders the tab; `api.ts` gained the pipeline types plus `pipelineApi` (definition/analyze/replay) and `replayAnswerBodies`, which rebuilds the raw TypeSafe answer shapes from the validated fields so replay feeds back exactly what the policy consumed. `App.tsx` gained one nav entry and one route (`#/decision-pipeline`); all existing screens are unchanged. `styles.css` gained a small `.dp-*` block (card grid with `auto-fit` for small screens, settings grid, analyzed-text block); no new dependency.
+
+Request discipline: the definition is fetched once on mount (keyless, no Jev). Analysis fires only from the **Analyze once** click; the button disables while busy; errors are displayed and never auto-resubmitted. The analyzed text is pinned above the results; editing the draft marks results stale (announced via `role=status` / `aria-live`) and blocks replay until a new analysis. Replay posts answers + settings to C# only — the component holds no decision logic; invalid settings surface the server's 400 message inline. Technical View renders the exact wire payloads when diagnostics are enabled and explains their absence otherwise, without calling another endpoint.
+
+Operation: `npm run dev` (Vite proxies `/api` to `localhost:5099`) or `npm run build`. The bundled `wwwroot` refresh is deferred to task 09.
 
 ## Commands
 
