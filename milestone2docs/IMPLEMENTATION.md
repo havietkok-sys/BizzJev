@@ -14,7 +14,7 @@ Architectural boundary (frozen): **Jev owns semantic inference; application code
 | `src/BizzJev.Lab/DecisionPipelineClient.cs` | 03 | Single-request mixed-primitive TypeSafe client (`POST /v1/systemone`), no retry, strict per-answer validation |
 | `src/BizzJev.Lab/DecisionPipelinePolicy.cs` | 04 | Pure deterministic policy: frozen rule table, reasons, actions, explanations |
 | `src/BizzJev.Lab/DecisionPipelineEndpoints.cs` | 06 | `/api/decision-pipeline/definition`, `/analyze`, `/replay` handlers (internal, testable without a server) |
-| `src/BizzJev.Lab/DecisionPipelineEvaluation.cs` | 08 (planned) | Evaluation runner and metrics |
+| `src/BizzJev.Lab/DecisionPipelineEvaluation.cs` | 08 | Dataset loader, persistent budget ledger, sequential runner, frozen metrics, evaluation routes |
 | `src/BizzJev.Lab/config/decision-pipeline-cases.v1.json` | 05 (planned) | Frozen 40-case synthetic dataset |
 | `web/lab/src/DecisionPipeline.tsx` + API helpers | 07 | Decision Pipeline tab (`#/decision-pipeline`) |
 
@@ -80,6 +80,17 @@ Local run: `dotnet run --project src/BizzJev.Lab` (needs `TYPESAFE_API_KEY` in u
 Request discipline: the definition is fetched once on mount (keyless, no Jev). Analysis fires only from the **Analyze once** click; the button disables while busy; errors are displayed and never auto-resubmitted. The analyzed text is pinned above the results; editing the draft marks results stale (announced via `role=status` / `aria-live`) and blocks replay until a new analysis. Replay posts answers + settings to C# only — the component holds no decision logic; invalid settings surface the server's 400 message inline. Technical View renders the exact wire payloads when diagnostics are enabled and explains their absence otherwise, without calling another endpoint.
 
 Operation: `npm run dev` (Vite proxies `/api` to `localhost:5099`) or `npm run build`. The bundled `wwwroot` refresh is deferred to task 09.
+
+## Evaluation runner (task 08)
+
+`DecisionPipelineEvaluation.cs` contains the dataset loader (parses the frozen 40-case JSON incl. ambiguous/interval labels), the **budget ledger**, the sequential runner, the pure metrics computation and four routes (`GET …/evaluations/cases`, `POST …/evaluations` with `{ "split": "DESIGN" | "TEST" }` — 400 `invalid_body`, 409 `budget_exhausted`, 503 `missing_api_key` — `GET …/evaluations` history, `GET …/evaluations/{id}` detail with run-ID validation keeping paths inside the run directory).
+
+- **Budget enforcement:** `DecisionPipelineBudgetLedger` persists `data/lab/decision-pipeline/budget.json` (ceiling from `DecisionPipeline:LiveRequestCeiling`, default 1000; on first creation it imports the one attempt already recorded in LIVE_REQUEST_BUDGET.md). Before every dispatch the runner checks the remaining allowance and **records the attempt before sending**; exhaustion stops the run as `stopped_budget` with accurate attempted/completed/unattempted counts. Failures/timeouts consume and are never refunded. New runner instances load the same ledger, so consumption survives restarts (tested).
+- **Runs are immutable** per-run JSON files under `data/lab/decision-pipeline/evaluations/`, each with full per-case records (input, expectations, validated answers, decision, error, elapsed, usage, global budget attempt number, raw response while Technical View is enabled), versions, dataset hash and the computed metrics. Sanitized copies live in [results/](results/).
+- **Metrics:** pure `DecisionPipelineEvaluationMetrics.Compute` over serialized case runs — primitive-level results first (routing agreement/confusion on determinate+valid answers; urgency point MAE and interval error separately; raw-Noul Brier with disclosed denominator), then policy/workflow metrics (thresholded cancellation with REVIEW = not-YES, review/technical-failure rates, ambiguity capture incl. confident-eligible, incorrect automatic recommendations with per-output errors, reversal-pair deltas, latency median/p95 nearest-rank, token totals with unknown count). Empty denominators yield `null`, never zero.
+- **Live findings that changed validation (not semantics):** two tolerance recalibrations documented in [API_CONTRACT.md](API_CONTRACT.md) — score-agreement 1e-5 → 0.05 (API derives scores from higher-precision internals than its 2-decimal wire probabilities; measured ±0.01) and distribution-sum 1e-5 → 0.03 (a rounded 4-value distribution measured summing to 0.99). Values are consumed as received; nothing is renormalized. Regression tests encode both observed wire shapes.
+
+Invoke a run: start the app, then `Invoke-RestMethod -Method Post -Uri http://localhost:5099/api/decision-pipeline/evaluations -ContentType 'application/json' -Body '{"split":"TEST"}'` (or curl). The response includes the run, planned attempts and remaining budget; `GET …/evaluations` lists history.
 
 ## Commands
 

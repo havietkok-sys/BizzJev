@@ -201,9 +201,15 @@ public static class DecisionPipelineConfig
 {
     public const int MinCustomerTextUtf16Length = 1;
     public const int MaxCustomerTextUtf16Length = 8000;
-    /// Validation-only tolerances (response structure checks); never used in policy threshold comparisons.
-    public const decimal DistributionSumTolerance = 0.00001m;
-    public const decimal ScoreAgreementTolerance = 0.00001m;
+    /// Validation-only tolerances (response structure checks); never used in policy threshold
+    /// comparisons. Live evidence (runs 20260921-213818907-design and 20260921-214205361-test):
+    /// TypeSafe rounds wire numbers to 2 decimals — the reported Score derives from
+    /// higher-precision internals (measured |score − weighted(wire probabilities)| = 0.01 on four
+    /// cases) and a rounded distribution can sum to 0.99 (dp-t07). Bounds: score agreement
+    /// ≤ 0.035 for levels 0–3; distribution sum ≤ 0.025 for five rounded options. Values are
+    /// consumed exactly as received — never renormalized or repaired.
+    public const decimal DistributionSumTolerance = 0.03m;
+    public const decimal ScoreAgreementTolerance = 0.05m;
 
     public static readonly string RoutingQuestionId = "routing";
     public static readonly string UrgencyQuestionId = "urgency";

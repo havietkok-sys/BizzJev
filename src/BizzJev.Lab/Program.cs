@@ -406,6 +406,14 @@ DecisionPipelineEndpoints.MapDecisionPipelineEndpoints(app, new DecisionPipeline
     EnableTechnicalView = enableTechnicalView,
     Json = json
 });
+DecisionPipelineEvaluationEndpoints.MapDecisionPipelineEvaluationEndpoints(app, new DecisionPipelineEndpointOptions
+{
+    ResolveApiKey = () => config["TYPESAFE_API_KEY"],
+    Model = model,
+    TimeoutSeconds = timeout,
+    EnableTechnicalView = enableTechnicalView,
+    Json = json
+});
 
 app.Run();
 

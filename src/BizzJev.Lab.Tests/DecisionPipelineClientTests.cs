@@ -206,6 +206,33 @@ public sealed class DecisionPipelineClientTests
     }
 
     [Fact]
+    public async Task ApiRoundedScoreWithinAgreementToleranceIsValid()
+    {
+        // Live-observed shape (run 20260921-213818907-design, dp-d14): wire probabilities are
+        // 2-decimal roundings while the reported score derives from higher-precision internals.
+        // |0.1 - 0.09| = 0.01 must pass the validation tolerance (policy still uses the exact score).
+        var body = WithAnswer("urgency",
+            """{ "type": "score", "score": 0.1, "legend": { "0": "a", "1": "b", "2": "c", "3": "d" }, "probabilities": { "0": 0.94, "1": 0.03, "2": 0.03, "3": 0 }, "confidence": 0.8 }""");
+        var handler = new CountingHandler(_ => Json(body));
+        var outcome = await Client(handler).AnalyzeAsync("hello", Config());
+        Assert.True(outcome.Answers.Urgency.Valid);
+        Assert.Equal(0.1m, outcome.Answers.Urgency.Score);
+    }
+
+    [Fact]
+    public async Task ApiRoundedDistributionSummingTo099IsValid()
+    {
+        // Live-observed shape (run 20260921-214205361-test, dp-t07): 2-decimal roundings can sum
+        // to 0.99. The values are consumed as received — never renormalized.
+        var body = WithAnswer("urgency",
+            """{ "type": "score", "score": 0.1, "legend": { "0": "a", "1": "b", "2": "c", "3": "d" }, "probabilities": { "0": 0.93, "1": 0.04, "2": 0, "3": 0.02 }, "confidence": 0.9 }""");
+        var handler = new CountingHandler(_ => Json(body));
+        var outcome = await Client(handler).AnalyzeAsync("hello", Config());
+        Assert.True(outcome.Answers.Urgency.Valid);
+        Assert.Equal(0.02m, outcome.Answers.Urgency.Probabilities!["3"]);
+    }
+
+    [Fact]
     public async Task MalformedResponseBodyIsAnEnvelopeError()
     {
         var handler = new CountingHandler(_ => Json("not json at all"));

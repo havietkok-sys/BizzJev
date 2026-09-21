@@ -13,10 +13,10 @@ This budget covers integration smoke checks, prompt refinement, DESIGN/TEST eval
 | Item | Requests |
 |---|---:|
 | Authorized ceiling | 1,000 |
-| Consumed or reserved | 1 |
-| Remaining | 999 |
+| Consumed | 81 |
+| Remaining | 919 |
 
-Attempt 1 was consumed by the task 07 UI browser verification (a single live `analyze` of dataset case dp-d01 through the new tab at 2026-09-21 21:27 UTC; HTTP success, model `jev-1.13.0`, 839.9 ms, usage 1726 in / 89 out tokens, result Technical/urgency 2/cancellation NO matching the DESIGN expectation). No other live Jev calls have been issued for this milestone; Milestone 1 experiments are outside this allowance; reading documentation and offline tests do not consume it.
+Final state after the task 08 frozen evaluation (2026-09-21): attempt 1 = task 07 UI verification (success); attempts 2–25 = first DESIGN run (discovery of the 2-decimal score rounding, 4 validator-rejected answers, preserved as evidence); attempts 26–49 = DESIGN baseline run (24/24); attempts 50–65 = first TEST run (discovery of the 0.99 distribution sum, 1 validator-rejected answer, preserved as evidence); attempts 66–81 = TEST baseline run (16/16). All 81 attempts are recorded one-by-one in the runtime ledger (`data/lab/decision-pipeline/budget.json`), reserved before dispatch; nothing was refunded. Measured results: [EVALUATION_REPORT.md](EVALUATION_REPORT.md); sanitized run artifacts: [results/](results/). The ceiling is an allowance, not a target: 919 requests remain for any future owner-directed work.
 
 ## Enforcement and ledger
 
@@ -31,5 +31,9 @@ Append ledger entries identifying the task/run, purpose, allocated attempt numbe
 | Task/run | Purpose | Reserved attempt numbers | Count | Outcome / evidence |
 |---|---|---|---:|---|
 | task 07 UI check | Single live analyze demonstration through the new tab (browser verification) | 1 | 1 | SUCCESS 2026-09-21 21:27 UTC — dp-d01 via `#/decision-pipeline`, Technical/2/NO as expected; evidence in task 07 completion record |
+| task 08 evaluation | Frozen DESIGN split (24 cases, sequential, one attempt per case) — first run | 2–25 | 24 | CONSUMED: run `20260921-213818907-design` 24 attempted / 20 completed; 4 urgency answers rejected by the over-strict 1e-5 Score-agreement tolerance (validator bug, live-measured 0.01 deviations); run preserved as evidence |
+| task 08 evaluation | DESIGN re-run with recalibrated validation tolerance (0.05) | 26–49 | 24 | CONSUMED: run `20260921-214122782-design`, 24/24 completed — reported as the DESIGN baseline |
+| task 08 evaluation | Frozen TEST split — first run | 50–65 | 16 | CONSUMED: run `20260921-214205361-test`, 16 attempted / 15 completed; dp-t07 distribution sum 0.99 rejected by the 1e-5 sum tolerance (same rounding family); preserved as evidence |
+| task 08 evaluation | TEST re-run with recalibrated sum tolerance (0.03) | 66–81 | 16 | CONSUMED: run `20260921-214337239-test`, 16/16 completed — reported as the TEST baseline |
 
 The ceiling is an allowance, not a spending target. Preserve versioned results and reuse raw answers for policy-only changes. If exhausted, save partial evidence, report unrun work and continue independent offline tasks; request an increase only if more live execution is needed.
