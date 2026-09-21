@@ -217,3 +217,16 @@ details.tech-section.nested summary { display: flex; align-items: center; gap: 1
   .ov-arrow { transform: rotate(90deg); align-self: flex-start; margin-left: 24px; }
   .ov-stage { flex-basis: auto; }
 }
+
+/* ---------- Gate Studio: compact gate flow, empty criteria, policy flow ---------- */
+.gs-flow { display: flex; flex-direction: column; gap: 2px; margin: 12px 0 4px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 8px; }
+.gs-flow-title { text-transform: uppercase; letter-spacing: .08em; font-size: 10px; margin-bottom: 4px; }
+.gs-flow-step { font-size: 12px; color: var(--text); }
+.gs-flow-step .dim { color: var(--dim); }
+.gs-flow-arrow { color: var(--action); font-size: 12px; line-height: 1; margin-left: 8px; }
+.gs-empty-criteria { border: 1px dashed var(--line); border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.gs-add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.gs-add-criteria { font-size: 12px; padding: 4px 10px; }
+.gs-policy-flow { display: flex; flex-direction: column; gap: 2px; margin: 10px 0 12px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 8px; }
+.gs-policy-step { font-size: 12.5px; }
+.gs-policy-step em { color: var(--dim); font-style: normal; }

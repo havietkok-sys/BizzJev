@@ -25,7 +25,9 @@ INTERPRETED RESULT / ACTION
 
 ## The four categories
 
-### [SENT TO JEV] — what BizzJev sends to Jev
+The categories describe **origin within the pipeline, not authorship**: project-authored semantic content is SENT TO JEV, and "SENT TO JEV" never means "authored by Jev". They are not mutually exclusive kinds of content — one piece of content can be project-authored *and* sent to Jev.
+
+### [SENT TO JEV] — data or semantic definitions included in the Jev request
 
 Data actually included in the request to TypeSafe's System One API: the shared state (the customer message, exactly as submitted — never trimmed or normalized), the question definitions (instructions and criteria for each Choice/Score/Noul question), and the configured model.
 
@@ -34,28 +36,29 @@ Two clarifications that matter:
 - The question definitions are **project-authored content that is sent to Jev**, not Jev-authored definitions. The five routing categories, the urgency level descriptions and the cancellation criteria were written for this project (frozen as `pipeline-v1` / `gates.v1`).
 - Being sent to Jev does not make something a Jev product: the same wire format carries this project's conventions, and another business could send entirely different definitions.
 
-### [JEV OUTPUT] — what Jev returns directly
+### [JEV OUTPUT] — values returned directly by Jev
 
 Values returned by the model in the response: the selected Choice category with its full probability distribution and confidence, the Score value with its distribution/legend/confidence, the Noul yes-probability, the returned model name and the token usage.
 
-- Jev output is **probabilistic model output, not guaranteed truth**. Confidence summarizes how concentrated the probability distribution is; it is not a promise that the answer is correct.
+- Jev output is **probabilistic model output, not guaranteed truth**, and it has **not yet been converted into a local business decision**. Confidence summarizes how concentrated the probability distribution is; it is not a promise that the answer is correct.
 - Noul deliberately has no confidence field.
 - The application validates the structure of these values but never edits, renormalizes or "repairs" them.
 
-### [C# DERIVED] — what BizzJev computes deterministically
+### [C# DERIVED] — deterministic values calculated locally from validated Jev output
 
-Values calculated by BizzJev in C# from the Jev output and the active project policy: the routing margin, the priority label (Normal/Elevated/Urgent), the cancellation disposition (NO/REVIEW/YES), review-required flags, the urgent-risk flag, matched rule IDs, the combined outcome (`policy_eligible` / `human_review` / `technical_failure`), proposed actions, and measured run facts (elapsed time, outbound attempt counts).
+Values calculated by BizzJev in C# from the Jev output and the current policy: the routing margin, the priority label (Normal/Elevated/Urgent), the cancellation disposition (NO/REVIEW/YES), review-required flags, the urgent-risk flag, matched rule IDs, the combined outcome (`policy_eligible` / `human_review` / `technical_failure`), proposed actions, and measured run facts (elapsed time, outbound attempt counts).
 
 - These values are **deterministic given the validated Jev output and the active policy settings**: the same inputs always produce the same result. That is what makes policy replay possible — the same stored answers with different thresholds recompute offline with zero Jev calls.
 - **Jev does not produce these values.** Jev never returns "Elevated", "YES" or "review required"; it returns the Score, the Noul probability and the confidence, and BizzJev maps them through project thresholds.
 - No customer text reaches the policy: the policy is a pure function of typed answers and settings.
 
-### [PROJECT POLICY] — project/business definitions
+### [PROJECT POLICY] — local business/demo rules applied after Jev returns its output
 
-Definitions, thresholds, precedence rules and conventions chosen by this project for the demo/business workflow: threshold values (routing confidence/minimums, cancellation boundaries, priority bands, urgent-risk minimum, gate review/accept thresholds), the frozen question definitions themselves, semantic/policy version labels, and the gate set contents.
+Thresholds, precedence rules and decision conventions chosen by this project for the demo/business workflow: threshold values (routing confidence/minimums, cancellation boundaries, priority bands, urgent-risk minimum, gate review/accept thresholds) and version labels. **PROJECT POLICY is reserved for local rules applied *after* Jev returns its semantic output.**
 
+- A threshold or policy is not sent to Jev: Jev never receives it (unless some content is explicitly shown elsewhere as SENT TO JEV). Changing a threshold changes the interpretation of a Jev output, never the Jev output itself — and never the prompt.
 - These are **not TypeSafe or Jev defaults** unless explicitly documented as such. Another business could choose completely different values without touching the model.
-- Changing a threshold changes the interpretation of a Jev output, never the Jev output itself.
+- Project-authored *semantic definitions* (instructions, criteria, category meanings) are **not** PROJECT POLICY — they are project-authored content that is [SENT TO JEV].
 
 ## Examples
 
@@ -94,7 +97,7 @@ A gate "PASS"-style result is always application policy: it must be impossible t
 
 - **Analyze** — legend under "Policy scale per gate"; badges on the signal line [JEV OUTPUT], the scale [PROJECT POLICY], the current result [C# DERIVED], business actions [C# DERIVED]; full badges throughout Technical View.
 - **Decision Pipeline** — legend on the intro panel; badges in all three result tabs (Analysis keeps them sparse: card-level badges plus the derived/policy lines that matter; Technical carries the complete annotation including wire bodies).
-- **Gate Studio** — legend in the gate list; BUSINESS DEFINITION [PROJECT POLICY], JEV PROMPT DEFINITION [SENT TO JEV], POLICY section [PROJECT POLICY], draft-test signals [JEV OUTPUT] and draft comparisons [C# DERIVED].
+- **Gate Studio** — legend plus a compact six-step gate flow in the gate list; BUSINESS DEFINITION is explicitly captioned as project-authored design notes (no badge — not sent as-is, not post-inference policy); JEV PROMPT DEFINITION [SENT TO JEV] with an empty-criteria notice when a gate defines its semantics entirely in the instruction; the POLICY section shows the local mini-flow Jev output [JEV OUTPUT] → local thresholds [PROJECT POLICY] → gate decision [C# DERIVED]; draft-test signals [JEV OUTPUT] and draft comparisons [C# DERIVED].
 - **Help popups** — every term in the `?` help system carries a "Source:" line using the same canonical labels.
 
 Hover a badge for a one-sentence explanation of its category.

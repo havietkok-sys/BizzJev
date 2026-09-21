@@ -80,8 +80,8 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
                   <tr><th>Prompt version</th><td>{g.promptVersion} <ProvenanceBadge p="projectPolicy" /></td></tr>
                   <tr><th>Business goal</th><td>{g.businessGoal}</td></tr>
                   <tr><th>Instruction <ProvenanceBadge p="sentToJev" /></th><td>{g.instructions}</td></tr>
-                  <tr><th>TRUE criteria <ProvenanceBadge p="sentToJev" /></th><td>{g.criteriaTrue}</td></tr>
-                  <tr><th>FALSE criteria <ProvenanceBadge p="sentToJev" /></th><td>{g.criteriaFalse}</td></tr>
+                  <tr><th>TRUE criteria <ProvenanceBadge p="sentToJev" /></th><td>{g.criteriaTrue || <span className="dim">not configured — the positive condition is defined by the instruction</span>}</td></tr>
+                  <tr><th>FALSE criteria <ProvenanceBadge p="sentToJev" /></th><td>{g.criteriaFalse || <span className="dim">not configured — the negative boundary is defined by the instruction</span>}</td></tr>
                   <tr><th>Review threshold <ProvenanceBadge p="projectPolicy" /></th><td>{g.reviewThreshold}</td></tr>
                   <tr><th>Accept threshold <ProvenanceBadge p="projectPolicy" /></th><td>{g.acceptThreshold}</td></tr>
                 </tbody>

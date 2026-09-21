@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { provenanceLabels, provenanceShort, type Provenance } from './provenance';
+import { provenanceLabels, provenanceLegendLines, provenanceShort, type Provenance } from './provenance';
 
 /**
  * Shared provenance badge. One component, one canonical label set (provenance.ts), used
@@ -14,16 +14,25 @@ export function ProvenanceBadge({ p, children }: { p: Provenance; children?: Rea
   );
 }
 
-/** One-line legend of all four categories; anchors the badge language on each screen. */
+/**
+ * One-line legend of the four categories plus the exclusivity caveat; anchors the badge
+ * language on each screen. PROJECT POLICY means local rules applied AFTER Jev returns;
+ * project-authored semantic content that is sent to Jev is SENT TO JEV, not PROJECT POLICY.
+ */
 export function ProvenanceLegend() {
   return (
-    <p className="prov-legend small dim">
-      Data provenance:{' '}
-      <ProvenanceBadge p="sentToJev" /> what BizzJev sends to Jev ·{' '}
-      <ProvenanceBadge p="jevOutput" /> what Jev returns ·{' '}
-      <ProvenanceBadge p="cSharpDerived" /> what BizzJev computes in C# ·{' '}
-      <ProvenanceBadge p="projectPolicy" /> project/business choices
-      {' '}— explained in <code>docs/DATA_PROVENANCE.md</code> in the repository
-    </p>
+    <div className="prov-legend small dim">
+      <p style={{ margin: 0 }}>
+        Data provenance:{' '}
+        <ProvenanceBadge p="sentToJev" /> {provenanceLegendLines.sentToJev} ·{' '}
+        <ProvenanceBadge p="jevOutput" /> {provenanceLegendLines.jevOutput} ·{' '}
+        <ProvenanceBadge p="cSharpDerived" /> {provenanceLegendLines.cSharpDerived} ·{' '}
+        <ProvenanceBadge p="projectPolicy" /> {provenanceLegendLines.projectPolicy}
+      </p>
+      <p style={{ margin: '2px 0 0' }}>
+        The categories describe origin, not authorship: semantic definitions are project-authored <i>and</i> SENT TO JEV.
+        Explained in <code>docs/DATA_PROVENANCE.md</code> in the repository.
+      </p>
+    </div>
   );
 }

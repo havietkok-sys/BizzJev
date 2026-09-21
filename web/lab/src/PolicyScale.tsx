@@ -94,8 +94,10 @@ export function PolicyScale({ gateId, profile, gateVersion, probability, review,
           <span className="dim small"> · policy scale <ProvenanceBadge p="projectPolicy" /></span>
           <InfoButton topic="scale" />
         </div>
-        <div className={`pill ${outcome}`} style={{ minWidth: 210 }}>
-          CURRENT RESULT: {outcome.toUpperCase()} <ProvenanceBadge p="cSharpDerived" />
+        <div className={`pill ${probability === null ? 'no' : outcome}`} style={{ minWidth: 210 }}>
+          {probability === null
+            ? <>THRESHOLDS ONLY — not analyzed yet <ProvenanceBadge p="projectPolicy" /></>
+            : <>CURRENT RESULT: {outcome.toUpperCase()} <ProvenanceBadge p="cSharpDerived" /></>}
         </div>
       </div>
 

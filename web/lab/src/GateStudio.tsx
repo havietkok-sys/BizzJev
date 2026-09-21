@@ -34,6 +34,42 @@ interface DraftEvalResult {
 
 type GateDraft = GateDef & { criteriaTrue: string; criteriaFalse: string };
 
+const CRITERIA_EMPTY_NOTE = {
+  true: 'No separate TRUE criteria are configured. The positive condition is defined by the Jev instruction above.',
+  false: 'No separate FALSE criteria are configured. The negative boundary is defined by the Jev instruction above.'
+} as const;
+
+/**
+ * Criteria field with a compact empty state: an unconfigured criterion is shown as a short
+ * explanatory notice (never a large empty box, never fabricated content). "Add" reveals an
+ * editable textarea; once the field has content it renders normally.
+ */
+function CriteriaField({ kind, value, revealed, onReveal, onChange }: {
+  kind: 'true' | 'false';
+  value: string;
+  revealed: boolean;
+  onReveal: () => void;
+  onChange: (v: string) => void;
+}) {
+  const empty = !value || !value.trim();
+  if (empty && !revealed) {
+    return (
+      <div className="gs-empty-criteria small dim">
+        {CRITERIA_EMPTY_NOTE[kind]}
+        <button className="secondary gs-add-criteria" onClick={onReveal}>＋ add {kind === 'true' ? 'TRUE' : 'FALSE'} criteria</button>
+      </div>
+    );
+  }
+  return (
+    <textarea
+      style={{ minHeight: 60 }}
+      value={value}
+      placeholder={`Optional ${kind === 'true' ? 'TRUE' : 'FALSE'} criteria (noul criteria.${kind}) — leave empty to define the condition entirely in the instruction`}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  );
+}
+
 const FIELDS: { key: keyof GateDraft; label: string; help: string }[] = [
   { key: 'businessGoal', label: 'Business goal', help: 'The purpose of this gate in plain language: what business question does it answer?' },
   { key: 'semanticTarget', label: 'Semantic target', help: 'What concept is this gate intended to detect?' },
@@ -41,12 +77,6 @@ const FIELDS: { key: keyof GateDraft; label: string; help: string }[] = [
   { key: 'semanticBoundaries', label: 'Semantic boundaries', help: 'Which nearby concepts should NOT be admitted? Where does this concept stop?' },
   { key: 'falseNegativeConsequence', label: 'False-negative consequence', help: 'What happens if a real case is missed?' },
   { key: 'falsePositiveConsequence', label: 'False-positive consequence', help: 'What happens if a false alarm passes the gate?' },
-];
-
-const PROMPT_FIELDS: { key: 'instructions' | 'criteriaTrue' | 'criteriaFalse'; label: string; help: string }[] = [
-  { key: 'instructions', label: 'Jev instruction', help: 'The actual question Jev answers for this gate. Sent verbatim in every request.' },
-  { key: 'criteriaTrue', label: 'TRUE criteria', help: 'When should the answer be YES? (noul criteria.true)' },
-  { key: 'criteriaFalse', label: 'FALSE criteria', help: 'When should the answer be NO? (noul criteria.false)' },
 ];
 
 const PROFILES = ['catch_most', 'strong_boundary', 'balanced_routing', 'analytics'];
@@ -74,6 +104,7 @@ export function GateStudio() {
   const [busy, setBusy] = useState(false);
   const [compareSel, setCompareSel] = useState<string[]>([]);
   const [compareData, setCompareData] = useState<Record<string, string> | null>(null);
+  const [revealCriteria, setRevealCriteria] = useState<{ t: boolean; f: boolean }>({ t: false, f: false });
 
   const load = async () => {
     const g: { gateSetVersion: string; gates: GateDef[] } = await fetch('/api/gates').then(r => r.json());
@@ -100,12 +131,19 @@ export function GateStudio() {
     const vs = versions[gateId] ?? [];
     const active = vs.find(v => v.isActive)?.version ?? 'v1';
     const full = await api.version(gateId, active);
-    const d: GateDraft = { ...full.gate, criteriaTrue: full.gate.criteriaTrue ?? (full.gate as unknown as GateDef).criteriaTrue ?? '', criteriaFalse: full.gate.criteriaFalse ?? (full.gate as unknown as GateDef).criteriaFalse ?? '' };
+    const raw = full.gate as unknown as Record<string, unknown>;
+    // version payloads carry criteria as { true, false }; the /api/gates listing flattens them
+    const d: GateDraft = {
+      ...full.gate,
+      criteriaTrue: String(raw.criteriaTrue ?? (raw.criteria as { true?: string } | undefined)?.true ?? ''),
+      criteriaFalse: String(raw.criteriaFalse ?? (raw.criteria as { false?: string } | undefined)?.false ?? '')
+    };
     setSelected(gateId);
     setDraft(d);
     setSavedSnapshot(JSON.parse(JSON.stringify(d)));
     setChangeNote(''); setDraftTest(null); setDraftEval(null);
     setCompareSel([]); setCompareData(null); setMsg('');
+    setRevealCriteria({ t: false, f: false });
   };
 
   const set = (patch: Partial<GateDraft>) => setDraft(d => d && { ...d, ...patch });
@@ -128,9 +166,15 @@ export function GateStudio() {
   const selectGateReload = async (version: string) => {
     if (!selected) return;
     const full = await api.version(selected, version);
-    const d: GateDraft = { ...full.gate, criteriaTrue: (full.gate as any).criteriaTrue ?? '', criteriaFalse: (full.gate as any).criteriaFalse ?? '' };
+    const raw = full.gate as unknown as Record<string, unknown>;
+    const d: GateDraft = {
+      ...full.gate,
+      criteriaTrue: String(raw.criteriaTrue ?? (raw.criteria as { true?: string } | undefined)?.true ?? ''),
+      criteriaFalse: String(raw.criteriaFalse ?? (raw.criteria as { false?: string } | undefined)?.false ?? '')
+    };
     setDraft(d);
     setSavedSnapshot(JSON.parse(JSON.stringify(d)));
+    setRevealCriteria({ t: false, f: false });
   };
 
   const runDraftTest = async () => {
@@ -224,6 +268,20 @@ export function GateStudio() {
         <h2>Gates</h2>
         <p className="dim small">This is where Nordbo defines what each semantic detector means. Changes can be tested against saved customer cases before becoming active; every saved change creates a new version so previous behavior remains reproducible. <InfoButton topic="gatedesign" /></p>
         <ProvenanceLegend />
+        <div className="gs-flow" aria-label="How a gate definition becomes a gate decision">
+          <span className="gs-flow-title small dim">How a gate works</span>
+          <span className="gs-flow-step">Semantic definition <span className="dim">(project-authored)</span></span>
+          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+          <span className="gs-flow-step">Jev prompt definition <ProvenanceBadge p="sentToJev" /></span>
+          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+          <span className="gs-flow-step">Jev</span>
+          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+          <span className="gs-flow-step">Semantic signal <ProvenanceBadge p="jevOutput" /></span>
+          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+          <span className="gs-flow-step">Threshold / local policy <ProvenanceBadge p="projectPolicy" /></span>
+          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+          <span className="gs-flow-step">Gate decision <ProvenanceBadge p="cSharpDerived" /></span>
+        </div>
         {gates.map(g => (
           <div key={g.gateId}
             className={'studio-gate' + (selected === g.gateId ? ' selected' : '')}
@@ -257,7 +315,8 @@ export function GateStudio() {
             </section>
 
             <section className="panel">
-              <h3 className="section-label">BUSINESS DEFINITION <ProvenanceBadge p="projectPolicy" /> <span className="dim">— what does this gate mean?</span> <InfoButton topic="gatedesign" /></h3>
+              <h3 className="section-label">BUSINESS DEFINITION <span className="dim">— what does this gate mean?</span> <InfoButton topic="gatedesign" /></h3>
+              <p className="dim small" style={{ margin: '0 0 10px' }}>Project-authored design notes. They shape the Jev prompt definition below — they are not sent to Jev as-is, and they are not post-inference rules.</p>
               {FIELDS.map(f => (
                 <div key={f.key} style={{ marginBottom: 8 }}>
                   <label className="small dim" title={f.help}>{f.label}</label>
@@ -275,13 +334,44 @@ export function GateStudio() {
 
             <section className="panel">
               <h3 className="section-label">JEV PROMPT DEFINITION <ProvenanceBadge p="sentToJev" /> <span className="dim">— what Jev actually receives (project-authored, sent verbatim)</span></h3>
-              {PROMPT_FIELDS.map(f => (
-                <div key={f.key} style={{ marginBottom: 8 }}>
-                  <label className="small dim" title={f.help}>{f.label}</label>
-                  <textarea style={{ minHeight: f.key === 'instructions' ? 88 : 60 }} value={String(draft[f.key] ?? '')}
-                    onChange={e => set({ [f.key]: e.target.value } as Partial<GateDraft>)} />
-                </div>
-              ))}
+              <div style={{ marginBottom: 8 }}>
+                <label className="small dim" title="The actual question Jev answers for this gate. Sent verbatim in every request.">Jev instruction</label>
+                <textarea style={{ minHeight: 88 }} value={String(draft.instructions ?? '')}
+                  onChange={e => set({ instructions: e.target.value } as Partial<GateDraft>)} />
+              </div>
+              {(() => {
+                const bothEmpty =
+                  (!draft.criteriaTrue || !draft.criteriaTrue.trim()) && (!draft.criteriaFalse || !draft.criteriaFalse.trim());
+                if (bothEmpty && !revealCriteria.t && !revealCriteria.f) {
+                  return (
+                    <div className="gs-empty-criteria small dim">
+                      This gate uses the Jev instruction as its complete semantic definition. No separate TRUE/FALSE criteria are configured.
+                      <span className="gs-add-row">
+                        <button className="secondary gs-add-criteria" onClick={() => setRevealCriteria(r => ({ ...r, t: true }))}>＋ add TRUE criteria</button>
+                        <button className="secondary gs-add-criteria" onClick={() => setRevealCriteria(r => ({ ...r, f: true }))}>＋ add FALSE criteria</button>
+                      </span>
+                    </div>
+                  );
+                }
+                return (
+                  <>
+                    <div style={{ marginBottom: 8 }}>
+                      <label className="small dim" title="When should the answer be YES? (noul criteria.true)">TRUE criteria</label>
+                      <CriteriaField kind="true" value={draft.criteriaTrue}
+                        revealed={revealCriteria.t}
+                        onReveal={() => setRevealCriteria(r => ({ ...r, t: true }))}
+                        onChange={(v) => set({ criteriaTrue: v } as Partial<GateDraft>)} />
+                    </div>
+                    <div style={{ marginBottom: 8 }}>
+                      <label className="small dim" title="When should the answer be NO? (noul criteria.false)">FALSE criteria</label>
+                      <CriteriaField kind="false" value={draft.criteriaFalse}
+                        revealed={revealCriteria.f}
+                        onReveal={() => setRevealCriteria(r => ({ ...r, f: true }))}
+                        onChange={(v) => set({ criteriaFalse: v } as Partial<GateDraft>)} />
+                    </div>
+                  </>
+                );
+              })()}
               <button className="secondary" onClick={() => setShowJson(!showJson)}>{showJson ? 'Hide JSON' : 'View JSON'}</button>
               {showJson && (
                 <pre>{JSON.stringify({
@@ -293,8 +383,15 @@ export function GateStudio() {
             </section>
 
             <section className="panel">
-              <h3 className="section-label">POLICY <ProvenanceBadge p="projectPolicy" /> <span className="dim">— what Nordbo does with the resulting signal</span></h3>
+              <h3 className="section-label">POLICY <ProvenanceBadge p="projectPolicy" /> <span className="dim">— what Nordbo does with the resulting signal, after Jev returns it</span></h3>
               <p className="dim small">Separate from the semantic definition: changing thresholds never modifies the prompt, and editing the prompt never silently changes thresholds.</p>
+              <div className="gs-policy-flow" aria-label="From Jev output to gate decision">
+                <span className="gs-policy-step">Jev output <ProvenanceBadge p="jevOutput" /></span>
+                <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+                <span className="gs-policy-step">local threshold / policy <em>(this section)</em> <ProvenanceBadge p="projectPolicy" /></span>
+                <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+                <span className="gs-policy-step">gate decision (NO / REVIEW / YES) <ProvenanceBadge p="cSharpDerived" /></span>
+              </div>
               <PolicyScale
                 gateId={selected}
                 profile={draft.policyProfile}
