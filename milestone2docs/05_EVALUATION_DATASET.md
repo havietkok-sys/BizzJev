@@ -41,9 +41,9 @@ Task 08 adds runtime schema validation using this contract. If a simple existing
 
 ## Completion record
 
-- Status / owner:
-- Dataset path, version and hash:
-- Split and coverage checks:
-- Documentation and known ambiguity:
-- Exposure disclosure / live requests:
-- Orchestrator verification: verifier, revision/artifact versions, checked evidence and decision:
+- Status / owner: **DONE** (orchestrator-verified 2026-09-21). Authored by the orchestrator agent in the implementation session; verification was a separate programmatic + review pass.
+- Dataset path, version and hash: `src/BizzJev.Lab/config/decision-pipeline-cases.v1.json`, version `decision-pipeline-cases-v1`, SHA-256 `CCCCA6FF34816D0C363E926C9B99BE0553632195D934BC7A22D6032BF3E84F67`, frozen before any live request. Documentation: [DATASET.md](DATASET.md) (provenance incl. disclosed AI authorship, schema, coverage, split rules, limitations).
+- Split and coverage checks: 40 cases = 24 DESIGN + 16 TEST (programmatic); unique IDs; no duplicate texts; exactly 4 reversal pairs (`rp1`–`rp4`), each with both members in the same split and family; no family crosses splits; routing categories Technical/Billing/Contract/Support/Other all covered plus one explicit ambiguous annotation (dp-t16); urgency levels 0–3 all covered plus one interval (dp-d22); cancellation YES/NO/UNCLEAR all covered; every case carries rationale + business-requirement codes; `synthetic: true` everywhere; Milestone 1 `config/testcases.v1.json` untouched.
+- Documentation and known ambiguity: ambiguous expectations are explicit (dp-t16 routing, dp-d22 urgency interval, dp-d16 cancellation UNCLEAR) with notes that review capture is desired, not guaranteed. The 8 UI examples (`dp-d01/d03/d05/d10/d12/d13/d14/d19`) are all DESIGN and recorded in the dataset's `uiExamples` array.
+- Exposure disclosure / live requests: labels authored only from the frozen specification — 22 of 24 DESIGN cases are the spec's §6 examples or close paraphrases (design-exposed by definition); TEST cases are new scenarios but authored by the same agent that wrote the specification, so no author independence is claimed. Zero live Jev requests consumed. Runtime schema validation remains task 08's to add; the freeze-time check was a one-off script (documented in [DATASET.md](DATASET.md)), no package added.
+- Orchestrator verification: verifier = ZCode orchestrator, separate pass; evidence = the programmatic check output above, DATASET.md cross-read against the frozen specification's categories/levels/boundaries, and the recorded hash; decision = task 05 **DONE**. Task 06 remains WAITING on 03 and 04.
