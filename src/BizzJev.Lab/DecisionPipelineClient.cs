@@ -160,9 +160,9 @@ public sealed class DecisionPipelineClient
             // unknown additive top-level fields are ignored on purpose: they must not break a compatible response
             answersNode = obj.TryGetPropertyValue("answers", out var a) && a is JsonObject answers ? answers : null;
         }
-        var routing = ValidateChoice(answersNode);
-        var urgency = ValidateScore(answersNode);
-        var cancellation = ValidateNoul(answersNode);
+        var routing = ValidateChoiceAnswer(AnswerNode(answersNode, DecisionPipelineConfig.RoutingQuestionId));
+        var urgency = ValidateScoreAnswer(AnswerNode(answersNode, DecisionPipelineConfig.UrgencyQuestionId));
+        var cancellation = ValidateNoulAnswer(AnswerNode(answersNode, DecisionPipelineConfig.CancellationQuestionId));
         return Parsed(config, body, payloadJson, timer, envelopeErrors, model, usage, routing, urgency, cancellation);
     }
 
@@ -213,11 +213,11 @@ public sealed class DecisionPipelineClient
         return null;
     }
 
-    // ---------- per-primitive validation ----------
+    // ---------- per-primitive validation (shared with the replay endpoint) ----------
 
-    private static ChoiceAnswerSlot ValidateChoice(JsonObject? answers)
+    /// Validates one routing answer node (null = absent). Replay uses the same rules as live parsing.
+    internal static ChoiceAnswerSlot ValidateChoiceAnswer(JsonNode? node)
     {
-        var node = AnswerNode(answers, DecisionPipelineConfig.RoutingQuestionId);
         if (node is null)
             return new ChoiceAnswerSlot { Valid = false, Error = AnswerErrorCodes.MissingAnswer };
         var raw = node.DeepClone();
@@ -236,9 +236,9 @@ public sealed class DecisionPipelineClient
         return new ChoiceAnswerSlot { Valid = true, Error = null, Raw = raw, Selected = selected, Probabilities = probabilities, Confidence = confidence };
     }
 
-    private static ScoreAnswerSlot ValidateScore(JsonObject? answers)
+    /// Validates one urgency answer node (null = absent). Replay uses the same rules as live parsing.
+    internal static ScoreAnswerSlot ValidateScoreAnswer(JsonNode? node)
     {
-        var node = AnswerNode(answers, DecisionPipelineConfig.UrgencyQuestionId);
         if (node is null)
             return new ScoreAnswerSlot { Valid = false, Error = AnswerErrorCodes.MissingAnswer };
         var raw = node.DeepClone();
@@ -270,9 +270,9 @@ public sealed class DecisionPipelineClient
         };
     }
 
-    private static NoulAnswerSlot ValidateNoul(JsonObject? answers)
+    /// Validates one cancellation answer node (null = absent). Replay uses the same rules as live parsing.
+    internal static NoulAnswerSlot ValidateNoulAnswer(JsonNode? node)
     {
-        var node = AnswerNode(answers, DecisionPipelineConfig.CancellationQuestionId);
         if (node is null)
             return new NoulAnswerSlot { Valid = false, Error = AnswerErrorCodes.MissingAnswer };
         var raw = node.DeepClone();

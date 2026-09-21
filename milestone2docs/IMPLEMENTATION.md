@@ -13,7 +13,7 @@ Architectural boundary (frozen): **Jev owns semantic inference; application code
 | `src/BizzJev.Lab.Tests/DecisionPipelineContractTests.cs` | 02 | Config validation checks, exact-number checks (incl. `0.60 − 0.40 = 0.20` and rejection of silently-rounded forms), serialization/null semantics and wire enum names |
 | `src/BizzJev.Lab/DecisionPipelineClient.cs` | 03 | Single-request mixed-primitive TypeSafe client (`POST /v1/systemone`), no retry, strict per-answer validation |
 | `src/BizzJev.Lab/DecisionPipelinePolicy.cs` | 04 | Pure deterministic policy: frozen rule table, reasons, actions, explanations |
-| `src/BizzJev.Lab/DecisionPipelineEndpoints.cs` | 06 (planned) | `/api/decision-pipeline/*` routes |
+| `src/BizzJev.Lab/DecisionPipelineEndpoints.cs` | 06 | `/api/decision-pipeline/definition`, `/analyze`, `/replay` handlers (internal, testable without a server) |
 | `src/BizzJev.Lab/DecisionPipelineEvaluation.cs` | 08 (planned) | Evaluation runner and metrics |
 | `src/BizzJev.Lab/config/decision-pipeline-cases.v1.json` | 05 (planned) | Frozen 40-case synthetic dataset |
 | `web/lab/src/DecisionPipeline.tsx` + API helpers | 07 (planned) | Decision Pipeline tab |
@@ -62,6 +62,16 @@ Actions (all non-executing, fixed order): `human_review` whenever the outcome is
 Every matched rule carries a `PolicyExplanation` — a deterministic comparison with observed values and thresholds (for example `margin 0.2 >= 0.2`, `P(level 3) 0.2 >= 0.2`). These are C# policy explanations, never model reasoning; no global confidence is computed and probabilities are never multiplied or averaged across primitives.
 
 Two replay examples (identical raw answers, different thresholds — from `TwoReplaysWithDifferentThresholdsDifferWithoutTouchingAnswers`): routing Technical (confidence 0.85), score 2.45 with P(3)=0.45, Noul 0.55. With defaults: priority **Elevated** (2.45 < 2.50), cancellation **REVIEW** (0.55 < 0.80), urgent-risk review → human review. With `urgentAtLeast = 2.40` and `cancellationYesAtLeast = 0.50`: priority **Urgent**, cancellation **YES** → no urgent-risk review. The answers object is bit-identical after both evaluations; the policy version label changes to `pipeline-policy-v1-custom` and the exact settings identify the replay.
+
+## Backend endpoints (task 06)
+
+`Program.cs` gained one registration call only (`DecisionPipelineEndpoints.MapDecisionPipelineEndpoints`); every Milestone 1 endpoint is unchanged. The handlers live in `DecisionPipelineEndpoints` as internal methods taking explicit dependencies, so the tests execute them directly against a `DefaultHttpContext` — no test-only production endpoint and no mocking framework.
+
+- `GET /api/decision-pipeline/definition` — frozen questions (deep-cloned config node), policy defaults, routing categories, Score level descriptions, configured model and the eight DESIGN examples loaded from the dataset's `uiExamples` (all DESIGN, verified at startup and by test). No API key needed, zero Jev calls.
+- `POST /api/decision-pipeline/analyze` — strict body parse (`invalid_body`), structural text validation (`invalid_input`, zero calls), lazy key resolution (`503 missing_api_key`), exactly one client call, then the C# policy. Upstream failures map to `502 upstream_http_error` / `504 upstream_unavailable` (single attempt, no retry — the message says so). A received response with an invalid required answer returns `200` with `decision.pipelineStatus = "failed"` and `overallDisposition = "technical_failure"`, valid siblings visible. `EnableTechnicalView=false` removes `diagnostics` and every `answers.*.raw` while keeping the validated values and the decision.
+- `POST /api/decision-pipeline/replay` — the handler has **no client and no key parameter at all**: replay is structurally incapable of inference (asserted by a reflection test on its signature). `semanticVersion` mismatch → `400 semantic_version_mismatch`; blank `model` → `400 invalid_body`; supplied `policy` must contain all eight settings, structurally valid **and** within ranges/orderings (`400 invalid_policy_settings` listing every violation — range validation is run here, not only in the policy). Answers are revalidated by the same `DecisionPipelineClient.Validate*Answer` methods used for live responses, so an unavailable or semantically invalid answer reproduces the same `technical_failure` decision a live run would produce. Supplied settings mark the result `pipeline-policy-v1-custom` and are echoed in full; `outboundAttempts` is always `0`.
+
+Local run: `dotnet run --project src/BizzJev.Lab` (needs `TYPESAFE_API_KEY` in user secrets/environment only for `/analyze`; definition and replay work keyless). Evaluation routes are reserved for task 08 under `/api/decision-pipeline/evaluations`.
 
 ## Commands
 

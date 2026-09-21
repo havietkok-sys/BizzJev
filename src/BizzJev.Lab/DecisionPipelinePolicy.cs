@@ -18,6 +18,13 @@ public sealed record DecisionPipelinePolicyInput
 /// network, filesystem, randomness or input mutation. Invalid settings throw instead of clamping.
 public static class DecisionPipelinePolicy
 {
+    /// Winner probability minus the largest other-option probability, in decimal.
+    /// Single source for the margin used by both the policy rules and the response display.
+    public static decimal? ComputeMargin(ChoiceAnswerSlot routing)
+        => routing.Valid
+            ? routing.Probabilities![routing.Selected!] - routing.Probabilities.Where(kv => kv.Key != routing.Selected).Max(kv => kv.Value)
+            : null;
+
     public static DecisionPipelineDecision Evaluate(DecisionPipelinePolicyInput input)
     {
         var settingsErrors = input.Settings.Validate();
@@ -57,13 +64,13 @@ public static class DecisionPipelinePolicy
             team = routing.Selected;
             var others = routing.Probabilities!.Where(kv => kv.Key != team).ToList();
             var maxOther = others.Max(kv => kv.Value);
-            margin = routing.Probabilities![team!] - maxOther;
-            var tied = routing.Probabilities[team!] == maxOther;
+            margin = DecisionPipelinePolicy.ComputeMargin(routing);
+            var tied = routing.Probabilities![team!] == maxOther;
             ruleIds.Add(RuleId.ROUTING_SELECTED);
             explanations.Add(new PolicyExplanation
             {
                 RuleId = RuleId.ROUTING_SELECTED,
-                Text = $"selected {team}; confidence {Fmt(routing.Confidence!.Value)}; margin {Fmt(margin.Value)}"
+                Text = $"selected {team}; confidence {Fmt(routing.Confidence!.Value)}; margin {Fmt(margin!.Value)}"
             });
             if (team == nameof(RoutingCategory.Other))
             {

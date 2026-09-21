@@ -92,7 +92,9 @@ public sealed record DecisionPipelinePolicySettings
         {
             var lowOk = minInclusive ? value >= min : value > min;
             var highOk = maxInclusive ? value <= max : value < max;
-            if (!lowOk || !highOk) errors.Add($"{name} must be {(minInclusive ? ">=" : ">")} {min} and {(maxInclusive ? "<=" : "<")} {max}; got {value}");
+            if (!lowOk || !highOk)
+                errors.Add(string.Create(CultureInfo.InvariantCulture,
+                    $"{name} must be {(minInclusive ? ">=" : ">")} {min} and {(maxInclusive ? "<=" : "<")} {max}; got {value}"));
         }
         InRange(RoutingConfidenceMin, 0m, 1m, true, true, "routingConfidenceMin");
         InRange(RoutingMarginMin, 0m, 1m, true, true, "routingMarginMin");
@@ -100,11 +102,13 @@ public sealed record DecisionPipelinePolicySettings
         InRange(CancellationNoBelow, 0m, 1m, true, false, "cancellationNoBelow");
         InRange(CancellationYesAtLeast, 0m, 1m, false, true, "cancellationYesAtLeast");
         if (CancellationNoBelow >= CancellationYesAtLeast)
-            errors.Add($"cancellationNoBelow ({CancellationNoBelow}) must be strictly below cancellationYesAtLeast ({CancellationYesAtLeast})");
+            errors.Add(string.Create(CultureInfo.InvariantCulture,
+                $"cancellationNoBelow ({CancellationNoBelow}) must be strictly below cancellationYesAtLeast ({CancellationYesAtLeast})"));
         InRange(ElevatedAtLeast, 0m, 3m, true, false, "elevatedAtLeast");
         InRange(UrgentAtLeast, 0m, 3m, false, true, "urgentAtLeast");
         if (ElevatedAtLeast >= UrgentAtLeast)
-            errors.Add($"elevatedAtLeast ({ElevatedAtLeast}) must be strictly below urgentAtLeast ({UrgentAtLeast})");
+            errors.Add(string.Create(CultureInfo.InvariantCulture,
+                $"elevatedAtLeast ({ElevatedAtLeast}) must be strictly below urgentAtLeast ({UrgentAtLeast})"));
         InRange(UrgentRiskAtLeast, 0m, 1m, false, true, "urgentRiskAtLeast");
         return errors;
     }
@@ -358,8 +362,9 @@ public static class DecisionPipelineConfig
             errors.Add($"questions.{id}.instructions must reference the shared state field 'customerText'");
     }
 
-    /// Reads the eight policy settings as exact decimals. Unknown policy fields are rejected.
-    private static DecisionPipelinePolicySettings? ReadSettings(JsonObject policy, List<string> errors)
+    /// Reads the eight policy settings as exact decimals (all required; unknown fields rejected).
+    /// Also used by the replay endpoint for caller-supplied settings.
+    internal static DecisionPipelinePolicySettings? ReadSettings(JsonObject policy, List<string> errors)
     {
         var local = new List<string>();
         foreach (var key in policy)
