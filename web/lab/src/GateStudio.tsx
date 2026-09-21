@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { studioApi as api, type GateDef } from './api';
 import { PolicyScale, InfoButton } from './PolicyScale';
+import { ProvenanceBadge, ProvenanceLegend } from './ProvenanceBadge';
 
 interface VersionMeta {
   version: string;
@@ -222,6 +223,7 @@ export function GateStudio() {
       <div className="studio-list panel">
         <h2>Gates</h2>
         <p className="dim small">This is where Nordbo defines what each semantic detector means. Changes can be tested against saved customer cases before becoming active; every saved change creates a new version so previous behavior remains reproducible. <InfoButton topic="gatedesign" /></p>
+        <ProvenanceLegend />
         {gates.map(g => (
           <div key={g.gateId}
             className={'studio-gate' + (selected === g.gateId ? ' selected' : '')}
@@ -255,7 +257,7 @@ export function GateStudio() {
             </section>
 
             <section className="panel">
-              <h3 className="section-label">BUSINESS DEFINITION <span className="dim">— what does this gate mean?</span> <InfoButton topic="gatedesign" /></h3>
+              <h3 className="section-label">BUSINESS DEFINITION <ProvenanceBadge p="projectPolicy" /> <span className="dim">— what does this gate mean?</span> <InfoButton topic="gatedesign" /></h3>
               {FIELDS.map(f => (
                 <div key={f.key} style={{ marginBottom: 8 }}>
                   <label className="small dim" title={f.help}>{f.label}</label>
@@ -272,7 +274,7 @@ export function GateStudio() {
             </section>
 
             <section className="panel">
-              <h3 className="section-label">JEV PROMPT DEFINITION <span className="dim">— what Jev actually receives</span></h3>
+              <h3 className="section-label">JEV PROMPT DEFINITION <ProvenanceBadge p="sentToJev" /> <span className="dim">— what Jev actually receives (project-authored, sent verbatim)</span></h3>
               {PROMPT_FIELDS.map(f => (
                 <div key={f.key} style={{ marginBottom: 8 }}>
                   <label className="small dim" title={f.help}>{f.label}</label>
@@ -291,7 +293,7 @@ export function GateStudio() {
             </section>
 
             <section className="panel">
-              <h3 className="section-label">POLICY <span className="dim">— what Nordbo does with the resulting signal</span></h3>
+              <h3 className="section-label">POLICY <ProvenanceBadge p="projectPolicy" /> <span className="dim">— what Nordbo does with the resulting signal</span></h3>
               <p className="dim small">Separate from the semantic definition: changing thresholds never modifies the prompt, and editing the prompt never silently changes thresholds.</p>
               <PolicyScale
                 gateId={selected}
@@ -322,17 +324,17 @@ export function GateStudio() {
               </div>
               {draftTest && (
                 <div className="small" style={{ marginTop: 8 }}>
-                  <p>Draft signal: <span className="prob">{draftTest.draftSignal?.toFixed(2)}</span>
+                  <p>Draft signal <ProvenanceBadge p="jevOutput" />: <span className="prob">{draftTest.draftSignal?.toFixed(2)}</span>
                     {draftTest.difference !== null && draftTest.difference !== undefined && (
-                      <span className="dim"> (difference {draftTest.difference > 0 ? '+' : ''}{draftTest.difference.toFixed(2)})</span>
+                      <span className="dim"> (difference <ProvenanceBadge p="cSharpDerived" /> {draftTest.difference > 0 ? '+' : ''}{draftTest.difference.toFixed(2)})</span>
                     )}
                   </p>
-                  <p className="dim">Active {draftTest.activeVersion} signal: {draftTest.activeSignal?.toFixed(2)}</p>
+                  <p className="dim">Active {draftTest.activeVersion} signal <ProvenanceBadge p="jevOutput" />: {draftTest.activeSignal?.toFixed(2)}</p>
                 </div>
               )}
               {draftEval && (
                 <div style={{ marginTop: 10 }}>
-                  <p className="small"><b>{currentActive} → draft</b> · Fixed: <span style={{ color: 'var(--yes)' }}>{draftEval.fixedCases.length}</span> ·
+                  <p className="small"><b>{currentActive} → draft</b> <ProvenanceBadge p="cSharpDerived" /> · Fixed: <span style={{ color: 'var(--yes)' }}>{draftEval.fixedCases.length}</span> ·
                     Broken: <span style={{ color: '#f85149' }}>{draftEval.brokenCases.length}</span> · Unchanged: {draftEval.unchangedCases.length}</p>
                   <table className="small">
                     <thead><tr><th></th><th>TP</th><th>FP</th><th>FN</th><th>TN</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
@@ -354,8 +356,8 @@ export function GateStudio() {
                     <details key={c.caseId} className="tech-section nested">
                       <summary>{c.caseId} — expected {c.expected}</summary>
                       <div className="tech-body small">
-                        <div><b>{draftEval.activeVersion}</b>: {c.activeSignal?.toFixed(2)} → {c.activeYes ? 'YES' : 'NO'}</div>
-                        <div><b>draft</b>: {c.draftSignal?.toFixed(2)} → {c.draftYes ? 'YES' : 'NO'}</div>
+                        <div><b>{draftEval.activeVersion}</b>: <span className="prob">{c.activeSignal?.toFixed(2)}</span> <ProvenanceBadge p="jevOutput" /> → {c.activeYes ? 'YES' : 'NO'} <ProvenanceBadge p="cSharpDerived" /></div>
+                        <div><b>draft</b>: <span className="prob">{c.draftSignal?.toFixed(2)}</span> <ProvenanceBadge p="jevOutput" /> → {c.draftYes ? 'YES' : 'NO'} <ProvenanceBadge p="cSharpDerived" /></div>
                         <pre>{c.customerText}</pre>
                       </div>
                     </details>

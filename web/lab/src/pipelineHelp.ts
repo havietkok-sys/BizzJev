@@ -1,7 +1,9 @@
 // Centralized help content for the Decision Pipeline UI. Documentation only: this mapping
-// contains no semantic or policy logic. Every entry keeps the architecture distinction —
-// Jev performs semantic inference; thresholds, labels and actions are deterministic
-// application policy — and says explicitly where that distinction matters.
+// contains no semantic or policy logic. Every entry carries a canonical provenance category
+// (provenance.ts) shown as a "Source:" line in the detailed popup — Jev performs semantic
+// inference; thresholds, labels and actions are deterministic application policy.
+
+import type { Provenance } from './provenance';
 
 export type HelpTopicId =
   | 'jev' | 'choice' | 'score' | 'noul' | 'confidence' | 'distribution' | 'margin' | 'pyes'
@@ -17,15 +19,15 @@ export interface HelpTopic {
   short: string;
   /** Detailed popup: paragraphs in reading order (meaning, source, usage, caveats, example). */
   long: string[];
-  /** Where the value comes from — surfaced as a tag in the popup. */
-  source: 'Jev (semantic inference)' | 'Application policy (deterministic C#)' | 'Configuration / metadata';
+  /** Canonical provenance of the value this term describes (see provenance.ts). */
+  provenance: Provenance;
 }
 
 export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   jev: {
     term: 'Jev',
     short: 'The TypeSafe AI model that reads the customer message and returns typed judgments (probabilities, choices, scores) instead of chat text.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'Jev is the AI model behind this pipeline, called through TypeSafe\'s System One API. It interprets the natural-language customer message and returns structured, typed answers — not generated text and not explanations.',
       'In this application Jev performs ALL semantic inference: deciding which team should handle the message, how urgent it is, and whether the customer is explicitly asking to cancel. One analysis is exactly ONE request containing all three questions.',
@@ -36,7 +38,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   choice: {
     term: 'Choice',
     short: 'Jev selects one option from a predefined set based on the meaning of the customer message.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'Choice is a Jev semantic primitive used here to select the team responsible for initial handling: Technical, Billing, Contract, Support or Other.',
       'Jev evaluates the shared customerText against the defined category criteria and returns a selected category, a probability for every category, and a confidence value. When several issues appear in one message, the fixed business order (Technical > Billing > Contract > Support > Other) is part of the question Jev answers.',
@@ -47,7 +49,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   score: {
     term: 'Score',
     short: 'Jev places the message on an ordered 0–3 urgency scale, where each level has a concrete written description.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'Score is a Jev semantic primitive that positions the message along ordered, described levels. Here it measures urgency — how consequential delaying handling would be — from level 0 (no stated current impact) to level 3 (a concrete consequence within 24 hours or worsening now).',
       'Jev returns a value between levels (e.g. 1.5), the full probability distribution across levels, the level descriptions (legend), and a confidence value.',
@@ -58,7 +60,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   noul: {
     term: 'Noul',
     short: 'A Jev yes/no judgment returned as a probability between 0 and 1 — here, the probability that the customer explicitly asks to cancel.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'Noul is a Jev semantic primitive that answers a yes/no question with a probability (0–1). Here it answers: does this message contain an actual, current request or instruction to end at least one of the customer\'s own services?',
       'It separates real requests (including polite or indirect ones) from questions about fees or procedure, conditional threats ("if it happens again I\'ll leave"), negations ("do not cancel") and quotes of other people.',
@@ -69,7 +71,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   confidence: {
     term: 'confidence',
     short: 'How concentrated the model\'s probability distribution is (0–1). Low confidence often signals a genuinely ambiguous message.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'Confidence is returned by Jev alongside Choice and Score answers. It summarizes how concentrated the probability distribution is: all probability on one option gives 1.0; probability spread across options gives lower values.',
       'It is the model\'s own uncertainty signal, not a guarantee of correctness — a confident answer can still be wrong, and the evaluation report measures when that happens.',
@@ -80,7 +82,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   distribution: {
     term: 'probability distribution',
     short: 'The model\'s probability for every option or level, not just the winner. All values together always sum to about 1.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'For Choice, the distribution gives a probability for each team; for Score, a probability for each urgency level. The selected answer is the option with the highest probability.',
       'The full distribution is preserved and shown because the runner-up probabilities matter: a "won" answer with a close runner-up (small margin) behaves differently in policy than a landslide.',
@@ -90,7 +92,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   margin: {
     term: 'routing margin',
     short: 'The winning team\'s probability minus the runner-up\'s — how clear-cut the routing choice was.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'The margin is computed in C# from the Choice distribution Jev returned: winner probability minus the largest other probability.',
       'Policy requires a minimum margin (default 0.20). A close contest — for example Technical 0.55 vs Billing 0.45, margin 0.10 — triggers routing review even when the winner looks obvious.',
@@ -101,7 +103,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   pyes: {
     term: 'P(yes)',
     short: 'The raw probability returned by the Noul question that the customer is explicitly asking to cancel.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'P(yes) is the raw Noul probability, shown exactly as received. Values near 0 or 1 are clear answers; values in between are genuinely uncertain.',
       'It describes explicit cancellation requests only — not dissatisfaction, threats to leave, or questions about cancellation fees.',
@@ -111,7 +113,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   initialOwner: {
     term: 'initial handling owner',
     short: 'The team proposed to handle the message FIRST when several issues coexist — not a claim about the customer\'s main concern.',
-    source: 'Jev (semantic inference)',
+    provenance: 'jevOutput',
     long: [
       'When a message contains several actionable issues, one team must own first response. The fixed order (Technical > Billing > Contract > Support > Other) is part of the question Jev answers.',
       'This is deliberately NOT "the customer\'s primary concern": "internet down + charged twice" routes to Technical first even if the customer cares most about the money.',
@@ -121,7 +123,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   priority: {
     term: 'priority (Normal / Elevated / Urgent)',
     short: 'A deterministic label derived from the urgency score through fixed thresholds — not a separate Jev answer.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'Priority is C# policy: score below 1.50 → Normal, below 2.50 → Elevated, otherwise Urgent (demo defaults; replay can change these boundaries).',
       'Jev produces only the 0–3 urgency score and its distribution; the priority band, and any review attached to it, is application code.',
@@ -131,7 +133,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   cancellationDisposition: {
     term: 'cancellation disposition',
     short: 'The policy interpretation of the cancellation probability: NO, REVIEW (a person should look) or YES.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'The disposition maps the raw Noul probability to three states: below 0.20 → NO, at or above 0.80 → YES, in between → REVIEW. These boundaries are demo policy defaults.',
       'REVIEW means the probability sits between the boundaries — it is not "medium intent" and not an error.',
@@ -141,7 +143,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   policyEligible: {
     term: 'policy eligible',
     short: 'The complete recommendation passed all demo policy checks — it is a proposal that needs no review, NOT permission to act automatically.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'policy_eligible means: the pipeline succeeded and no review reason fired (routing confident, urgency confident, cancellation clearly inside a boundary, team not "Other").',
       'It is the strongest outcome this demo can produce, and it still only PROPOSES handling — every action in this application is a recommendation for a human, never an executed cancellation, message or ticket.',
@@ -151,7 +153,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   humanReview: {
     term: 'human review',
     short: 'The proposed handoff to a person, with the exact reasons — a designed workflow state, not a system failure.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'human_review means at least one review reason fired: uncertain routing or urgency, an ambiguous cancellation probability, general triage for "Other", or an urgent-risk tail under a low mean priority.',
       'Each reason is deterministic C# output with observed values and thresholds — it is not model reasoning.',
@@ -162,7 +164,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   technicalFailure: {
     term: 'technical failure',
     short: 'A required answer was missing or structurally invalid (or the request failed) — the pipeline result, never a semantic "no".',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'technical_failure means the decision could not be completed honestly: a required Jev answer was absent or invalid, required metadata was missing, or the single request failed at transport level.',
       'It is deliberately distinct from a valid but ambiguous answer: a missing cancellation answer is shown as "unavailable", never silently treated as NO.',
@@ -172,7 +174,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   urgentRisk: {
     term: 'urgent risk',
     short: 'A safety net: enough probability mass sits on urgency level 3 (≥ 0.20) to keep an urgent indication visible even under a lower average.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'A Score distribution can hide a serious tail: 80% level 0 plus 20% level 3 averages to only 0.60 (Normal). The urgent-risk flag fires when P(level 3) reaches the configured minimum (default 0.20), independent of the mean.',
       'When the flag fires but the mean-derived priority is not Urgent, the case is routed to review — the priority is never silently promoted.',
@@ -182,7 +184,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   reviewReason: {
     term: 'review reason',
     short: 'The deterministic rule that triggered human review, shown with the observed values and thresholds that caused it.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'Reasons use stable codes: routing_uncertain, urgency_uncertain, cancellation_uncertain, urgent_risk_review, general_triage, technical_failure — each listed at most once, in a fixed order.',
       'Each reason\'s text is generated by C# from the actual numbers (for example "confidence 0.45 < routingConfidenceMin 0.8"), so it can be audited.',
@@ -192,7 +194,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   proposedAction: {
     term: 'proposed action',
     short: 'A non-executing handling suggestion (route to a team, keep urgent attention, review a cancellation, hand off to a person).',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'Actions are ordered suggestions built by C#: human_review, urgent_attention, route_to_team, cancellation_handling.',
       'Nothing is ever executed: the demo never cancels a service, contacts a customer or creates a ticket. A YES only proposes that a person handles the cancellation scope requested in the message.',
@@ -202,7 +204,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   threshold: {
     term: 'threshold',
     short: 'A boundary on a Jev-produced number where deterministic policy changes its interpretation. Changing it never changes the Jev answers.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'Thresholds are business decisions applied to Jev\'s typed answers: minimum routing confidence, minimum margin, minimum urgency confidence, the cancellation NO/YES boundaries, the priority band boundaries and the urgent-risk minimum.',
       'Editing thresholds here recalculates the decision on the server from the SAME stored answers — zero new Jev requests.',
@@ -212,7 +214,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   semanticVersion: {
     term: 'semantic version (pipeline-v1)',
     short: 'The frozen identity of the three Jev questions — wording, categories and urgency levels. Changing it requires re-evaluation.',
-    source: 'Configuration / metadata',
+    provenance: 'projectPolicy',
     long: [
       'The semantic version pins the exact instructions and criteria sent to Jev for routing, urgency and cancellation. While it is unchanged, raw answers from different runs are comparable.',
       'Threshold changes do NOT change the semantic version — they are policy experiments on top of unchanged questions.',
@@ -222,7 +224,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   policyVersion: {
     term: 'policy version (pipeline-policy-v1)',
     short: 'The identity of the default threshold set. Your edited thresholds are labeled "-custom" while remaining fully reproducible.',
-    source: 'Configuration / metadata',
+    provenance: 'projectPolicy',
     long: [
       'pipeline-policy-v1 identifies the frozen default thresholds. When replay uses edited settings, the result is labeled pipeline-policy-v1-custom and the exact settings are echoed so the replay is identifiable by its values, not just the label.',
       'Policy version changes never alter the Jev questions or raw answers.'
@@ -231,7 +233,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   replayCustom: {
     term: 'custom policy',
     short: 'Your locally edited threshold set, applied only in this replay. The frozen defaults are untouched.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'Edited settings replace the defaults wholesale for that replay and are sent to the server, which validates ranges and orderings and recomputes the decision in C#.',
       'This page contains no JavaScript copy of the policy — the backend is the single source of truth. Invalid settings are rejected with an explicit error listing every violation.'
@@ -240,7 +242,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   matchedRule: {
     term: 'matched rule ID',
     short: 'The name of a deterministic C# rule that fired for this decision, e.g. ROUTING_ELIGIBLE or PRIORITY_URGENT.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'Rule IDs are stable identifiers for the branches of the frozen decision table (routing selection and review, priority banding, urgent-risk, cancellation banding, overall outcome).',
       'They let you cite exactly which policy branch produced a decision, and they are used by tests to pin behavior.',
@@ -250,7 +252,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   deterministicPolicy: {
     term: 'deterministic policy',
     short: 'Plain C# rules (thresholds, comparisons, ordered outcomes) that turn Jev\'s typed answers into a decision. Same inputs, same output, every time.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'The policy is a pure function of the validated answers and the threshold settings: no randomness, no clock, no network, no second AI model, and no access to the customer text at all.',
       'Its signature cannot even receive customer text — semantic inference stays entirely with Jev, and the policy only combines typed results.',
@@ -260,7 +262,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   replay: {
     term: 'policy replay',
     short: 'Recalculating the C# decision from the SAME stored Jev answers with (optionally) different thresholds — zero new Jev requests.',
-    source: 'Application policy (deterministic C#)',
+    provenance: 'cSharpDerived',
     long: [
       'Replay sends the stored raw answers and your threshold set to the server; the deterministic policy recomputes the decision. No inference happens — the replay endpoint structurally has no path to Jev.',
       'Use it to answer "what would different business thresholds have decided for this exact judgment?" without spending another request.',
@@ -270,7 +272,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   outboundAttempt: {
     term: 'outbound attempt',
     short: 'How many live requests to Jev this operation actually made. An analysis is always exactly 1; replay is always 0.',
-    source: 'Configuration / metadata',
+    provenance: 'cSharpDerived',
     long: [
       'The counter is recorded by the backend. One analysis = one HTTP request with all three questions; failures, timeouts and malformed responses still count as attempts, and nothing is retried automatically.',
       'The evaluation runner checks the shared request budget before every attempt and stops before exceeding the authorized ceiling.'
@@ -279,7 +281,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   tokenUsage: {
     term: 'token usage',
     short: 'How many input/output tokens the Jev request consumed, as reported by the API. "unknown" means the run failed before usage was known.',
-    source: 'Configuration / metadata',
+    provenance: 'jevOutput',
     long: [
       'Input tokens cover the whole request (the frozen questions plus the customer message), output tokens the answers. The question definitions dominate the input size, which is why one batched request is cheaper than three separate ones.',
       'Missing usage on a failed run is reported as unknown — never shown as zero.'
@@ -288,7 +290,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   rawRequest: {
     term: 'raw request body',
     short: 'The exact JSON sent to Jev for this analysis — one request containing all three questions and the unchanged customer text.',
-    source: 'Configuration / metadata',
+    provenance: 'sentToJev',
     long: [
       'This is the verbatim wire payload captured by the server (shown pretty-printed for readability; values are untouched). It contains the model, the shared state with the customer message exactly as submitted, and the three frozen question definitions.',
       'It never contains credentials: the API key travels only in a server-side header.',
@@ -298,7 +300,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   rawResponse: {
     term: 'raw response body',
     short: 'The exact JSON Jev returned, preserved verbatim before any validation or policy touched it.',
-    source: 'Configuration / metadata',
+    provenance: 'jevOutput',
     long: [
       'The raw response is captured as received and shown unaltered (pretty-printed for readability). The validated values and the decision are computed FROM it — nothing edits it afterwards.',
       'Comparing this with the judgment cards shows exactly what validation and policy added on top of the model\'s answer.'
@@ -307,7 +309,7 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
   synthetic: {
     term: 'synthetic example',
     short: 'A fabricated fixture text authored for this demo (fictional Nordbo Telecom) — not a real customer message.',
-    source: 'Configuration / metadata',
+    provenance: 'projectPolicy',
     long: [
       'The example texts and their expected outcomes are hand-authored project fixtures, frozen with the evaluation dataset. They exist to make behavior reproducible and testable.',
       'They are never replaced by live model output, and no measured result is ever presented as a fixture or vice versa.'

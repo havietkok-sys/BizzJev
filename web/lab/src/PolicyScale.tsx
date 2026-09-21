@@ -1,6 +1,7 @@
 import { useRef, useState, type ReactNode } from 'react';
 import { decideLocal } from './api';
 import { tooltips, details } from './help';
+import { ProvenanceBadge } from './ProvenanceBadge';
 
 const ZONE_TIPS = {
   no: 'NO zone: the signal is below the review threshold, so this workflow does not act on it.',
@@ -90,16 +91,16 @@ export function PolicyScale({ gateId, profile, gateVersion, probability, review,
         <div className="gate-title">
           <Hover tip={profile ?? gateId}><b>{gateId}</b></Hover>
           {gateVersion && <a className="dim small" href="#/studio"> · Gate version: {gateVersion} · Open in Gate Studio</a>}
-          <span className="dim small"> · policy scale</span>
+          <span className="dim small"> · policy scale <ProvenanceBadge p="projectPolicy" /></span>
           <InfoButton topic="scale" />
         </div>
         <div className={`pill ${outcome}`} style={{ minWidth: 210 }}>
-          CURRENT RESULT: {outcome.toUpperCase()}
+          CURRENT RESULT: {outcome.toUpperCase()} <ProvenanceBadge p="cSharpDerived" />
         </div>
       </div>
 
       <div className="jev-line">
-        <span className="dim small">Jev signal:</span>{' '}
+        <span className="dim small">Jev signal <ProvenanceBadge p="jevOutput" />:</span>{' '}
         {probability === null
           ? <span className="dim small">not analyzed yet — thresholds below still define business policy</span>
           : <Hover tip={tooltips.jev}><span className="prob">{probability.toFixed(2)}</span></Hover>}

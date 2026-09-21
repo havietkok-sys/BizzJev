@@ -171,6 +171,7 @@ For documents available in both languages, the English version uses the base fil
 | [Jev evaluation report](docs/JEV_EVALUATION_REPORT.md) · [Svenska](docs/JEV_EVALUATION_REPORT_SWE.md) | Early Nordbo routing experiments and findings |
 | [BizzJev evaluation](docs/BIZZJEV_EVALUATION.md) · [Svenska](docs/BIZZJEV_EVALUATION_SWE.md) | Evaluation and lessons learned from Nordbo and CFPB experiments |
 | [docs/DEMO_RUN.md](docs/DEMO_RUN.md) | How to run the demo, troubleshooting, walkthrough |
+| [docs/DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md) | The four provenance labels (SENT TO JEV / JEV OUTPUT / C# DERIVED / PROJECT POLICY) used across all screens |
 | [docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE.md](docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE.md) | Practical guide: how to design semantic gate prompts (broad inside, sharp at the edges) |
 | [docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE_SWE.md](docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE_SWE.md) | Same guide in Swedish (Svenska) |
 | [docs/SEMANTIC_OPERATIONS_LAB_DESIGN.md](docs/SEMANTIC_OPERATIONS_LAB_DESIGN.md) | Frozen product and experiment specification |

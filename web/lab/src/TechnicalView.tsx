@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { AnalyzeResponse, GateDef } from './api';
 import { InfoButton } from './PolicyScale';
+import { ProvenanceBadge } from './ProvenanceBadge';
 
 function CopyButton({ text, label }: { text: string; label: string }) {
   const [done, setDone] = useState(false);
@@ -20,7 +21,7 @@ function pretty(json: string): string {
   catch { return json; }
 }
 
-function Section({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+function Section({ title, children, defaultOpen = false }: { title: React.ReactNode; children: React.ReactNode; defaultOpen?: boolean }) {
   return (
     <details className="tech-section" open={defaultOpen}>
       <summary>{title}</summary>
@@ -58,17 +59,17 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
         </table>
       </Section>
 
-      <Section title="Customer Input" defaultOpen>
+      <Section title={<span>Customer Input <ProvenanceBadge p="sentToJev" /></span>} defaultOpen>
         <pre>{customerText}</pre>
       </Section>
 
-      <Section title="Jev Request (exact payload sent)">
+      <Section title={<span>Jev Request (exact payload sent) <ProvenanceBadge p="sentToJev" /></span>}>
         <CopyButton text={d.requestPayload} label="Copy Request" />
         <pre>{pretty(d.requestPayload)}</pre>
         <p className="dim small">This is the exact serialized request body. The authorization header is applied server-side and is never part of the payload.</p>
       </Section>
 
-      <Section title="Gate Definitions (as used in this run)">
+      <Section title={<span>Gate Definitions (as used in this run) <ProvenanceBadge p="sentToJev" /> <span className="dim">— project-authored content sent verbatim</span></span>}>
         {gates.map((g) => (
           <details key={g.gateId} className="tech-section nested">
             <summary>{g.gateId} <span className="dim small">· {g.promptVersion}</span></summary>
@@ -76,13 +77,13 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
               <table>
                 <tbody>
                   <tr><th>Type</th><td>Noul</td></tr>
-                  <tr><th>Prompt version</th><td>{g.promptVersion}</td></tr>
+                  <tr><th>Prompt version</th><td>{g.promptVersion} <ProvenanceBadge p="projectPolicy" /></td></tr>
                   <tr><th>Business goal</th><td>{g.businessGoal}</td></tr>
-                  <tr><th>Instruction</th><td>{g.instructions}</td></tr>
-                  <tr><th>TRUE criteria</th><td>{g.criteriaTrue}</td></tr>
-                  <tr><th>FALSE criteria</th><td>{g.criteriaFalse}</td></tr>
-                  <tr><th>Review threshold</th><td>{g.reviewThreshold}</td></tr>
-                  <tr><th>Accept threshold</th><td>{g.acceptThreshold}</td></tr>
+                  <tr><th>Instruction <ProvenanceBadge p="sentToJev" /></th><td>{g.instructions}</td></tr>
+                  <tr><th>TRUE criteria <ProvenanceBadge p="sentToJev" /></th><td>{g.criteriaTrue}</td></tr>
+                  <tr><th>FALSE criteria <ProvenanceBadge p="sentToJev" /></th><td>{g.criteriaFalse}</td></tr>
+                  <tr><th>Review threshold <ProvenanceBadge p="projectPolicy" /></th><td>{g.reviewThreshold}</td></tr>
+                  <tr><th>Accept threshold <ProvenanceBadge p="projectPolicy" /></th><td>{g.acceptThreshold}</td></tr>
                 </tbody>
               </table>
               <CopyButton text={JSON.stringify({
@@ -95,12 +96,12 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
         ))}
       </Section>
 
-      <Section title="Raw Jev Response (unmodified)">
+      <Section title={<span>Raw Jev Response (unmodified) <ProvenanceBadge p="jevOutput" /></span>}>
         <CopyButton text={d.rawResponse} label="Copy Response" />
         <pre>{pretty(d.rawResponse)}</pre>
       </Section>
 
-      <Section title="Parsed Signals" defaultOpen>
+      <Section title={<span>Parsed Signals <ProvenanceBadge p="jevOutput" /></span>} defaultOpen>
         <p className="dim small">Raw Jev response → application semantic signals (probability that each concept is present):</p>
         <table>
           <thead><tr><th>Gate</th><th>Jev signal</th><th>Prompt version</th><th>Status</th></tr></thead>
@@ -117,7 +118,7 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
         </table>
       </Section>
 
-      <Section title="Policy Interpretation (deterministic application logic)">
+      <Section title={<span>Policy Interpretation (deterministic application logic) <ProvenanceBadge p="cSharpDerived" /></span>}>
         <p className="dim small">Not an AI judgment: each result is computed by comparing the frozen Jev signal against the two thresholds recorded for this run.</p>
         {result.policy.map((p) => {
           const s = result.signals.find((x) => x.gateId === p.gateId);
@@ -127,16 +128,16 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
             : `${p.reviewThreshold} <= ${prob.toFixed(2)} < ${p.acceptThreshold} → ${p.result.toUpperCase()}`;
           return (
             <details key={p.gateId} className="tech-section nested">
-              <summary>{p.gateId} <span className={`pill ${p.result}`}>{p.result.toUpperCase()}</span></summary>
+              <summary>{p.gateId} <span className={`pill ${p.result}`}>{p.result.toUpperCase()}</span> <ProvenanceBadge p="cSharpDerived" /></summary>
               <div className="tech-body">
                 <table>
                   <tbody>
-                    <tr><th>Jev signal</th><td className="prob">{prob?.toFixed(2) ?? 'n/a'}</td></tr>
-                    <tr><th>Review threshold</th><td>{p.reviewThreshold}</td></tr>
-                    <tr><th>Accept threshold</th><td>{p.acceptThreshold}</td></tr>
-                    <tr><th>Rule</th><td>{rule}</td></tr>
-                    <tr><th>Result</th><td>{p.result.toUpperCase()}</td></tr>
-                    <tr><th>Policy version</th><td>{p.policyVersion}</td></tr>
+                    <tr><th>Jev signal <ProvenanceBadge p="jevOutput" /></th><td className="prob">{prob?.toFixed(2) ?? 'n/a'}</td></tr>
+                    <tr><th>Review threshold <ProvenanceBadge p="projectPolicy" /></th><td>{p.reviewThreshold}</td></tr>
+                    <tr><th>Accept threshold <ProvenanceBadge p="projectPolicy" /></th><td>{p.acceptThreshold}</td></tr>
+                    <tr><th>Rule <ProvenanceBadge p="cSharpDerived" /></th><td>{rule}</td></tr>
+                    <tr><th>Result <ProvenanceBadge p="cSharpDerived" /></th><td>{p.result.toUpperCase()}</td></tr>
+                    <tr><th>Policy version <ProvenanceBadge p="projectPolicy" /></th><td>{p.policyVersion}</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -145,7 +146,7 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
         })}
       </Section>
 
-      <Section title="Business Actions (derived from policy)" defaultOpen>
+      <Section title={<span>Business Actions (derived from policy) <ProvenanceBadge p="cSharpDerived" /></span>} defaultOpen>
         {result.actions.length === 0 && <p className="dim">No actions triggered in this run.</p>}
         {result.actions.map((a) => (
           <div key={a.sourceGate} className="action-line">

@@ -5,6 +5,7 @@ import { Overview } from './Overview';
 import { TechnicalView } from './TechnicalView';
 import { GateStudio } from './GateStudio';
 import { DecisionPipeline } from './DecisionPipeline';
+import { ProvenanceBadge, ProvenanceLegend } from './ProvenanceBadge';
 
 type Screen = 'overview' | 'analyze' | 'pipeline' | 'library' | 'studio';
 
@@ -144,7 +145,8 @@ function AnalyzeScreen() {
 
       {result && view === 'business' && (
         <section className="panel">
-          <h2>Business actions</h2>
+          <h2>Business actions <ProvenanceBadge p="cSharpDerived" /></h2>
+          <p className="dim small" style={{ marginTop: 0 }}>Actions are derived by BizzJev's deterministic C# policy from the Jev signals and the configured thresholds — Jev does not produce them.</p>
           {result.actions.length === 0 && <p className="dim">No actions triggered.</p>}
           {result.actions.map((a) => (
             <div key={a.sourceGate} className="action-line">
@@ -162,9 +164,10 @@ function AnalyzeScreen() {
       <section className="panel">
         <h2>Policy scale per gate</h2>
         <p className="pipeline">
-          <b>JEV SIGNAL</b> (model output) · <b>BUSINESS THRESHOLDS</b> (editable boundaries) · <b>CURRENT POLICY RESULT</b> (interpretation).
+          <b>JEV SIGNAL</b> <ProvenanceBadge p="jevOutput" /> (model output) · <b>BUSINESS THRESHOLDS</b> <ProvenanceBadge p="projectPolicy" /> (editable boundaries) · <b>CURRENT POLICY RESULT</b> <ProvenanceBadge p="cSharpDerived" /> (interpretation).
           Moving the boundary handles recomputes NO/REVIEW/YES instantly — Jev is not called again. <InfoButton topic="scale" />
         </p>
+        <ProvenanceLegend />
         <div className="save-row" style={{ marginBottom: 10 }}>
           <span className="dim small">policy version: {policyVersion || '…'}</span>
           <button className="secondary" onClick={saveThresholds} disabled={!dirty}>Save thresholds as policy</button>

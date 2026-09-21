@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { helpTopics, type HelpTopicId } from './pipelineHelp';
+import { provenanceLabels, provenanceShort } from './provenance';
 
 /**
  * Shared "?" help indicator used across the Decision Pipeline UI.
@@ -65,9 +66,12 @@ export function HelpTerm({ term, label }: { term: HelpTopicId; label?: string })
             onClick={(e) => e.stopPropagation()}>
             <h3 id={titleId}>
               {topic.term}
-              <span className="help-source">{topic.source}</span>
+              <span className="help-source" title={provenanceShort[topic.provenance]}>
+                Source: <code>{provenanceLabels[topic.provenance]}</code>
+              </span>
               <button className="secondary" onClick={close}>Close</button>
             </h3>
+            <p className="dim small" style={{ marginTop: 0 }}>{provenanceShort[topic.provenance]}</p>
             {topic.long.map((p, i) => <p key={i} className={i === 0 ? 'help-lead' : undefined}>{p}</p>)}
           </div>
         </div>

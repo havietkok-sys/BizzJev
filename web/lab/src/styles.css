@@ -159,3 +159,13 @@ details.tech-section.nested summary { display: flex; align-items: center; gap: 1
 .help-modal p { font-size: 13px; line-height: 1.55; margin: 8px 0; }
 .help-source { display: inline-block; font-size: 11px; color: var(--dim); border: 1px solid var(--line); border-radius: 10px; padding: 1px 8px; font-weight: 400; }
 @media (max-width: 720px) { .dp-tech-grid { grid-template-columns: 1fr; } .dp-subnav { padding: 0 8px; } .dp-result > [role='tabpanel'] { padding: 12px 10px 4px; } }
+
+/* ---------- shared provenance badges ---------- */
+.prov-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .06em; border-radius: 8px; padding: 1px 6px; vertical-align: middle; margin-left: 4px; white-space: nowrap; cursor: help; border: 1px solid transparent; }
+.prov-sentToJev { background: color-mix(in srgb, var(--action) 18%, transparent); color: var(--action); border-color: color-mix(in srgb, var(--action) 40%, transparent); }
+.prov-jevOutput { background: color-mix(in srgb, var(--jev) 18%, transparent); color: var(--jev); border-color: color-mix(in srgb, var(--jev) 40%, transparent); }
+.prov-cSharpDerived { background: color-mix(in srgb, var(--yes) 16%, transparent); color: var(--yes); border-color: color-mix(in srgb, var(--yes) 40%, transparent); }
+.prov-projectPolicy { background: color-mix(in srgb, var(--review) 16%, transparent); color: var(--review); border-color: color-mix(in srgb, var(--review) 40%, transparent); }
+.prov-legend { margin: 6px 0 10px; }
+.prov-legend .prov-badge { cursor: help; }
+.dp-settings-block { margin: 10px 0; }

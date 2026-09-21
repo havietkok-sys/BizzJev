@@ -5,6 +5,7 @@ import {
   type PipelineDecision, type PipelinePolicySettings, type ChoiceSlot, type ScoreSlot, type NoulSlot
 } from './api';
 import { HelpTerm } from './HelpTerm';
+import { ProvenanceBadge, ProvenanceLegend } from './ProvenanceBadge';
 
 type ResultTab = 'analysis' | 'replay' | 'technical';
 
@@ -211,6 +212,7 @@ export function DecisionPipeline() {
             Domain: fictional Nordbo Telecom. Frozen semantics: <code>{definition.semanticVersion}</code> <HelpTerm term="semanticVersion" />,
             policy <code>{definition.policyVersion}</code> <HelpTerm term="policyVersion" />, model <code>{definition.model}</code>.
           </p>
+          <ProvenanceLegend />
         </section>
       )}
     </>
@@ -223,10 +225,11 @@ function AnalysisView({ result, definition, hasReplay, analyzedText }: { result:
   const d = result.decision;
   return (
     <>
-      <h3 className="dp-tab-title">Analyzed text (exact input of this analysis)</h3>
+      <h3 className="dp-tab-title">Analyzed text (exact input of this analysis) <ProvenanceBadge p="sentToJev" /></h3>
       <p className="analyzed-text">{analyzedText}</p>
       <p className="dim small">
-        semantic {result.semanticVersion} · policy {result.policyVersion} · model {result.returnedModel ?? 'unavailable'} · analyzed {result.analyzedAtUtc}
+        semantic {result.semanticVersion} <ProvenanceBadge p="projectPolicy" /> · policy {result.policyVersion} <ProvenanceBadge p="projectPolicy" /> ·
+        model {result.returnedModel ?? 'unavailable'} <ProvenanceBadge p="sentToJev" /> · analyzed {result.analyzedAtUtc}
       </p>
 
       <div className="dp-cards">
@@ -235,11 +238,11 @@ function AnalysisView({ result, definition, hasReplay, analyzedText }: { result:
         <NoulCard slot={result.answers.cancellationRequested} disposition={d.cancellationDisposition} />
       </div>
 
-      <h3 className="dp-tab-title">C# decision (deterministic policy — not Jev reasoning)</h3>
+      <h3 className="dp-tab-title">C# decision (deterministic policy — not Jev reasoning) <ProvenanceBadge p="cSharpDerived" /></h3>
       <DecisionCard decision={d} />
 
       <details className="dp-why">
-        <summary>Why? — the deterministic rules behind this decision <HelpTerm term="matchedRule" /></summary>
+        <summary>Why? — the deterministic rules behind this decision <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="matchedRule" /></summary>
         <ul className="dp-rules">
           {d.explanations.map((x, i) => <li key={i}><code>{x.ruleId}</code> — <span className="small">{x.text}</span></li>)}
         </ul>
@@ -277,14 +280,16 @@ function ReplayView(props: {
     <>
       <h3 className="dp-tab-title">Policy replay <HelpTerm term="replay" /> — local demo thresholds, zero Jev calls</h3>
       <p className="dim small">
-        Change <b>thresholds</b> <HelpTerm term="threshold" /> and recalculate: the deterministic C# policy <HelpTerm term="deterministicPolicy" /> recomputes the
-        decision on the server from the <b>same stored Jev answers</b> — replay makes <b>zero</b> additional Jev requests, and this page contains no
-        JavaScript copy of the policy. Changed settings are a <b>custom policy</b> <HelpTerm term="replayCustom" /> (<code>pipeline-policy-v1-custom</code>), not the
+        Change <b>thresholds</b> <ProvenanceBadge p="projectPolicy" /> <HelpTerm term="threshold" /> and recalculate: the deterministic C# policy <HelpTerm term="deterministicPolicy" /> recomputes the
+        decision <ProvenanceBadge p="cSharpDerived" /> on the server from the <b>same stored Jev answers</b> <ProvenanceBadge p="jevOutput" /> — the stored answers are sent back unchanged, replay makes <b>zero</b> additional Jev requests,
+        and this page contains no JavaScript copy of the policy. Changed settings are a <b>custom policy</b> <HelpTerm term="replayCustom" /> (<code>pipeline-policy-v1-custom</code>), not the
         frozen default <code>{result.policyVersion}</code> <HelpTerm term="policyVersion" />.
       </p>
 
       {settings && (
-        <div className="dp-settings">
+        <div className="dp-settings-block">
+          <p className="small dim" style={{ margin: '0 0 6px' }}>Threshold settings <ProvenanceBadge p="projectPolicy" /> (demo defaults from <code>{result.policyVersion}</code>; editable here as a local experiment)</p>
+          <div className="dp-settings">
           {(Object.keys(SETTING_LABELS) as (keyof PipelinePolicySettings)[]).map((key) => (
             <div key={key} className="dp-setting">
               <label className="dp-setting-label" htmlFor={`dp-set-${key}`}>
@@ -295,6 +300,7 @@ function ReplayView(props: {
                 onChange={(e) => onSetting(key, Number(e.target.value))} />
             </div>
           ))}
+          </div>
         </div>
       )}
 
@@ -311,9 +317,9 @@ function ReplayView(props: {
 
       {replay && (
         <>
-          <h3 className="dp-tab-title">Replayed decision</h3>
+          <h3 className="dp-tab-title">Replayed decision <ProvenanceBadge p="cSharpDerived" /></h3>
           <p className="small dim">
-            recalculated {replay.replayedAtUtc} · policy {replay.policyVersion} · <b>{replay.outboundAttempts}</b> Jev calls <HelpTerm term="outboundAttempt" />
+            recalculated {replay.replayedAtUtc} · policy {replay.policyVersion} <ProvenanceBadge p="projectPolicy" /> · <b>{replay.outboundAttempts}</b> Jev calls <HelpTerm term="outboundAttempt" />
           </p>
           <ComparisonRow label="Compared with the analysis result:" before={result.decision} after={replay.decision} />
           <DecisionCard decision={replay.decision} replayNote={null} />
@@ -360,16 +366,16 @@ function TechnicalView({ result, definition }: { result: PipelineAnalyzeResponse
       <h3 className="dp-tab-title">Run metadata</h3>
       <table>
         <tbody>
-          <tr><th>Model</th><td>{dg.returnedModel ?? 'unavailable'}</td></tr>
-          <tr><th>Semantic version <HelpTerm term="semanticVersion" /></th><td><code>{dg.semanticVersion}</code></td></tr>
-          <tr><th>Policy version <HelpTerm term="policyVersion" /></th><td><code>{dg.policyVersion}</code></td></tr>
-          <tr><th>Elapsed</th><td>{dg.elapsedMs.toFixed(1)} ms</td></tr>
-          <tr><th>Outbound attempts <HelpTerm term="outboundAttempt" /></th><td>{dg.outboundAttempts}</td></tr>
-          <tr><th>Token usage <HelpTerm term="tokenUsage" /></th><td>{dg.usage ? `${dg.usage.inputTokens} in / ${dg.usage.outputTokens} out` : 'unknown'}</td></tr>
+          <tr><th>Model <ProvenanceBadge p="sentToJev" /></th><td>{dg.returnedModel ?? 'unavailable'} (as returned)</td></tr>
+          <tr><th>Semantic version <ProvenanceBadge p="projectPolicy" /> <HelpTerm term="semanticVersion" /></th><td><code>{dg.semanticVersion}</code></td></tr>
+          <tr><th>Policy version <ProvenanceBadge p="projectPolicy" /> <HelpTerm term="policyVersion" /></th><td><code>{dg.policyVersion}</code></td></tr>
+          <tr><th>Elapsed <ProvenanceBadge p="cSharpDerived" /></th><td>{dg.elapsedMs.toFixed(1)} ms (measured by BizzJev)</td></tr>
+          <tr><th>Outbound attempts <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="outboundAttempt" /></th><td>{dg.outboundAttempts}</td></tr>
+          <tr><th>Token usage <ProvenanceBadge p="jevOutput" /> <HelpTerm term="tokenUsage" /></th><td>{dg.usage ? `${dg.usage.inputTokens} in / ${dg.usage.outputTokens} out` : 'unknown'}</td></tr>
         </tbody>
       </table>
 
-      <h3 className="dp-tab-title">Distributions and confidence <HelpTerm term="distribution" /></h3>
+      <h3 className="dp-tab-title">Distributions and confidence <ProvenanceBadge p="jevOutput" /> <HelpTerm term="distribution" /></h3>
       <div className="dp-tech-grid">
         <div>
           <h4>Choice <HelpTerm term="choice" /></h4>
@@ -407,7 +413,7 @@ function TechnicalView({ result, definition }: { result: PipelineAnalyzeResponse
         </div>
       </div>
 
-      <h3 className="dp-tab-title">Deterministic rule trace <HelpTerm term="matchedRule" /></h3>
+      <h3 className="dp-tab-title">Deterministic rule trace <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="matchedRule" /></h3>
       <p className="dim small">Matched rule IDs (fixed order): {d.matchedRuleIds.join(', ') || '—'}</p>
       <ul className="dp-rules">
         {d.explanations.map((x, i) => <li key={i}><code>{x.ruleId}</code> — <span className="small">{x.text}</span></li>)}
@@ -435,16 +441,16 @@ function TechnicalView({ result, definition }: { result: PipelineAnalyzeResponse
         these payloads: the API key travels only in a server-side header.
       </p>
       <details open className="dp-wire">
-        <summary>Request body <HelpTerm term="rawRequest" /> (exactly as sent — one request, three questions)</summary>
+        <summary>Request body <HelpTerm term="rawRequest" /> <ProvenanceBadge p="sentToJev" /> (exactly as sent — one request, three questions)</summary>
         <pre className="dp-pre">{prettyJson(dg.requestPayload)}</pre>
       </details>
       <details className="dp-wire">
-        <summary>Response body <HelpTerm term="rawResponse" /> (exactly as received)</summary>
+        <summary>Response body <HelpTerm term="rawResponse" /> <ProvenanceBadge p="jevOutput" /> (exactly as received)</summary>
         <pre className="dp-pre">{prettyJson(dg.rawResponse)}</pre>
       </details>
       {definition && (
         <details className="dp-wire">
-          <summary>Score level descriptions used for this run (frozen definition)</summary>
+          <summary>Score level descriptions used for this run <ProvenanceBadge p="projectPolicy" /> (project-authored, sent as criteria)</summary>
           <ol className="small dim" style={{ paddingLeft: 20 }}>
             {definition.scoreLevelDescriptions.map((l, i) => <li key={i}>{l}</li>)}
           </ol>
@@ -463,11 +469,11 @@ function SlotError({ error }: { error: string | null }) {
 function ChoiceCard({ slot }: { slot: ChoiceSlot }) {
   return (
     <div className="dp-card">
-      <h3>Choice <HelpTerm term="choice" /> <span className="dim small">— responsible team</span></h3>
+      <h3>Choice <HelpTerm term="choice" /> <ProvenanceBadge p="jevOutput" /> <span className="dim small">— responsible team</span></h3>
       {slot.valid ? (
         <>
           <p><b>{slot.selected}</b> <span className="dim small">(initial handling <HelpTerm term="initialOwner" />)</span></p>
-          <p className="small">confidence <HelpTerm term="confidence" /> {slot.confidence?.toFixed(2)} · margin <HelpTerm term="margin" /> {(slot.margin ?? 0).toFixed(2)}</p>
+          <p className="small">confidence <HelpTerm term="confidence" /> {slot.confidence?.toFixed(2)} · margin <HelpTerm term="margin" /> {(slot.margin ?? 0).toFixed(2)} <ProvenanceBadge p="cSharpDerived" /></p>
           <table>
             <thead><tr><th>Category</th><th>Probability <HelpTerm term="distribution" /></th></tr></thead>
             <tbody>
@@ -485,13 +491,13 @@ function ChoiceCard({ slot }: { slot: ChoiceSlot }) {
 function ScoreCard({ slot, levels }: { slot: ScoreSlot; levels: string[] | null }) {
   return (
     <div className="dp-card">
-      <h3>Score <HelpTerm term="score" /> <span className="dim small">— urgency (consequence of waiting)</span></h3>
+      <h3>Score <HelpTerm term="score" /> <ProvenanceBadge p="jevOutput" /> <span className="dim small">— urgency (consequence of waiting)</span></h3>
       {slot.valid ? (
         <>
           <p><b>{slot.score?.toFixed(2)}</b> <span className="dim small">on scale 0–3</span></p>
           <p className="small">confidence <HelpTerm term="confidence" /> {slot.confidence?.toFixed(2)}</p>
           <table>
-            <thead><tr><th>Level</th><th>Probability</th><th>Meaning (frozen)</th></tr></thead>
+            <thead><tr><th>Level</th><th>Probability</th><th>Meaning (frozen) <ProvenanceBadge p="projectPolicy" /></th></tr></thead>
             <tbody>
               {slot.probabilities && Object.entries(slot.probabilities).map(([level, p]) => (
                 <tr key={level}>
@@ -511,12 +517,12 @@ function ScoreCard({ slot, levels }: { slot: ScoreSlot; levels: string[] | null 
 function NoulCard({ slot, disposition }: { slot: NoulSlot; disposition: PipelineDecision['cancellationDisposition'] }) {
   return (
     <div className="dp-card">
-      <h3>Noul <HelpTerm term="noul" /> <span className="dim small">— explicit cancellation intent</span></h3>
+      <h3>Noul <HelpTerm term="noul" /> <ProvenanceBadge p="jevOutput" /> <span className="dim small">— explicit cancellation intent</span></h3>
       {slot.valid ? (
         <>
           <p>P(yes) <HelpTerm term="pyes" /> = <b>{slot.probability?.toFixed(2)}</b></p>
           <p className="small">
-            policy disposition <HelpTerm term="cancellationDisposition" />:{' '}
+            policy disposition <HelpTerm term="cancellationDisposition" /> <ProvenanceBadge p="cSharpDerived" />:{' '}
             {disposition === null ? <SlotError error={null} /> : <span className="pill" data-disp={disposition}>{disposition}</span>}
           </p>
           <p className="dim small" style={{ marginBottom: 0 }}>
@@ -544,7 +550,7 @@ function DecisionCard({ decision, replayNote }: { decision: PipelineDecision; re
       </p>
       <table>
         <tbody>
-          <tr><th>Proposed team</th><td>{decision.proposedTeam ?? 'unavailable'}</td></tr>
+          <tr><th>Proposed team <ProvenanceBadge p="jevOutput" /></th><td>{decision.proposedTeam ?? 'unavailable'}</td></tr>
           <tr><th>Routing review required</th><td>{String(decision.routingReviewRequired)}</td></tr>
           <tr><th>Proposed priority <HelpTerm term="priority" /></th><td>{decision.proposedPriority ?? 'unavailable'}</td></tr>
           <tr><th>Urgency review required</th><td>{String(decision.urgencyReviewRequired)}</td></tr>
@@ -552,6 +558,7 @@ function DecisionCard({ decision, replayNote }: { decision: PipelineDecision; re
           <tr><th>Cancellation disposition</th><td>{decision.cancellationDisposition ?? 'unavailable'}</td></tr>
         </tbody>
       </table>
+      <p className="dim small" style={{ margin: 0 }}>Team is the raw Jev Choice selection <ProvenanceBadge p="jevOutput" />; every other row in this table is deterministic C# policy <ProvenanceBadge p="cSharpDerived" />.</p>
       <h4>Review reasons ({decision.reviewReasons.length}) <HelpTerm term="reviewReason" /></h4>
       {decision.reviewReasons.length === 0
         ? <p className="dim small">None — the complete recommendation meets this demo's policy checks.</p>
