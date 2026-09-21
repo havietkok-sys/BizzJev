@@ -1,6 +1,6 @@
 # Milestone 2 — Multi-primitive evaluation / single-call decision pipeline
 
-Status: **tasks 01, 02 and 05 delivered and verified; tasks 03 and 04 are released and next; no live Jev requests consumed yet.**
+Status: **tasks 01-05 delivered and verified; task 06 is released and next; no live Jev requests consumed yet.**
 
 The goal is a new **Decision Pipeline** tab in the existing Semantic Operations Lab. One customer message goes to Jev in one request containing Choice, Score and Noul questions. Typed answers become inputs to deterministic C# policy, with an explicit human fallback.
 
@@ -24,16 +24,16 @@ This folder is the handoff package for implementation agents and the project own
 | 01 | [Freeze semantics and acceptance contract](01_SEMANTIC_SPECIFICATION.md) | None | DONE |
 | 02 | [Define typed contracts and versioned configuration](02_TYPED_CONTRACTS.md) | 01 | DONE |
 | 03 | [Implement the single-call Jev client](03_SINGLE_CALL_CLIENT.md) | 02 | DONE |
-| 04 | [Implement deterministic decision policy](04_DECISION_POLICY.md) | 02 | READY |
+| 04 | [Implement deterministic decision policy](04_DECISION_POLICY.md) | 02 | DONE |
 | 05 | [Prepare the synthetic evaluation dataset](05_EVALUATION_DATASET.md) | 01 | DONE |
-| 06 | [Integrate backend endpoints and policy replay](06_BACKEND_API.md) | 03, 04, 05 | WAITING |
+| 06 | [Integrate backend endpoints and policy replay](06_BACKEND_API.md) | 03, 04, 05 | READY |
 | 07 | [Build the Decision Pipeline tab](07_DECISION_PIPELINE_UI.md) | 05, 06 | WAITING |
 | 08 | [Implement and run the evaluation workflow](08_EVALUATION_RUNNER.md) | 05, 06 | WAITING |
 | 09 | [Integrate, document and verify the milestone](09_ACCEPTANCE_AND_DOCUMENTATION.md) | 07, 08 | WAITING |
 
 This is the authoritative task status table. The orchestrator updates it during implementation, not while merely reading the plan. Each task ends with a completion record template for evidence.
 
-Tasks 03 and 04 are dependency-ready but not started (released by task 02 verification). DONE reflects verified task delivery, not owner acceptance of the milestone or merge authorization.
+Task 06 is dependency-ready (03, 04, 05 verified); tasks 07 and 08 remain WAITING on 06. DONE reflects verified task delivery, not owner acceptance of the milestone or merge authorization.
 
 ## Scope and decisions
 
