@@ -57,6 +57,12 @@ A single customer message may simultaneously contain:
 
 The system detects all of them at once. Several signals may be present simultaneously; there is no winner-takes-all classification.
 
+### Data sources and demo examples
+
+The demo ships with **100 synthetic customer messages** for the fictional Nordbo Telecom, with predefined expected labels in [testcases.v1.json](src/BizzJev.Lab/config/testcases.v1.json). These are constructed test scenarios, not real customer complaints or CFPB records. A full evaluation runs these built-in cases plus any cases the user has saved locally; the origin of user-supplied text depends on what the user enters. Results on the synthetic set do not establish accuracy on real customer data.
+
+The separate CFPB experiments use **real consumer complaint narratives** from the [CFPB Consumer Complaint Database Narratives Archive](https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/). The source is the archive's **CCDB Export July 2026**, stored locally as `data/raw/cfpb/CCDB_Export_20_July_2026.csv`, with Debt collection cases selected by the preparation scripts. These records are not the demo's built-in dataset. See the [CFPB data model and taxonomy report](docs/CFPB_DATA_MODEL_AND_TAXONOMY.md) for source details and label interpretation.
+
 ## Core Idea
 
 ```
@@ -152,8 +158,12 @@ AI tools were used heavily for implementation, testing, analysis, and formalizin
 
 ## Documentation
 
+For documents available in both languages, the English version uses the base filename and the Swedish translation uses `_SWE.md`, following the existing guide convention. Keep language versions together in `docs/` and link between them. When updating either version, update its counterpart as well.
+
 | Document | Purpose |
 |---|---|
+| [Jev evaluation report](docs/JEV_EVALUATION_REPORT.md) · [Svenska](docs/JEV_EVALUATION_REPORT_SWE.md) | Early Nordbo routing experiments and findings |
+| [BizzJev evaluation](docs/BIZZJEV_EVALUATION.md) · [Svenska](docs/BIZZJEV_EVALUATION_SWE.md) | Evaluation and lessons learned from Nordbo and CFPB experiments |
 | [docs/DEMO_RUN.md](docs/DEMO_RUN.md) | How to run the demo, troubleshooting, walkthrough |
 | [docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE.md](docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE.md) | Practical guide: how to design semantic gate prompts (broad inside, sharp at the edges) |
 | [docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE_SWE.md](docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE_SWE.md) | Same guide in Swedish (Svenska) |

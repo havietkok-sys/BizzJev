@@ -1,5 +1,7 @@
 # BizzJev — Evaluation and Lessons Learned
 
+[Svenska](BIZZJEV_EVALUATION_SWE.md)
+
 ## Overview
 
 BizzJev is a practical exploration of **Jev / TypeSafe System One as a typed semantic judgment layer inside ordinary software**.
@@ -303,6 +305,10 @@ They are also dangerous.
 If the same people—or language models—create both the examples and the expected answers, an evaluation may primarily demonstrate agreement with its own assumptions.
 
 BizzJev therefore moved to real-world data from the U.S. Consumer Financial Protection Bureau's Consumer Complaint Database.
+
+**Dataset source:** [CFPB Consumer Complaint Database Narratives Archive](https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/), **CCDB Export July 2026**. The local source file is `data/raw/cfpb/CCDB_Export_20_July_2026.csv`; [prepare_cfpb_debt_benchmark.py](../scripts/prepare_cfpb_debt_benchmark.py) prepares the initial benchmark. The [data model and taxonomy report](CFPB_DATA_MODEL_AND_TAXONOMY.md) documents the source and how its labels should be interpreted.
+
+**Separate demo dataset:** The Semantic Operations Lab for the fictional Nordbo Telecom ships with [100 synthetic customer messages and expected labels](../src/BizzJev.Lab/config/testcases.v1.json), not CFPB complaints. A full demo evaluation also includes any locally saved user cases, whose text may have a different origin. The synthetic demo results do not establish accuracy on real customer data.
 
 The selected domain was **Debt collection**.
 
@@ -753,6 +759,22 @@ Type safety can constrain the output.
 It cannot define the meaning for us.
 
 That remains a system-design problem.
+
+## Reflection and Evaluation
+
+The implementation of the Jev API integration was carried out with assistance from the official TypeSafe skill. This was particularly useful because Jev introduces concepts and interaction patterns that differ significantly from those commonly used with conventional LLM APIs.
+
+An important observation during development was that the main difficulty was not necessarily the API code itself. The harder problem was getting the LLM-based development tools to understand the purpose of Jev within the application and to correctly derive how Jev should be used to solve a given problem.
+
+With established technologies, an LLM can often infer intent from familiar architectural patterns and previously learned examples. With Jev, that intuition appeared much weaker in this project. The model could understand the syntax of an API call while still misunderstanding what decision Jev was supposed to make, what information should be encoded into the request, or how the question presented to Jev should be structured.
+
+This became especially clear when designing the Jev queries themselves. Small differences in how a question, criterion, or decision rule was formulated could materially change the behavior of the system. Several of these formulations therefore had to be refined through testing rather than being correctly derived by the coding model from a high-level description.
+
+This means that understanding is not obtained “for free” from the LLM. The relevant mental model has to be provided through specifications, examples, explicit constraints, and guardrails. During longer implementation tasks, that understanding can also drift, with the model gradually falling back toward more familiar conventional LLM or API patterns.
+
+As a result, development with Jev was highly specification-driven. It was often necessary to define not only what the application should do, but also why Jev was being used, exactly what decision Jev was responsible for, how that decision should be expressed as a query, and which assumptions the implementation must not make.
+
+The interpretation from this project is that this was less a difficulty in writing Jev code and more a consequence of working with a new technology for which the LLM-based development tools appeared to have little established implementation intuition, limited precedent, and few learned design patterns to rely on. This is a reflection on the development experience, not a measured comparison of coding models or evidence about their training data.
 
 ---
 

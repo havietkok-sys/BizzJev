@@ -235,7 +235,9 @@ Edit any field to create an **unsaved draft**. Use **Test Draft** to run the dra
 
 ### 6. Evaluation Library
 
-Go to the **Evaluation Library** tab. Click **Run full evaluation** to score all gates against the 100-case synthetic dataset. Inspect per-gate metrics (TP, FP, FN, TN, Precision, Recall, F1), metrics by case type, the weakest routing gate, and the Operational Capture view (how many expected-YES cases were automatic YES vs human REVIEW vs missed).
+Go to the **Evaluation Library** tab. Click **Run full evaluation** to score all gates against the 100 built-in synthetic cases plus any locally saved user cases. Inspect per-gate metrics (TP, FP, FN, TN, Precision, Recall, F1), metrics by case type, the weakest routing gate, and the Operational Capture view (how many expected-YES cases were automatic YES vs human REVIEW vs missed).
+
+The built-in [dataset](../src/BizzJev.Lab/config/testcases.v1.json) contains constructed customer messages and expected labels for the fictional Nordbo Telecom. These are not real customer complaints and are separate from the CFPB data used in earlier experiments; see [Data sources and demo examples](../README.md#data-sources-and-demo-examples). User-saved cases contain whatever text the user supplied, so their origin is not guaranteed to be synthetic. Results on the built-in set demonstrate behavior on those scenarios, not accuracy on real customer data.
 
 ---
 

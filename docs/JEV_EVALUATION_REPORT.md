@@ -1,19 +1,21 @@
 # BizzJev – Jev Evaluation Report
 
-**Status:** Pågående experimentrapport
+[Svenska](JEV_EVALUATION_REPORT_SWE.md)
+
+**Status:** Ongoing experiment report
 **Jev model:** `jev-1.13.0`
-**Projekt:** BizzJev
-**Syfte:** Utvärdera TypeSafe Jev som semantisk routingkomponent för inkommande kundärenden.
+**Project:** BizzJev
+**Purpose:** Evaluate TypeSafe Jev as a semantic routing component for incoming customer requests.
 
 ---
 
-## 1. Syfte
+## 1. Purpose
 
-BizzJev är ett litet experimentprojekt för att undersöka hur TypeSafe Jev kan användas för typed semantic judgments i ett vanligt applikationsflöde.
+BizzJev is a small experimental project exploring how TypeSafe Jev can be used for typed semantic judgments in a conventional application flow.
 
-Det första domänfallet är det fiktiva bostadsbolaget **Nordbo Property**.
+The first domain case is the fictional housing company **Nordbo Property**.
 
-Ett inkommande kundmeddelande ska klassificeras till en routingkategori:
+An incoming customer message is to be classified into one routing category:
 
 * Maintenance
 * Billing
@@ -21,18 +23,18 @@ Ett inkommande kundmeddelande ska klassificeras till en routingkategori:
 * Contract
 * Other
 
-Projektet är medvetet litet. Målet i denna fas är inte att bygga ett komplett kundservicesystem utan att förstå:
+The project is deliberately small. The goal at this stage is not to build a complete customer service system, but to understand:
 
-1. hur Jev beter sig på tydliga klassificeringsfall,
-2. hur probability distribution och confidence beter sig vid tvetydighet,
-3. hur känsligt resultatet är för hur judgment-frågan formuleras,
-4. var semantisk bedömning bör sluta och deterministisk business logic börja.
+1. how Jev behaves on clear classification cases,
+2. how the probability distribution and confidence behave under ambiguity,
+3. how sensitive the result is to the wording of the judgment question,
+4. where semantic judgment should end and deterministic business logic should begin.
 
 ---
 
-# 2. Teknisk baseline
+# 2. Technical Baseline
 
-Den första tekniska milstolpen var att bevisa den minsta externa integrationen:
+The first technical milestone was to prove the smallest external integration:
 
 ```text
 C#
@@ -46,13 +48,13 @@ typed response
 C#
 ```
 
-Integrationen använder direkt HTTP från .NET utan ytterligare SDK-lager.
+The integration uses direct HTTP from .NET without an additional SDK layer.
 
-Det första autentiserade testet använde ett enkelt Billing-fall:
+The first authenticated test used a simple Billing case:
 
 > I was charged rent twice.
 
-Jev returnerade:
+Jev returned:
 
 ```text
 Choice: Billing
@@ -61,15 +63,15 @@ Confidence: 1.00
 Model: jev-1.13.0
 ```
 
-Det bekräftade att hela kedjan C# → TypeSafe → Jev → typed Choice fungerade.
+This confirmed that the entire C# → TypeSafe → Jev → typed Choice chain worked.
 
 ---
 
-# 3. Baseline judgment
+# 3. Baseline Judgment
 
-Det ursprungliga judgmentet bad Jev klassificera kundens **primary reason** för att kontakta Nordbo.
+The original judgment asked Jev to classify the customer's **primary reason** for contacting Nordbo.
 
-`Choice` innehöll fem konkurrerande alternativ:
+`Choice` contained five competing options:
 
 ```text
 Maintenance
@@ -79,47 +81,47 @@ Contract
 Other
 ```
 
-`Other` definierades som att inget av de fyra specifika Nordbo-områdena passar.
+`Other` was defined as none of the four specific Nordbo areas fitting the request.
 
-Det är viktigt att skilja detta från osäkerhet:
+It is important to distinguish this from uncertainty:
 
 ```text
 Other
-= ärendet passar inte de definierade kategorierna
+= the request does not fit the defined categories
 
 Uncertainty
-= flera tolkningar/kategorier kan konkurrera
+= several interpretations/categories may compete
 
 Error
-= Jev-anropet eller svaret misslyckades
+= the Jev call or response failed
 ```
 
 ---
 
-# 4. Experiment 1 – Basic evaluation
+# 4. Experiment 1 – Basic Evaluation
 
-## Mål
+## Goal
 
-Första eval-setet skulle kontrollera om baseline-judgmentet fungerade på tydliga ärenden samt några enkla robustness-fall.
+The first evaluation set was intended to check whether the baseline judgment worked on clear requests and a few simple robustness cases.
 
-Totalt kördes **10 riktiga Jev-anrop**.
+A total of **10 real Jev calls** were made.
 
-## Testfall
+## Test Cases
 
-| #  | Fall                                            | Förväntat   |
-| -- | ----------------------------------------------- | ----------- |
-| 1  | Radiator stopped working                        | Maintenance |
-| 2  | Charged rent twice                              | Billing     |
-| 3  | Key doesn't open entrance                       | Access      |
-| 4  | Terminate lease                                 | Contract    |
-| 5  | Buy a mountain bike                             | Other       |
-| 6  | Communist hamster + broken radiator             | Maintenance |
-| 7  | Flat freezing despite heating                   | Maintenance |
+| #  | Case                                           | Expected    |
+| -- | ---------------------------------------------- | ----------- |
+| 1  | Radiator stopped working                       | Maintenance |
+| 2  | Charged rent twice                             | Billing     |
+| 3  | Key doesn't open entrance                      | Access      |
+| 4  | Terminate lease                                | Contract    |
+| 5  | Buy a mountain bike                            | Other       |
+| 6  | Communist hamster + broken radiator            | Maintenance |
+| 7  | Flat freezing despite heating                  | Maintenance |
 | 8  | Irrelevant weather/football + incorrect invoice | Billing     |
-| 9  | Rent question + cannot enter using code         | Access      |
-| 10 | Prompt-like instruction + leaking sink          | Maintenance |
+| 9  | Rent question + cannot enter using code        | Access      |
+| 10 | Prompt-like instruction + leaking sink         | Maintenance |
 
-## Resultat
+## Results
 
 ```text
 Passed: 10
@@ -127,58 +129,58 @@ Failed: 0
 Total: 10
 ```
 
-Samtliga tio fall returnerade dessutom:
+All ten cases also returned:
 
 ```text
 winning probability = 1.00
 confidence          = 1.00
 ```
 
-med `0.00` på samtliga konkurrerande kategorier.
+with `0.00` for all competing categories.
 
 ## Observation
 
-Jev hanterade i detta lilla testset:
+In this small test set, Jev handled:
 
-* tydliga kategorier,
-* implicit problemformulering,
+* clear categories,
+* implicit descriptions of problems,
 * irrelevant information,
-* ett uttalat huvudärende bland flera ämnen,
-* instruction-like text inuti kundmeddelandet.
+* an explicitly stated main request among several topics,
+* instruction-like text inside the customer message.
 
-Resultatet var lovande, men testfallen var fortfarande relativt enkla.
+The result was promising, but the test cases were still relatively simple.
 
-Framför allt hade vi ännu inte observerat hur Jev betedde sig när flera kategorier faktiskt var semantiskt rimliga.
+In particular, we had not yet observed how Jev behaved when several categories were genuinely semantically plausible.
 
 ---
 
-# 5. Experiment 2 – Ambiguity evaluation
+# 5. Experiment 2 – Ambiguity Evaluation
 
-## Mål
+## Goal
 
-Det andra experimentet försökte avsiktligt skapa konflikter mellan kategorier.
+The second experiment deliberately attempted to create conflicts between categories.
 
-Ingen PASS/FAIL-label användes eftersom flera fall saknade ett objektivt korrekt single-choice-svar.
+No PASS/FAIL label was used because several cases lacked an objectively correct single-choice answer.
 
-Vi observerade istället:
+Instead, we observed:
 
-* vald Choice,
+* selected Choice,
 * winning probability,
 * runner-up probability,
 * margin,
 * confidence.
 
-Totalt kördes **9 riktiga Jev-anrop**.
+A total of **9 real Jev calls** were made.
 
-## Resultat
+## Results
 
-De tydligaste gränsfallen förblev helt koncentrerade.
+The most obvious boundary cases still produced fully concentrated distributions.
 
-Exempel:
+For example:
 
 > The lock on my front door is broken.
 
-gav:
+produced:
 
 ```text
 Access      1.00
@@ -186,13 +188,13 @@ Maintenance 0.00
 Confidence  1.00
 ```
 
-Även:
+Similarly:
 
 > My key sometimes works, but the lock probably needs repairing.
 
-gav `Access 1.00`.
+produced `Access 1.00`.
 
-Andra formuleringar skapade däremot verkliga distributionsskillnader.
+Other phrasings, however, produced real differences in the distributions.
 
 ### Billing vs Maintenance
 
@@ -219,11 +221,11 @@ Contract  0.28
 Confidence: 0.64
 ```
 
-### Otillräcklig information
+### Insufficient Information
 
 > There is a problem with my apartment. Can you help?
 
-gav:
+produced:
 
 ```text
 Maintenance  0.67
@@ -232,19 +234,19 @@ Other        0.33
 Confidence: 0.58
 ```
 
-Detta var den lägsta observerade confidence-nivån i experimentet.
+This was the lowest confidence level observed in the experiment.
 
 ---
 
-# 6. Upptäckten av order sensitivity
+# 6. The Discovery of Order Sensitivity
 
-Det mest intressanta resultatet uppstod i två avsiktligt speglade testfall.
+The most interesting result emerged from two deliberately mirrored test cases.
 
 ### Variant A
 
 > My heating is broken and I was charged rent twice.
 
-Resultat:
+Result:
 
 ```text
 Maintenance  0.80
@@ -258,7 +260,7 @@ Confidence: 0.76
 
 > I was charged rent twice and my heating is broken.
 
-Resultat:
+Result:
 
 ```text
 Billing      0.80
@@ -268,61 +270,61 @@ Other        0.01
 Confidence: 0.75
 ```
 
-Den semantiska informationen var i praktiken densamma.
+The semantic information was effectively the same.
 
-Det enda avsiktliga ingreppet var ordningen.
+The only deliberate change was the order.
 
-Ändå speglades beslutet nästan perfekt:
+Yet the decision was almost perfectly mirrored:
 
 ```text
-Maintenance först
+Maintenance first
 → Maintenance .80
 
-Billing först
+Billing first
 → Billing .80
 ```
 
 ---
 
-# 7. Hypotes – “primary” var underdefinierat
+# 7. Hypothesis – “Primary” Was Underdefined
 
-Den första misstanken kunde ha varit att Jev hade en generell order bias.
+The initial suspicion might have been that Jev had a general order bias.
 
-Vid närmare analys uppstod istället en viktig fråga kring själva judgment-specifikationen.
+Closer analysis instead raised an important question about the judgment specification itself.
 
-Baseline-instruktionen bad modellen välja kundens:
+The baseline instruction asked the model to select the customer's:
 
 > primary reason
 
-Men i exemplet:
+But in the example:
 
 > My heating is broken and I was charged rent twice.
 
-finns två fullt giltiga ärenden.
+there are two fully valid requests.
 
-Ingenting i texten säger att det ena är viktigare eller mer primärt än det andra.
+Nothing in the text says that one is more important or more primary than the other.
 
-Begreppet **primary** hade införts av BizzJev-instruktionen men hade inte definierats för multi-intent-fall.
+The concept of **primary** had been introduced by the BizzJev instruction but had not been defined for multi-intent cases.
 
-Hypotesen blev därför:
+The resulting hypothesis was:
 
-> Order-effekten kanske inte primärt beror på att Jev missförstår texten. Judgmentet kräver ett enda svar på en fråga där specifikationen inte definierar hur två samtidigt giltiga svar ska prioriteras.
+> The order effect may not primarily be caused by Jev misunderstanding the text. The judgment demands a single answer to a question whose specification does not define how two simultaneously valid answers should be prioritized.
 
-För att testa hypotesen behövde exakt denna osäkerhet tas bort utan att ändra kategorierna.
+Testing this hypothesis required removing precisely this uncertainty without changing the categories.
 
 ---
 
-# 8. Experiment 3 – Explicit routing priority
+# 8. Experiment 3 – Explicit Routing Priority
 
-## Mål
+## Goal
 
-Ett separat experimentellt Choice-judgment skapades.
+A separate experimental Choice judgment was created.
 
-Baseline-judgmentet lämnades oförändrat.
+The baseline judgment was left unchanged.
 
-Endast instruktionen ändrades.
+Only the instruction was changed.
 
-När flera kategorier samtidigt var giltiga skulle Jev använda en explicit business priority:
+When several categories were simultaneously valid, Jev was to use an explicit business priority:
 
 ```text
 Access
@@ -336,13 +338,13 @@ Contract
 Other
 ```
 
-Instruktionen sade dessutom uttryckligen att meddelandets ordningsföljd inte skulle bestämma prioritet.
+The instruction also explicitly stated that message order should not determine priority.
 
-Fyra par skapades där samma intents förekom i omvänd ordning.
+Four pairs were created in which the same intents appeared in reverse order.
 
-Fem tidigare tydliga single-intent-fall användes som kontroll.
+Five previously clear single-intent cases were used as controls.
 
-Totalt:
+Total:
 
 ```text
 8 paired cases
@@ -352,7 +354,7 @@ Totalt:
 
 ---
 
-# 9. Priority experiment – resultat
+# 9. Priority Experiment – Results
 
 ## Pair A – Maintenance vs Billing
 
@@ -368,26 +370,26 @@ Billing + Heating
 → confidence 1.00
 ```
 
-Ordningen hade ingen observerad effekt på vare sig Choice, distribution eller confidence.
+Order had no observed effect on Choice, distribution, or confidence.
 
 ---
 
 ## Pair B – Access vs Contract
 
-Båda ordningarna gav:
+Both orders produced:
 
 ```text
 Access 1.00
 confidence 1.00
 ```
 
-Distributionerna var identiska.
+The distributions were identical.
 
 ---
 
 ## Pair C – Billing vs Contract
 
-Första ordningen:
+First order:
 
 ```text
 Billing   0.97
@@ -395,7 +397,7 @@ Contract  0.03
 Confidence 0.96
 ```
 
-Omvänd ordning:
+Reverse order:
 
 ```text
 Billing   0.98
@@ -403,28 +405,28 @@ Contract  0.02
 Confidence 0.97
 ```
 
-Choice var alltså stabil.
+Choice was therefore stable.
 
-En liten skillnad på `0.01` observerades i distribution och confidence.
+A small difference of `0.01` was observed in the distribution and confidence.
 
 ---
 
 ## Pair D – Access vs Maintenance
 
-Båda ordningarna gav:
+Both orders produced:
 
 ```text
 Access 1.00
 confidence 1.00
 ```
 
-Distributionerna var identiska.
+The distributions were identical.
 
 ---
 
-# 10. Kontrollfall
+# 10. Control Cases
 
-De fem single-intent-kontrollerna var:
+The five single-intent controls were:
 
 ```text
 Maintenance
@@ -434,15 +436,15 @@ Contract
 Other
 ```
 
-Samtliga fem fortsatte ge sina tidigare förväntade kategorier.
+All five continued to produce their previously expected categories.
 
-Ingen regression observerades i kontrollfallen.
+No regression was observed in the control cases.
 
 ---
 
-# 11. Sammanfattning av priority-experimentet
+# 11. Summary of the Priority Experiment
 
-Alla fyra reverserade par gav samma Choice oavsett ordningsföljd.
+All four reversed pairs produced the same Choice regardless of order.
 
 ```text
 Pair A: Maintenance / Maintenance
@@ -451,77 +453,77 @@ Pair C: Billing / Billing
 Pair D: Access / Access
 ```
 
-Tre av fyra par gav exakt samma distribution och confidence mellan ordningsvarianterna.
+Three of the four pairs produced exactly the same distribution and confidence across the order variants.
 
-Pair C skiljde endast `0.01`.
+Pair C differed by only `0.01`.
 
-Samtliga fem kontrollfall passerade.
+All five control cases passed.
 
 ---
 
-# 12. Vad resultaten hittills stödjer
+# 12. What the Results Support So Far
 
-Experimenten ger preliminärt stöd för följande.
+The experiments provide preliminary support for the following.
 
-### Jev följer tydliga Choice-definitioner väl i detta lilla test
+### Jev follows clear Choice definitions well in this small test
 
-De tio ursprungliga baseline-fallen klassificerades enligt förväntan.
+The ten original baseline cases were classified as expected.
 
-### Jev kan uttrycka semantic competition i distributionen
+### Jev can express semantic competition in the distribution
 
-När judgmentet var underbestämt eller informationen otillräcklig observerades mindre koncentrerade probability distributions och lägre confidence.
+When the judgment was underdetermined or the information insufficient, less concentrated probability distributions and lower confidence were observed.
 
-### Prompt-/judgment-designen har stor betydelse
+### Prompt/judgment design matters greatly
 
-Den starkaste observationen hittills är skillnaden mellan:
+The strongest observation so far is the difference between:
 
 ```text
 "Choose the primary reason"
 ```
 
-och:
+and:
 
 ```text
 "If several categories apply,
 use this explicit business priority."
 ```
 
-Den första formuleringen gav kraftig order sensitivity i ett multi-intent-fall.
+The first wording produced strong order sensitivity in a multi-intent case.
 
-När businessregeln gjordes explicit försvann den observerade order-effekten nästan helt i de testade paren.
+When the business rule was made explicit, the observed order effect almost entirely disappeared in the tested pairs.
 
-### Typed output löser inte en underdefinierad fråga
+### Typed output does not resolve an underdefined question
 
-Att Jev producerar ett strikt typed `Choice` innebär inte automatiskt att den semantiska frågan har exakt ett korrekt svar.
+The fact that Jev produces a strictly typed `Choice` does not automatically mean that the semantic question has exactly one correct answer.
 
-Applikationen måste fortfarande definiera vad judgmentet faktiskt betyder.
-
----
-
-# 13. Vad resultaten INTE visar
-
-Testmängden är fortfarande liten.
-
-Resultaten visar därför inte att:
-
-* Jev generellt är order invariant,
-* Jev alltid klassificerar Nordbo-ärenden korrekt,
-* confidence är kalibrerad sannolikhet för correctness,
-* en viss confidence-nivå automatiskt bör leda till HUMAN_REVIEW,
-* den explicita priority-designen är den bästa produktdesignen,
-* Choice är den bästa primitive för alla routingproblem,
-* resultaten automatiskt generaliserar till svenska kundmeddelanden,
-* modellen är robust mot större adversarial- eller verkliga produktionsdata.
-
-Resultaten ska därför behandlas som experimentell evidens, inte produktionsvalidering.
+The application must still define what the judgment actually means.
 
 ---
 
-# 14. Arkitektonisk lärdom
+# 13. What the Results Do NOT Show
 
-Experimenten börjar tydliggöra en viktig gräns mellan semantic judgment och business policy.
+The test set is still small.
 
-En möjlig arkitektur är:
+The results therefore do not show that:
+
+* Jev is generally order invariant,
+* Jev always classifies Nordbo requests correctly,
+* confidence is a calibrated probability of correctness,
+* a particular confidence level should automatically trigger HUMAN_REVIEW,
+* the explicit priority design is the best product design,
+* Choice is the best primitive for all routing problems,
+* the results automatically generalize to Swedish customer messages,
+* the model is robust against larger adversarial or real production datasets.
+
+The results should therefore be treated as experimental evidence, not production validation.
+
+---
+
+# 14. Architectural Lesson
+
+The experiments are beginning to clarify an important boundary between semantic judgment and business policy.
+
+One possible architecture is:
 
 ```text
 Customer message
@@ -535,90 +537,90 @@ deterministic application policy
 routing / review / other action
 ```
 
-Jev behöver inte äga hela affärsbeslutet.
+Jev does not need to own the entire business decision.
 
-Exempelvis kan Jev avgöra vilka semantiska egenskaper ett meddelande har medan C# bestämmer vad verksamheten gör med dessa egenskaper.
+For example, Jev can determine which semantic properties a message has, while C# decides what the business does with those properties.
 
-Detta behöver dock testas vidare innan någon slutlig routingarkitektur väljs.
+However, this needs further testing before a final routing architecture is chosen.
 
 ---
 
-# 15. Nästa forskningsfråga – primitives
+# 15. Next Research Question – Primitives
 
-Experimenten har också väckt en mer grundläggande fråga:
+The experiments have also raised a more fundamental question:
 
-> Är ett kundmeddelande verkligen alltid ett single-label Choice-problem?
+> Is a customer message really always a single-label Choice problem?
 
-Exempel:
+For example:
 
 > My heating is broken and I was charged rent twice.
 
-Semantiskt kan båda följande samtidigt vara sanna:
+Semantically, both of the following can be true at the same time:
 
 ```text
 Contains Maintenance issue = YES
 Contains Billing issue     = YES
 ```
 
-En enda Choice tvingar däremot fram konkurrens:
+A single Choice, however, forces competition:
 
 ```text
 Maintenance VS Billing
 ```
 
-Nästa steg bör därför vara att förstå och experimentellt jämföra TypeSafe-primitives:
+The next step should therefore be to understand and experimentally compare the TypeSafe primitives:
 
 ### Choice
 
-Vilket av flera konkurrerande alternativ ska väljas?
+Which of several competing options should be selected?
 
 ### Noul
 
-Gäller ett specifikt villkor?
+Does a specific condition hold?
 
-Flera separata Noul-judgments skulle potentiellt kunna identifiera flera samtidiga intents utan att tvinga fram en vinnare.
+Several separate Noul judgments could potentially identify multiple simultaneous intents without forcing a winner.
 
 ### Score
 
-Hur mycket av en definierad egenskap finns?
+How much of a defined property is present?
 
-Det kan vara relevant för kontinuerliga judgment-dimensioner, exempelvis urgency, om dimensionen kan definieras tillräckligt tydligt.
+This may be relevant for continuous judgment dimensions, such as urgency, if the dimension can be defined clearly enough.
 
 ### Confidence
 
-Confidence ska behandlas separat från själva primitive-valet och inte tolkas som sannolikheten att modellen har rätt.
+Confidence should be treated separately from the choice of primitive and should not be interpreted as the probability that the model is correct.
 
 ---
 
-# 16. Rekommenderad experimentdisciplin framåt
+# 16. Recommended Experimental Discipline Going Forward
 
-BizzJev bör fortsätta med samma metod:
+BizzJev should continue using the same method:
 
 ```text
 Observation
     ↓
-Hypotes
+Hypothesis
     ↓
-Ändra EN relevant variabel
+Change ONE relevant variable
     ↓
-Kontroller
+Controls
     ↓
-Kör verkliga Jev-anrop
+Make real Jev calls
     ↓
-Jämför
+Compare
     ↓
-Dokumentera
+Document
 ```
 
-Nuvarande baseline- och experimentversioner bör behållas så att senare ändringar kan jämföras mot tidigare beteende.
+The current baseline and experimental versions should be retained so that later changes can be compared with earlier behavior.
 
-Framtida körningar bör även sparas maskinläsbart, exempelvis som JSON, så att experimentresultat kan analyseras och återanvändas utan att vara beroende av terminalutskrifter.
+Future runs should also be saved in a machine-readable format, such as JSON, so that experiment results can be analyzed and reused without relying on terminal output.
 
 ---
 
-# 17. Nuvarande läge
+# 17. Current Status
 
-Hittills har BizzJev genomfört:
+So far, BizzJev has completed:
 
 ```text
 1 real integration smoke test
@@ -630,21 +632,21 @@ Hittills har BizzJev genomfört:
 13 explicit-priority experiment requests
 ```
 
-Totalt:
+Total:
 
 ```text
-33 strukturerade eval-anrop
-+ den ursprungliga integrationens smoke test
+33 structured evaluation calls
++ the original integration smoke test
 ```
 
-De viktigaste resultaten hittills är inte bara klassificeringsresultaten.
+The most important results so far are not just the classification results.
 
-Projektet har redan demonstrerat en central egenskap hos semantic AI-system:
+The project has already demonstrated a central property of semantic AI systems:
 
-> Modellens beteende kan inte utvärderas separat från betydelsen av den fråga som applikationen faktiskt har specificerat.
+> Model behavior cannot be evaluated separately from the meaning of the question the application has actually specified.
 
-Det observerade multi-intent-problemet såg initialt ut som möjlig model/order bias.
+The observed multi-intent problem initially looked like possible model/order bias.
 
-Ett kontrollerat experiment visade därefter att en stor del av beteendet försvann när det tidigare underdefinierade begreppet **primary** ersattes med en explicit businessregel.
+A controlled experiment then showed that much of the behavior disappeared when the previously underdefined concept of **primary** was replaced with an explicit business rule.
 
-Det gör frågedesign, primitive-val och tydlig separation mellan semantic judgment och deterministic business logic till centrala delar av nästa fas av BizzJev.
+This makes question design, primitive selection, and a clear separation between semantic judgment and deterministic business logic central parts of the next phase of BizzJev.
