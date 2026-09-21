@@ -1,6 +1,6 @@
 # Milestone 2 — Multi-primitive evaluation / single-call decision pipeline
 
-Status: **tasks 01-08 delivered and verified including the live evaluation (81 of 1,000 requests consumed); task 09 is released and final.**
+Status: **all nine tasks delivered and verified; the Milestone2 branch is engineering-complete pending owner acceptance (82 of 1,000 live requests consumed).**
 
 The goal is a new **Decision Pipeline** tab in the existing Semantic Operations Lab. One customer message goes to Jev in one request containing Choice, Score and Noul questions. Typed answers become inputs to deterministic C# policy, with an explicit human fallback.
 
@@ -29,11 +29,11 @@ This folder is the handoff package for implementation agents and the project own
 | 06 | [Integrate backend endpoints and policy replay](06_BACKEND_API.md) | 03, 04, 05 | DONE |
 | 07 | [Build the Decision Pipeline tab](07_DECISION_PIPELINE_UI.md) | 05, 06 | DONE |
 | 08 | [Implement and run the evaluation workflow](08_EVALUATION_RUNNER.md) | 05, 06 | DONE |
-| 09 | [Integrate, document and verify the milestone](09_ACCEPTANCE_AND_DOCUMENTATION.md) | 07, 08 | READY |
+| 09 | [Integrate, document and verify the milestone](09_ACCEPTANCE_AND_DOCUMENTATION.md) | 07, 08 | DONE |
 
 This is the authoritative task status table. The orchestrator updates it during implementation, not while merely reading the plan. Each task ends with a completion record template for evidence.
 
-Task 09 is dependency-ready (07, 08 verified). Live budget: 81/1,000 consumed; see [LIVE_REQUEST_BUDGET.md](LIVE_REQUEST_BUDGET.md). DONE reflects verified task delivery, not owner acceptance of the milestone or merge authorization.
+All tasks are DONE with verified completion records. Live budget: 82/1,000 consumed ([LIVE_REQUEST_BUDGET.md](LIVE_REQUEST_BUDGET.md)). Engineering completion is **not** owner acceptance: final milestone acceptance and merge authorization into main belong exclusively to the owner. DONE reflects verified task delivery, not owner acceptance of the milestone or merge authorization.
 
 ## Scope and decisions
 

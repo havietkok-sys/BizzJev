@@ -50,11 +50,11 @@ The final handoff should let a new user run the demo, understand the three primi
 
 ## Completion record
 
-- Status / owner:
-- Final versions and files:
-- Build/test/browser checks actually completed:
-- Documentation and acceptance report links:
-- Live budget/attempts, unresolved limitations and publication status:
-- Orchestrator verification: verifier, revision/artifact versions, checked evidence and decision:
-- Owner final acceptance: pending unless explicitly provided:
-- Owner merge authorization: pending unless explicitly provided:
+- Status / owner: **DONE for engineering completion** (orchestrator-verified 2026-09-21). Implemented and verified by the orchestrator agent in a separate final pass. This is not owner acceptance and not merge authorization.
+- Final versions and files: semantic `pipeline-v1`, policy `pipeline-policy-v1`, dataset `decision-pipeline-cases-v1` (hash `CCCCA6FF34816D0C363E926C9B99BE0553632BF3E84F67` truncated in this sentence — full hash in [DATASET.md](DATASET.md)), model `jev-1.13.0`. Delivered application files: `DecisionPipeline.cs` (contracts), `DecisionPipelineClient.cs`, `DecisionPipelinePolicy.cs`, `DecisionPipelineEndpoints.cs`, `DecisionPipelineEvaluation.cs`, `config/decision-pipeline.v1.json`, `config/decision-pipeline-cases.v1.json`, `web/lab/src/DecisionPipeline.tsx` + API helpers + nav/route, refreshed `wwwroot` bundle; 138 new tests across four test files.
+- Build/test/browser checks actually completed: `dotnet build` 0 warnings/0 errors; full xUnit suite **165/165**; `npm run build` clean; `git diff --check` clean; `wwwroot` refreshed from `dist` with verified absolute-path stale-asset deletion and `index.html` reference check + credential scan of the bundle; backend-served browser walkthrough of `#/decision-pipeline` (one live analysis, budget attempt 82) plus Analyze/Studio/Library confirmed on the same bundle; keyless definition/replay behavior covered by endpoint tests (503 message for missing key on analyze only).
+- Documentation and acceptance report links: [ACCEPTANCE_REPORT.md](ACCEPTANCE_REPORT.md) (requirement matrix, end-to-end trace, commands/outcomes, versions/hashes, run references, limitations); root README and `docs/DEMO_RUN.md` updated with the new tab, provenance, single-call/no-retry behavior and milestone2docs links; historical reports untouched; this folder's README index updated to final status. Every produced document was reviewed against actual behavior.
+- Live budget/attempts, unresolved limitations and publication status: **82 of 1,000 requests consumed** (1 UI smoke + 80 evaluation + 1 final walkthrough), all ledger-recorded before dispatch; remaining limitations listed in the acceptance report (uncalibrated demo thresholds, small author-written synthetic set, two disclosed validation-tolerance recalibrations, confident answers on two ambiguous annotations, single-session latency figures). **The milestone is NOT merged or published**: all work is on `Milestone2` only; `main` untouched.
+- Orchestrator verification: verifier = ZCode orchestrator; evidence = final command outputs above, the acceptance matrix cross-checked item by item, saved run artifacts, and browser observations; decision = task 09 **DONE — Milestone2 engineering-complete**.
+- Owner final acceptance: **pending** (not provided).
+- Owner merge authorization: **pending** (not provided; merging/publishing into `main` is prohibited without it).

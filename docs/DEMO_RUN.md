@@ -239,6 +239,22 @@ Go to the **Evaluation Library** tab. Click **Run full evaluation** to score all
 
 The built-in [dataset](../src/BizzJev.Lab/config/testcases.v1.json) contains constructed customer messages and expected labels for the fictional Nordbo Telecom. These are not real customer complaints and are separate from the CFPB data used in earlier experiments; see [Data sources and demo examples](../README.md#data-sources-and-demo-examples). User-saved cases contain whatever text the user supplied, so their origin is not guaranteed to be synthetic. Results on the built-in set demonstrate behavior on those scenarios, not accuracy on real customer data.
 
+### 7. Decision Pipeline (mixed Choice + Score + Noul in one request)
+
+Go to the **Decision Pipeline** tab. Unlike the Analyze tab (Noul-only gates), this tab sends one message in a **single Jev request** containing three different question types:
+
+- **Choice** — which team owns initial handling (Technical, Billing, Contract, Support, Other)
+- **Score** — urgency 0–3, defined by the consequence of waiting
+- **Noul** — explicit cancellation intent (probability of yes)
+
+Load a synthetic example (or type your own message) and click **Analyze once** — exactly one request, no automatic retry. Read the three judgment cards (full probability distributions, the urgency level legend, the raw cancellation probability — Noul has no confidence value), then the **C# decision** card: proposed team, priority, cancellation disposition, review reasons and non-executing proposed actions. The **C# policy explanation** lists the exact rule comparisons that produced the decision; it is deterministic code output, not model reasoning.
+
+Try **Policy replay** below the results: change a threshold (for example lower `urgentAtLeast` to 1.8) and click **Recalculate policy** — the decision recomputes on the server from the *same* raw answers with **zero** new Jev requests. Editing the message marks results stale until you analyze again.
+
+Technical View shows the exact one-request wire payload and response, the returned model, elapsed time, the real outbound attempt count and token usage.
+
+Everything here proposes handling for a human; nothing cancels a service or contacts anyone. Full documentation: [milestone2docs](../milestone2docs/README.md) — especially the [user guide](../milestone2docs/USER_GUIDE.md), [API contract](../milestone2docs/API_CONTRACT.md) and the measured [evaluation report](../milestone2docs/EVALUATION_REPORT.md) (40-case frozen synthetic set; 82 of the 1,000-request development budget were consumed).
+
 ---
 
 ## Suggested Demo Inputs

@@ -13,8 +13,8 @@ This budget covers integration smoke checks, prompt refinement, DESIGN/TEST eval
 | Item | Requests |
 |---|---:|
 | Authorized ceiling | 1,000 |
-| Consumed | 81 |
-| Remaining | 919 |
+| Consumed or reserved | 82 |
+| Remaining | 918 |
 
 Final state after the task 08 frozen evaluation (2026-09-21): attempt 1 = task 07 UI verification (success); attempts 2–25 = first DESIGN run (discovery of the 2-decimal score rounding, 4 validator-rejected answers, preserved as evidence); attempts 26–49 = DESIGN baseline run (24/24); attempts 50–65 = first TEST run (discovery of the 0.99 distribution sum, 1 validator-rejected answer, preserved as evidence); attempts 66–81 = TEST baseline run (16/16). All 81 attempts are recorded one-by-one in the runtime ledger (`data/lab/decision-pipeline/budget.json`), reserved before dispatch; nothing was refunded. Measured results: [EVALUATION_REPORT.md](EVALUATION_REPORT.md); sanitized run artifacts: [results/](results/). The ceiling is an allowance, not a target: 919 requests remain for any future owner-directed work.
 
@@ -35,5 +35,8 @@ Append ledger entries identifying the task/run, purpose, allocated attempt numbe
 | task 08 evaluation | DESIGN re-run with recalibrated validation tolerance (0.05) | 26–49 | 24 | CONSUMED: run `20260921-214122782-design`, 24/24 completed — reported as the DESIGN baseline |
 | task 08 evaluation | Frozen TEST split — first run | 50–65 | 16 | CONSUMED: run `20260921-214205361-test`, 16 attempted / 15 completed; dp-t07 distribution sum 0.99 rejected by the 1e-5 sum tolerance (same rounding family); preserved as evidence |
 | task 08 evaluation | TEST re-run with recalibrated sum tolerance (0.03) | 66–81 | 16 | CONSUMED: run `20260921-214337239-test`, 16/16 completed — reported as the TEST baseline |
+| task 09 walkthrough | Single live analyze through the backend-served bundle (end-to-end trace, multi-issue + cancellation case dp-d03) | 82 | 1 | CONSUMED: SUCCESS 2026-09-21 ~21:50 UTC — Technical (conf 0.85/margin 0.76), urgency 2 → Elevated, Noul 0.98 → YES, `route_to_team` + `cancellation_handling`, 1 outbound attempt, 703.0 ms, usage 1723/89; matches the dp-d03 DESIGN expectation |
+
+Final consumption: **82 of 1,000** (918 remaining).
 
 The ceiling is an allowance, not a spending target. Preserve versioned results and reuse raw answers for policy-only changes. If exhausted, save partial evidence, report unrun work and continue independent offline tasks; request an increase only if more live execution is needed.
