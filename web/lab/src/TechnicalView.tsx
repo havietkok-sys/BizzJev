@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { AnalyzeResponse, GateDef } from './api';
-import { InfoButton } from './PolicyScale';
+import { HelpTerm } from './HelpTerm';
 import { ProvenanceBadge } from './ProvenanceBadge';
 
 function CopyButton({ text, label }: { text: string; label: string }) {
@@ -42,7 +42,7 @@ export function TechnicalView({ result, customerText, gates }: { result: Analyze
   }
   return (
     <section className="panel">
-      <h2>Technical View <InfoButton topic="viewtoggle" /> <span className="dim small">— same run as Business View; nothing was re-executed</span></h2>
+      <h2>Technical View <HelpTerm term="viewLevels" /> <span className="dim small">— same run; switching presentation never re-executes</span></h2>
 
       <Section title="Run Details" defaultOpen>
         <table>

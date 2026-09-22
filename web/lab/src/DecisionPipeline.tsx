@@ -5,7 +5,9 @@ import {
   type PipelineDecision, type PipelinePolicySettings, type ChoiceSlot, type ScoreSlot, type NoulSlot
 } from './api';
 import { HelpTerm } from './HelpTerm';
-import { ProvenanceBadge, ProvenanceLegend } from './ProvenanceBadge';
+import { ProvenanceBadge, ProvenanceKey } from './ProvenanceBadge';
+import { Explainer } from './Explainer';
+import { useViewLevel } from './viewLevel';
 
 type ResultTab = 'analysis' | 'replay' | 'technical';
 
@@ -31,17 +33,18 @@ function prettyJson(raw: string | null | undefined): string {
  * Decision Pipeline tab (Milestone 2). One customer message -> ONE Jev request with three
  * questions (Choice + Score + Noul) -> typed validation -> deterministic C# policy.
  *
- * The result area is organized in three INTERNAL tabs: Analysis (default, user-facing result),
- * Policy Replay (threshold experiments, zero Jev calls) and Technical (wire traffic and rule
- * trace; only when the server enables Technical View). The internal tab bar belongs to this
- * page, not to the application's top-level navigation.
+ * The result area follows the global presentation level (viewLevel.tsx): Quick demo shows
+ * the decision summary only (no tabs, no raw distributions); Business adds Policy Replay;
+ * Technical adds the diagnostics tab when the server enables Technical View. The internal
+ * tab bar belongs to this page, not to the application's top-level navigation.
  *
  * Request discipline: exactly one analysis request per explicit "Analyze once" click. Nothing is
- * sent on mount, typing, example selection, tab change or rerender; errors are never silently
- * resubmitted. Replay posts stored answers to C# only — this file contains no copy of the
- * decision policy.
+ * sent on mount, typing, example selection, tab change, level switch or rerender; errors are
+ * never silently resubmitted. Replay posts stored answers to C# only — this file contains no
+ * copy of the decision policy.
  */
 export function DecisionPipeline() {
+  const { level, atLeast } = useViewLevel();
   const [definition, setDefinition] = useState<PipelineDefinition | null>(null);
   const [draft, setDraft] = useState('');
   const [analyzedText, setAnalyzedText] = useState<string | null>(null);
@@ -120,13 +123,15 @@ export function DecisionPipeline() {
     setReplayError('');
   };
 
+  // Quick demo shows the analysis content only; the derivation below keeps every other
+  // level consistent even if the stored tab is unavailable at the current level.
+  const activeTab: ResultTab = level === 'quick' ? 'analysis' : tab;
+
   const onTabKeys = (e: React.KeyboardEvent) => {
-    const order: ResultTab[] = result?.diagnostics
-      ? ['analysis', 'replay', 'technical']
-      : ['analysis', 'replay'];
-    const idx = order.indexOf(tab);
+    const order = tabs.filter((t) => t.available).map((t) => t.id);
+    const idx = order.indexOf(activeTab);
     const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-    if (dir === 0) return;
+    if (dir === 0 || idx < 0) return;
     e.preventDefault();
     const next = order[(idx + dir + order.length) % order.length];
     setTab(next);
@@ -135,19 +140,21 @@ export function DecisionPipeline() {
 
   const tabs: { id: ResultTab; label: string; available: boolean }[] = [
     { id: 'analysis', label: 'Analysis', available: true },
-    { id: 'replay', label: 'Policy Replay', available: true },
-    { id: 'technical', label: 'Technical', available: result?.diagnostics != null }
+    { id: 'replay', label: 'Policy Replay', available: atLeast('business') },
+    { id: 'technical', label: 'Technical', available: atLeast('technical') && result?.diagnostics != null }
   ];
 
   return (
     <>
       <section className="panel">
         <h2>Customer message</h2>
-        <label className="small dim" htmlFor="dp-text">Customer text (sent to Jev unchanged; 1–8,000 UTF-16 units, not blank)</label>
+        <label className="small dim" htmlFor="dp-text">
+          {level === 'quick' ? 'Customer message' : 'Customer text (sent to Jev unchanged; 1–8,000 UTF-16 units, not blank)'}
+        </label>
         <textarea id="dp-text" value={draft} onChange={(e) => setDraft(e.target.value)}
           placeholder="Paste a customer message, or load a synthetic example below…" />
         <div className="save-row">
-          <label className="small dim" htmlFor="dp-example">Synthetic example <HelpTerm term="synthetic" />:</label>
+          <label className="small dim" htmlFor="dp-example">Synthetic example {level !== 'quick' && <HelpTerm term="synthetic" />}:</label>
           <select id="dp-example" value="" onChange={(e) => loadExample(e.target.value)} disabled={!definition}>
             <option value="">Load an example…</option>
             {definition?.examples.map((x) => (
@@ -155,7 +162,7 @@ export function DecisionPipeline() {
             ))}
           </select>
           <button onClick={analyze} disabled={busy || !draft.trim()}>{busy ? 'Analyzing…' : 'Analyze once'}</button>
-          <span className="dim small">one Jev request per click · no automatic retry</span>
+          {atLeast('business') && <span className="dim small">one Jev request per click · no automatic retry</span>}
         </div>
         <p className="small" role="status" aria-live="polite" style={{ marginBottom: 0 }}>
           {busy && 'Analyzing: one request in flight…'}
@@ -167,25 +174,27 @@ export function DecisionPipeline() {
 
       {result && (
         <section className="panel dp-result">
-          <nav className="dp-subnav" role="tablist" aria-label="Decision Pipeline result views" onKeyDown={onTabKeys}>
-            {tabs.filter(t => t.available).map(t => (
-              <button key={t.id} ref={(el) => { tabRefs.current[t.id] = el; }}
-                role="tab" id={`dp-tab-${t.id}`} aria-selected={tab === t.id} tabIndex={tab === t.id ? 0 : -1}
-                aria-controls={`dp-panel-${t.id}`}
-                className={tab === t.id ? 'dp-tab active' : 'dp-tab'}
-                onClick={() => setTab(t.id)}>
-                {t.label}{t.id === 'replay' && dirtySettings ? ' •' : ''}
-              </button>
-            ))}
-          </nav>
+          {atLeast('business') && (
+            <nav className="dp-subnav" role="tablist" aria-label="Decision Pipeline result views" onKeyDown={onTabKeys}>
+              {tabs.filter(t => t.available).map(t => (
+                <button key={t.id} ref={(el) => { tabRefs.current[t.id] = el; }}
+                  role="tab" id={`dp-tab-${t.id}`} aria-selected={activeTab === t.id} tabIndex={activeTab === t.id ? 0 : -1}
+                  aria-controls={`dp-panel-${t.id}`}
+                  className={activeTab === t.id ? 'dp-tab active' : 'dp-tab'}
+                  onClick={() => setTab(t.id)}>
+                  {t.label}{t.id === 'replay' && dirtySettings ? ' •' : ''}
+                </button>
+              ))}
+            </nav>
+          )}
 
-          {tab === 'analysis' && (
+          {activeTab === 'analysis' && (
             <div role="tabpanel" id="dp-panel-analysis" aria-labelledby="dp-tab-analysis">
               <AnalysisView result={result} definition={definition} hasReplay={replay !== null} analyzedText={analyzedText ?? ''} />
             </div>
           )}
 
-          {tab === 'replay' && (
+          {activeTab === 'replay' && (
             <div role="tabpanel" id="dp-panel-replay" aria-labelledby="dp-tab-replay">
               <ReplayView result={result} settings={settings} dirtySettings={dirtySettings} stale={stale}
                 replay={replay} replayError={replayError} replayBusy={replayBusy}
@@ -194,9 +203,9 @@ export function DecisionPipeline() {
             </div>
           )}
 
-          {tab === 'technical' && result.diagnostics && (
+          {activeTab === 'technical' && result.diagnostics && (
             <div role="tabpanel" id="dp-panel-technical" aria-labelledby="dp-tab-technical">
-              <TechnicalView result={result} definition={definition} />
+              <PipelineTechnicalView result={result} definition={definition} />
             </div>
           )}
         </section>
@@ -206,53 +215,80 @@ export function DecisionPipeline() {
         <section className="panel">
           <h2>What this tab does</h2>
           <p className="small dim">
-            One message goes to <b>Jev</b> <HelpTerm term="jev" /> in ONE request containing a <b>Choice</b> <HelpTerm term="choice" /> (responsible team),
-            a <b>Score</b> <HelpTerm term="score" /> (urgency 0–3) and a <b>Noul</b> <HelpTerm term="noul" /> (explicit cancellation intent) question.
-            Typed answers feed <b>deterministic C# policy</b> <HelpTerm term="deterministicPolicy" /> with an explicit human fallback.
-            Domain: fictional Nordbo Telecom. Frozen semantics: <code>{definition.semanticVersion}</code> <HelpTerm term="semanticVersion" />,
-            policy <code>{definition.policyVersion}</code> <HelpTerm term="policyVersion" />, model <code>{definition.model}</code>.
+            One message → three Jev judgments (responsible team, urgency, explicit cancellation) →
+            one explainable C# decision with an explicit human fallback.
           </p>
-          <ProvenanceLegend />
+          {atLeast('business') && (
+            <Explainer summary="More detail — the three Jev questions and the frozen versions">
+              <p style={{ margin: '0 0 8px' }}>
+                One message goes to <b>Jev</b> <HelpTerm term="jev" /> in ONE request containing a <b>Choice</b> <HelpTerm term="choice" /> (responsible team),
+                a <b>Score</b> <HelpTerm term="score" /> (urgency 0–3) and a <b>Noul</b> <HelpTerm term="noul" /> (explicit cancellation intent) question.
+                Typed answers feed <b>deterministic C# policy</b> <HelpTerm term="deterministicPolicy" /> with an explicit human fallback.
+                Domain: fictional Nordbo Telecom. Frozen semantics: <code>{definition.semanticVersion}</code> <HelpTerm term="semanticVersion" />,
+                policy <code>{definition.policyVersion}</code> <HelpTerm term="policyVersion" />, model <code>{definition.model}</code>.
+              </p>
+              <ProvenanceKey />
+            </Explainer>
+          )}
         </section>
       )}
     </>
   );
 }
 
-// ---------------- Analysis tab (default, user-facing) ----------------
+// ---------------- Analysis tab (level-adaptive) ----------------
 
 function AnalysisView({ result, definition, hasReplay, analyzedText }: { result: PipelineAnalyzeResponse; definition: PipelineDefinition | null; hasReplay: boolean; analyzedText: string }) {
+  const { level, atLeast } = useViewLevel();
   const d = result.decision;
   return (
     <>
       <h3 className="dp-tab-title">Analyzed text (exact input of this analysis) <ProvenanceBadge p="sentToJev" /></h3>
       <p className="analyzed-text">{analyzedText}</p>
-      <p className="dim small">
-        semantic {result.semanticVersion} <ProvenanceBadge p="projectPolicy" /> · policy {result.policyVersion} <ProvenanceBadge p="projectPolicy" /> ·
-        model {result.returnedModel ?? 'unavailable'} <ProvenanceBadge p="sentToJev" /> · analyzed {result.analyzedAtUtc}
-      </p>
-
-      <div className="dp-cards">
-        <ChoiceCard slot={result.answers.routing} />
-        <ScoreCard slot={result.answers.urgency} levels={definition?.scoreLevelDescriptions ?? null} />
-        <NoulCard slot={result.answers.cancellationRequested} disposition={d.cancellationDisposition} />
-      </div>
-
-      <h3 className="dp-tab-title">C# decision (deterministic policy — not Jev reasoning) <ProvenanceBadge p="cSharpDerived" /></h3>
-      <DecisionCard decision={d} />
-
-      <details className="dp-why">
-        <summary>Why? — the deterministic rules behind this decision <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="matchedRule" /></summary>
-        <ul className="dp-rules">
-          {d.explanations.map((x, i) => <li key={i}><code>{x.ruleId}</code> — <span className="small">{x.text}</span></li>)}
-        </ul>
-        <p className="dim small" style={{ marginBottom: 0 }}>
-          These comparisons come from the frozen C# rule table with observed values and thresholds. Full wire traffic and the complete rule
-          trace are in the Technical tab{result.diagnostics ? '' : ' (diagnostics are disabled on this server, so that tab is hidden)'}.
+      {atLeast('business') && (
+        <p className="dim small">
+          semantic {result.semanticVersion} <ProvenanceBadge p="projectPolicy" /> · policy {result.policyVersion} <ProvenanceBadge p="projectPolicy" /> ·
+          model {result.returnedModel ?? 'unavailable'} <ProvenanceBadge p="sentToJev" /> · analyzed {result.analyzedAtUtc}
         </p>
-      </details>
+      )}
 
-      {hasReplay && (
+      {level === 'quick' ? (
+        <>
+          <div className="dp-cards">
+            <QuickAnswerCard label="Responsible team" value={d.proposedTeam} confidence={result.answers.routing.confidence} />
+            <QuickAnswerCard label="Urgency" value={d.proposedPriority} confidence={result.answers.urgency.confidence} />
+            <QuickAnswerCard label="Cancellation" value={d.cancellationDisposition} confidence={null} />
+          </div>
+          <h3 className="dp-tab-title">Proposed handling <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="proposedAction" /></h3>
+          <QuickOutcome decision={d} />
+        </>
+      ) : (
+        <>
+          <div className="dp-cards">
+            <ChoiceCard slot={result.answers.routing} showDistribution={atLeast('technical')} />
+            <ScoreCard slot={result.answers.urgency} levels={definition?.scoreLevelDescriptions ?? null} showDistribution={atLeast('technical')} />
+            <NoulCard slot={result.answers.cancellationRequested} disposition={d.cancellationDisposition} />
+          </div>
+
+          <h3 className="dp-tab-title">C# decision (deterministic policy — not Jev reasoning) <ProvenanceBadge p="cSharpDerived" /></h3>
+          <DecisionCard decision={d} detail={level === 'technical' ? 'technical' : 'business'} />
+        </>
+      )}
+
+      {atLeast('business') && (
+        <details className="dp-why">
+          <summary>Why? — the deterministic rules behind this decision <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="matchedRule" /></summary>
+          <ul className="dp-rules">
+            {d.explanations.map((x, i) => <li key={i}><code>{x.ruleId}</code> — <span className="small">{x.text}</span></li>)}
+          </ul>
+          <p className="dim small" style={{ marginBottom: 0 }}>
+            These comparisons come from the frozen C# rule table with observed values and thresholds. Full wire traffic and the complete rule
+            trace are in the Technical tab{result.diagnostics ? '' : ' (diagnostics are disabled on this server, so that tab is hidden)'}.
+          </p>
+        </details>
+      )}
+
+      {atLeast('business') && hasReplay && (
         <p className="small" style={{ color: 'var(--action)' }}>
           A replayed decision with edited thresholds exists — see the <b>Policy Replay</b> tab.
         </p>
@@ -261,7 +297,63 @@ function AnalysisView({ result, definition, hasReplay, analyzedText }: { result:
   );
 }
 
-// ---------------- Policy Replay tab ----------------
+/**
+ * Quick Demo answer card: only decision-level values computed by BizzJev's C# policy
+ * (never raw distributions) plus a qualitative confidence indicator from the Jev answer.
+ */
+function QuickAnswerCard({ label, value, confidence }: { label: string; value: string | null; confidence: number | null }) {
+  return (
+    <div className="dp-card">
+      <h3>{label}</h3>
+      <p style={{ margin: 0 }}>
+        {value ? <b>{value}</b> : <span className="pill no">unavailable</span>}
+        {confidence !== null && confidence !== undefined && <ConfidenceDot value={confidence} />}
+      </p>
+    </div>
+  );
+}
+
+/** Qualitative confidence cue for the Quick demo: green ≥ 0.80, amber below (aligned with routingConfidenceMin). */
+function ConfidenceDot({ value }: { value: number }) {
+  const good = value >= 0.8;
+  return (
+    <span className={good ? 'conf-dot good' : 'conf-dot low'} title={`Jev confidence ${value.toFixed(2)}`}>
+      {good ? 'high confidence' : 'low confidence'}
+    </span>
+  );
+}
+
+function QuickOutcome({ decision }: { decision: PipelineDecision }) {
+  if (decision.pipelineStatus === 'failed' || decision.overallDisposition === 'technical_failure') {
+    return (
+      <p>
+        <span className="pill no">could not complete</span>{' '}
+        <span className="dim small">A required answer was missing or invalid — shown honestly, never treated as a “no”. <HelpTerm term="technicalFailure" /></span>
+      </p>
+    );
+  }
+  return (
+    <>
+      <p>
+        {decision.overallDisposition === 'human_review' && <span className="pill review">needs human review</span>}
+        {decision.overallDisposition === 'policy_eligible' && <span className="pill yes">ready for the proposed handling</span>}
+      </p>
+      {decision.reviewReasons.length > 0 && (
+        <ul className="dp-rules small">
+          {decision.reviewReasons.map((r, i) => <li key={i}>{r.detail}</li>)}
+        </ul>
+      )}
+      {decision.proposedActions.length > 0 && (
+        <ul className="dp-rules">
+          {decision.proposedActions.map((a, i) => <li key={i}>{a.label}</li>)}
+        </ul>
+      )}
+      <p className="dim small" style={{ margin: 0 }}>Proposals only — nothing is executed. <HelpTerm term="proposedAction" /></p>
+    </>
+  );
+}
+
+// ---------------- Policy Replay tab (Business and Technical levels) ----------------
 
 function ReplayView(props: {
   result: PipelineAnalyzeResponse;
@@ -275,16 +367,19 @@ function ReplayView(props: {
   onRecalculate: () => void;
   onReset: () => void;
 }) {
+  const { level } = useViewLevel();
   const { result, settings, dirtySettings, stale, replay, replayError, replayBusy, onSetting, onRecalculate, onReset } = props;
   return (
     <>
-      <h3 className="dp-tab-title">Policy replay <HelpTerm term="replay" /> — local demo thresholds, zero Jev calls</h3>
-      <p className="dim small">
-        Change <b>thresholds</b> <ProvenanceBadge p="projectPolicy" /> <HelpTerm term="threshold" /> and recalculate: the deterministic C# policy <HelpTerm term="deterministicPolicy" /> recomputes the
-        decision <ProvenanceBadge p="cSharpDerived" /> on the server from the <b>same stored Jev answers</b> <ProvenanceBadge p="jevOutput" /> — the stored answers are sent back unchanged, replay makes <b>zero</b> additional Jev requests,
-        and this page contains no JavaScript copy of the policy. Changed settings are a <b>custom policy</b> <HelpTerm term="replayCustom" /> (<code>pipeline-policy-v1-custom</code>), not the
-        frozen default <code>{result.policyVersion}</code> <HelpTerm term="policyVersion" />.
-      </p>
+      <h3 className="dp-tab-title">Policy replay <HelpTerm term="replay" /> — same stored answers, your thresholds, zero Jev calls</h3>
+      <Explainer summary="How replay works">
+        <p style={{ margin: '0 0 8px' }}>
+          Change <b>thresholds</b> <ProvenanceBadge p="projectPolicy" /> <HelpTerm term="threshold" /> and recalculate: the deterministic C# policy <HelpTerm term="deterministicPolicy" /> recomputes the
+          decision <ProvenanceBadge p="cSharpDerived" /> on the server from the <b>same stored Jev answers</b> <ProvenanceBadge p="jevOutput" /> — the stored answers are sent back unchanged, replay makes <b>zero</b> additional Jev requests,
+          and this page contains no JavaScript copy of the policy. Changed settings are a <b>custom policy</b> <HelpTerm term="replayCustom" /> (<code>pipeline-policy-v1-custom</code>), not the
+          frozen default <code>{result.policyVersion}</code> <HelpTerm term="policyVersion" />.
+        </p>
+      </Explainer>
 
       {settings && (
         <div className="dp-settings-block">
@@ -322,7 +417,7 @@ function ReplayView(props: {
             recalculated {replay.replayedAtUtc} · policy {replay.policyVersion} <ProvenanceBadge p="projectPolicy" /> · <b>{replay.outboundAttempts}</b> Jev calls <HelpTerm term="outboundAttempt" />
           </p>
           <ComparisonRow label="Compared with the analysis result:" before={result.decision} after={replay.decision} />
-          <DecisionCard decision={replay.decision} replayNote={null} />
+          <DecisionCard decision={replay.decision} detail={level === 'technical' ? 'technical' : 'business'} />
         </>
       )}
     </>
@@ -355,7 +450,7 @@ function ComparisonRow({ label, before, after }: { label: string; before: Pipeli
 
 // ---------------- Technical tab (only when the server enables Technical View) ----------------
 
-function TechnicalView({ result, definition }: { result: PipelineAnalyzeResponse; definition: PipelineDefinition | null }) {
+function PipelineTechnicalView({ result, definition }: { result: PipelineAnalyzeResponse; definition: PipelineDefinition | null }) {
   const dg = result.diagnostics!;
   const d = result.decision;
   const routing = result.answers.routing;
@@ -460,13 +555,13 @@ function TechnicalView({ result, definition }: { result: PipelineAnalyzeResponse
   );
 }
 
-// ---------------- shared cards ----------------
+// ---------------- shared cards (Business / Technical levels) ----------------
 
 function SlotError({ error }: { error: string | null }) {
   return <span className="pill no" title={`answer unavailable (${error ?? 'unavailable'})`}>unavailable</span>;
 }
 
-function ChoiceCard({ slot }: { slot: ChoiceSlot }) {
+function ChoiceCard({ slot, showDistribution }: { slot: ChoiceSlot; showDistribution: boolean }) {
   return (
     <div className="dp-card">
       <h3>Choice <HelpTerm term="choice" /> <ProvenanceBadge p="jevOutput" /> <span className="dim small">— responsible team</span></h3>
@@ -474,21 +569,23 @@ function ChoiceCard({ slot }: { slot: ChoiceSlot }) {
         <>
           <p><b>{slot.selected}</b> <span className="dim small">(initial handling <HelpTerm term="initialOwner" />)</span></p>
           <p className="small">confidence <HelpTerm term="confidence" /> {slot.confidence?.toFixed(2)} · margin <HelpTerm term="margin" /> {(slot.margin ?? 0).toFixed(2)} <ProvenanceBadge p="cSharpDerived" /></p>
-          <table>
-            <thead><tr><th>Category</th><th>Probability <HelpTerm term="distribution" /></th></tr></thead>
-            <tbody>
-              {slot.probabilities && Object.entries(slot.probabilities).map(([cat, p]) => (
-                <tr key={cat}><td>{cat}</td><td className="prob">{p.toFixed(2)}</td></tr>
-              ))}
-            </tbody>
-          </table>
+          {showDistribution && (
+            <table>
+              <thead><tr><th>Category</th><th>Probability <HelpTerm term="distribution" /></th></tr></thead>
+              <tbody>
+                {slot.probabilities && Object.entries(slot.probabilities).map(([cat, p]) => (
+                  <tr key={cat}><td>{cat}</td><td className="prob">{p.toFixed(2)}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </>
       ) : <SlotError error={slot.error} />}
     </div>
   );
 }
 
-function ScoreCard({ slot, levels }: { slot: ScoreSlot; levels: string[] | null }) {
+function ScoreCard({ slot, levels, showDistribution }: { slot: ScoreSlot; levels: string[] | null; showDistribution: boolean }) {
   return (
     <div className="dp-card">
       <h3>Score <HelpTerm term="score" /> <ProvenanceBadge p="jevOutput" /> <span className="dim small">— urgency (consequence of waiting)</span></h3>
@@ -496,18 +593,26 @@ function ScoreCard({ slot, levels }: { slot: ScoreSlot; levels: string[] | null 
         <>
           <p><b>{slot.score?.toFixed(2)}</b> <span className="dim small">on scale 0–3</span></p>
           <p className="small">confidence <HelpTerm term="confidence" /> {slot.confidence?.toFixed(2)}</p>
-          <table>
-            <thead><tr><th>Level</th><th>Probability</th><th>Meaning (frozen) <ProvenanceBadge p="projectPolicy" /></th></tr></thead>
-            <tbody>
-              {slot.probabilities && Object.entries(slot.probabilities).map(([level, p]) => (
-                <tr key={level}>
-                  <td>{level}</td>
-                  <td className="prob">{p.toFixed(2)}</td>
-                  <td className="small dim">{levels?.[Number(level)] ?? slot.legend?.[level] ?? ''}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {showDistribution ? (
+            <table>
+              <thead><tr><th>Level</th><th>Probability</th><th>Meaning (frozen) <ProvenanceBadge p="projectPolicy" /></th></tr></thead>
+              <tbody>
+                {slot.probabilities && Object.entries(slot.probabilities).map(([level, p]) => (
+                  <tr key={level}>
+                    <td>{level}</td>
+                    <td className="prob">{p.toFixed(2)}</td>
+                    <td className="small dim">{levels?.[Number(level)] ?? slot.legend?.[level] ?? ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            slot.score !== null && (
+              <p className="small dim" style={{ marginBottom: 0 }}>
+                {levels?.[Math.round(slot.score)] ?? slot.legend?.[String(Math.round(slot.score))] ?? ''}
+              </p>
+            )
+          )}
         </>
       ) : <SlotError error={slot.error} />}
     </div>
@@ -525,23 +630,18 @@ function NoulCard({ slot, disposition }: { slot: NoulSlot; disposition: Pipeline
             policy disposition <HelpTerm term="cancellationDisposition" /> <ProvenanceBadge p="cSharpDerived" />:{' '}
             {disposition === null ? <SlotError error={null} /> : <span className="pill" data-disp={disposition}>{disposition}</span>}
           </p>
-          <p className="dim small" style={{ marginBottom: 0 }}>
-            A raw probability from Jev — no confidence value exists for Noul. REVIEW means the probability sits between the
-            NO and YES boundaries; it is not “medium intent”.
-          </p>
         </>
       ) : <SlotError error={slot.error} />}
     </div>
   );
 }
 
-function DecisionCard({ decision, replayNote }: { decision: PipelineDecision; replayNote?: string | null }) {
+function DecisionCard({ decision, detail }: { decision: PipelineDecision; detail: 'business' | 'technical' }) {
   const statusColor = decision.pipelineStatus === 'ok'
     ? (decision.overallDisposition === 'policy_eligible' ? 'var(--yes)' : 'var(--review)')
     : '#f85149';
   return (
     <div>
-      {replayNote && <p className="small" style={{ color: 'var(--action)' }}>Replay result — {replayNote}</p>}
       <p>
         <span className="pill" style={{ color: statusColor }}>pipeline {decision.pipelineStatus}</span>{' '}
         <span className="pill" style={{ color: statusColor }}>{decision.overallDisposition}</span>{' '}
@@ -558,7 +658,9 @@ function DecisionCard({ decision, replayNote }: { decision: PipelineDecision; re
           <tr><th>Cancellation disposition</th><td>{decision.cancellationDisposition ?? 'unavailable'}</td></tr>
         </tbody>
       </table>
-      <p className="dim small" style={{ margin: 0 }}>Team is the raw Jev Choice selection <ProvenanceBadge p="jevOutput" />; every other row in this table is deterministic C# policy <ProvenanceBadge p="cSharpDerived" />.</p>
+      {detail === 'technical' && (
+        <p className="dim small" style={{ margin: 0 }}>Team is the raw Jev Choice selection <ProvenanceBadge p="jevOutput" />; every other row in this table is deterministic C# policy <ProvenanceBadge p="cSharpDerived" />.</p>
+      )}
       <h4>Review reasons ({decision.reviewReasons.length}) <HelpTerm term="reviewReason" /></h4>
       {decision.reviewReasons.length === 0
         ? <p className="dim small">None — the complete recommendation meets this demo's policy checks.</p>

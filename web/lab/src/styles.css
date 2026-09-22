@@ -4,7 +4,7 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; background: var(--bg); color: var(--text); font-size: 14px; }
-header { display: flex; gap: 16px; align-items: baseline; padding: 10px 18px; border-bottom: 1px solid var(--line); background: var(--panel); }
+header { display: flex; gap: 16px; align-items: baseline; padding: 10px 18px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
 header h1 { font-size: 15px; margin: 0; }
 header nav a { color: var(--jev); margin-right: 14px; text-decoration: none; }
 header nav a.active { text-decoration: underline; }
@@ -230,3 +230,43 @@ details.tech-section.nested summary { display: flex; align-items: center; gap: 1
 .gs-policy-flow { display: flex; flex-direction: column; gap: 2px; margin: 10px 0 12px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 8px; }
 .gs-policy-step { font-size: 12.5px; }
 .gs-policy-step em { color: var(--dim); font-style: normal; }
+
+/* ---------- presentation-level switcher (viewLevel.tsx) ---------- */
+.level-switch { margin-left: auto; display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; align-self: center; }
+.level-btn { background: none; color: var(--dim); border: none; border-radius: 0; padding: 5px 12px; font-weight: 700; font-size: 12px; margin: 0; cursor: pointer; }
+.level-btn + .level-btn { border-left: 1px solid var(--line); }
+.level-btn.active { background: var(--jev); color: #04121f; }
+.level-btn:focus-visible { outline: 2px solid var(--jev); outline-offset: -2px; }
+
+/* ---------- collapsible explainer (Explainer.tsx) ---------- */
+details.explainer { border: 1px dashed var(--line); border-radius: 8px; padding: 8px 12px; margin: 8px 0; background: var(--bg); }
+details.explainer summary { cursor: pointer; color: var(--jev); font-size: 13px; }
+details.explainer .explainer-body { margin-top: 6px; }
+
+/* ---------- panel rendered as a collapsed details (Analyze save-case, Library cases) ---------- */
+details.panel > summary { cursor: pointer; font-size: 13px; letter-spacing: .08em; color: var(--dim); text-transform: uppercase; font-weight: 700; }
+details.panel[open] > summary { margin-bottom: 10px; }
+details.howto-box > summary { cursor: pointer; color: var(--jev); font-weight: 700; }
+
+/* ---------- Analyze quick result: signal chips ---------- */
+.sig-chip { display: inline-block; border: 1px solid var(--line); border-radius: 14px; padding: 3px 12px; font-size: 12px; margin: 2px 6px 2px 0; background: var(--bg); }
+.sig-chip.detected { border-color: color-mix(in srgb, var(--yes) 55%, transparent); color: var(--yes); }
+.sig-chip.review { border-color: color-mix(in srgb, var(--review) 55%, transparent); color: var(--review); }
+
+/* ---------- Decision Pipeline quick cards: qualitative confidence cue ---------- */
+.conf-dot { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.conf-dot::before { content: '● '; }
+.conf-dot.good { color: var(--yes); }
+.conf-dot.low { color: var(--review); }
+
+/* ---------- provenance key button ---------- */
+.prov-key-wrap { display: inline-block; margin-left: 6px; }
+.prov-key-wrap .info { margin-left: 0; }
+
+/* ---------- Overview: run-the-demo CTA ---------- */
+.ov-cta { display: inline-block; background: var(--jev); color: #04121f; font-weight: 700; text-decoration: none; border-radius: 6px; padding: 8px 16px; }
+.ov-cta:hover, .ov-cta:focus-visible { filter: brightness(1.12); }
+
+/* ---------- Gate Studio: technical-only intro (lower levels) ---------- */
+.studio-intro { max-width: 640px; }
+.studio-intro ul { margin: 8px 0; }

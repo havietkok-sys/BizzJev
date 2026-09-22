@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { studioApi as api, type GateDef } from './api';
-import { PolicyScale, InfoButton } from './PolicyScale';
-import { ProvenanceBadge, ProvenanceLegend } from './ProvenanceBadge';
+import { PolicyScale } from './PolicyScale';
+import { ProvenanceBadge, ProvenanceKey } from './ProvenanceBadge';
+import { HelpTerm } from './HelpTerm';
+import { useViewLevel } from './viewLevel';
+import { GATE_DISPLAY_NAMES as DISPLAY_NAMES } from './examples';
 
 interface VersionMeta {
   version: string;
@@ -80,15 +83,9 @@ const FIELDS: { key: keyof GateDraft; label: string; help: string }[] = [
 ];
 
 const PROFILES = ['catch_most', 'strong_boundary', 'balanced_routing', 'analytics'];
-const DISPLAY_NAMES: Record<string, string> = {
-  billing_problem: 'Billing Problem', technical_problem: 'Technical Problem', contract_problem: 'Contract Problem',
-  support_interaction_problem: 'Support Interaction Problem', unresolved_issue: 'Unresolved Issue',
-  recurring_problem: 'Recurring Problem', positive_support_experience: 'Positive Support Experience',
-  negative_support_experience: 'Negative Support Experience', competitor_consideration: 'Competitor Consideration',
-  churn_risk: 'Churn Risk', explicit_cancellation_intent: 'Explicit Cancellation Intent'
-};
 
 export function GateStudio() {
+  const { level, setLevel } = useViewLevel();
   const [gates, setGates] = useState<GateDraft[]>([]);
   const [versions, setVersions] = useState<Record<string, VersionMeta[]>>({});
   const [activeVersions, setActiveVersions] = useState<Record<string, string>>({});
@@ -262,26 +259,54 @@ export function GateStudio() {
   const vs = selected ? (versions[selected] ?? []) : [];
   const currentActive = selected ? activeVersions[selected] : 'v1';
 
+  // Gate Studio is Technical-level only (approved design decision). Lower levels get a
+  // concise explanation plus an explicit switch action — the level is never changed
+  // automatically. The data-loading hooks above still ran; they only read local metadata.
+  if (level !== 'technical') {
+    return (
+      <section className="panel studio-intro">
+        <h2>Gate Studio</h2>
+        <p>
+          Nordbo’s detector workshop. Each <b>gate</b> teaches the system one thing it can recognize in a
+          customer message — a billing problem, churn risk, a cancellation request — and what may be done
+          with that signal.
+        </p>
+        <ul className="small dim">
+          <li>See what each detector means, in plain language</li>
+          <li>Edit detector definitions and test drafts against saved cases</li>
+          <li>Version every change without losing the frozen baseline</li>
+        </ul>
+        <p className="small dim">
+          Editing definitions is technical work, so the full studio is part of the <b>Technical</b> view.
+          Your choice is remembered for this session — nothing is switched automatically.
+        </p>
+        <button onClick={() => setLevel('technical')}>Switch to Technical view</button>
+      </section>
+    );
+  }
+
   return (
     <div className="studio-layout">
       <div className="studio-list panel">
         <h2>Gates</h2>
-        <p className="dim small">This is where Nordbo defines what each semantic detector means. Changes can be tested against saved customer cases before becoming active; every saved change creates a new version so previous behavior remains reproducible. <InfoButton topic="gatedesign" /></p>
-        <ProvenanceLegend />
-        <div className="gs-flow" aria-label="How a gate definition becomes a gate decision">
-          <span className="gs-flow-title small dim">How a gate works</span>
-          <span className="gs-flow-step">Semantic definition <span className="dim">(project-authored)</span></span>
-          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
-          <span className="gs-flow-step">Jev prompt definition <ProvenanceBadge p="sentToJev" /></span>
-          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
-          <span className="gs-flow-step">Jev</span>
-          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
-          <span className="gs-flow-step">Semantic signal <ProvenanceBadge p="jevOutput" /></span>
-          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
-          <span className="gs-flow-step">Threshold / local policy <ProvenanceBadge p="projectPolicy" /></span>
-          <span className="gs-flow-arrow" aria-hidden="true">↓</span>
-          <span className="gs-flow-step">Gate decision <ProvenanceBadge p="cSharpDerived" /></span>
-        </div>
+        <p className="dim small">This is where Nordbo defines what each semantic detector means. <HelpTerm term="gateDesign" /></p>
+        <ProvenanceKey />
+        <details className="explainer">
+          <summary>How a gate works</summary>
+          <div className="gs-flow" aria-label="How a gate definition becomes a gate decision">
+            <span className="gs-flow-step">Semantic definition <span className="dim">(project-authored)</span></span>
+            <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+            <span className="gs-flow-step">Jev prompt definition <ProvenanceBadge p="sentToJev" /></span>
+            <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+            <span className="gs-flow-step">Jev</span>
+            <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+            <span className="gs-flow-step">Semantic signal <ProvenanceBadge p="jevOutput" /></span>
+            <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+            <span className="gs-flow-step">Threshold / local policy <ProvenanceBadge p="projectPolicy" /></span>
+            <span className="gs-flow-arrow" aria-hidden="true">↓</span>
+            <span className="gs-flow-step">Gate decision <ProvenanceBadge p="cSharpDerived" /></span>
+          </div>
+        </details>
         {gates.map(g => (
           <div key={g.gateId}
             className={'studio-gate' + (selected === g.gateId ? ' selected' : '')}
@@ -290,7 +315,7 @@ export function GateStudio() {
             <span className="dim small"> {g.gateId}</span>
             <div className="dim small">
               Active: {activeVersions[g.gateId] ?? 'v1'} · {g.policyProfile}
-              {selected === g.gateId && dirty ? ' · <span style="color: var(--review)">Unsaved draft</span>' : ''}
+              {selected === g.gateId && dirty && <span style={{ color: 'var(--review)' }}> · Unsaved draft</span>}
             </div>
           </div>
         ))}
@@ -315,7 +340,7 @@ export function GateStudio() {
             </section>
 
             <section className="panel">
-              <h3 className="section-label">BUSINESS DEFINITION <span className="dim">— what does this gate mean?</span> <InfoButton topic="gatedesign" /></h3>
+              <h3 className="section-label">BUSINESS DEFINITION <span className="dim">— what does this gate mean?</span> <HelpTerm term="gateDesign" /></h3>
               <p className="dim small" style={{ margin: '0 0 10px' }}>Project-authored design notes. They shape the Jev prompt definition below — they are not sent to Jev as-is, and they are not post-inference rules.</p>
               {FIELDS.map(f => (
                 <div key={f.key} style={{ marginBottom: 8 }}>
