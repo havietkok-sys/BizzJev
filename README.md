@@ -24,6 +24,12 @@ BizzJev's own code maps those probabilities to **NO / REVIEW / YES** using confi
 
 The backend currently selects `jev-1.13.0` in [appsettings.json](src/BizzJev.Lab/appsettings.json). The UI and backend run locally; Jev inference runs on TypeSafe's service. The API key is sent only by the backend in the authorization header. Reading the documentation and saved experiment results does not require a key.
 
+### Milestone 2: the Decision Pipeline (mixed primitives in one request)
+
+The **Decision Pipeline** tab (`#/decision-pipeline`) composes all three primitives in a single Jev request: a **Choice** (which team owns initial handling), a **Score** (urgency as the consequence of waiting, levels 0–3) and a **Noul** (explicit cancellation intent) over one shared customer message. Typed answers then feed a deterministic C# policy that proposes a team, a priority, cancellation handling or an explicit human review with reasons — every proposal is a recommendation for a person, never an executed action.
+
+Architecture rule: **Jev owns all semantic inference; application code owns validation, deterministic policy and control flow.** No text heuristics, keyword rules or second models classify the message. Analysis makes exactly one HTTP request per run with no automatic retries; policy replay recomputes decisions from saved answers in C# with zero Jev calls. The frozen questions, thresholds, decision rules and the 40-case synthetic evaluation are documented in [milestone2docs](milestone2docs/README.md) — see the [semantic specification](milestone2docs/SEMANTIC_SPECIFICATION.md), [API contract](milestone2docs/API_CONTRACT.md), [user guide](milestone2docs/USER_GUIDE.md) and the measured [evaluation report](milestone2docs/EVALUATION_REPORT.md) (baseline runs: routing 38/39 agreement, urgency MAE 0.03/0.08, cancellation Brier 0.001/0.017, 29 automatic recommendations with 0 incorrect — small synthetic set, no production-accuracy claim).
+
 ### Official TypeSafe resources
 
 | Resource | What to use it for |
@@ -165,11 +171,13 @@ For documents available in both languages, the English version uses the base fil
 | [Jev evaluation report](docs/JEV_EVALUATION_REPORT.md) · [Svenska](docs/JEV_EVALUATION_REPORT_SWE.md) | Early Nordbo routing experiments and findings |
 | [BizzJev evaluation](docs/BIZZJEV_EVALUATION.md) · [Svenska](docs/BIZZJEV_EVALUATION_SWE.md) | Evaluation and lessons learned from Nordbo and CFPB experiments |
 | [docs/DEMO_RUN.md](docs/DEMO_RUN.md) | How to run the demo, troubleshooting, walkthrough |
+| [docs/DATA_PROVENANCE.md](docs/DATA_PROVENANCE.md) | The four provenance labels (SENT TO JEV / JEV OUTPUT / C# DERIVED / PROJECT POLICY) used across all screens |
 | [docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE.md](docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE.md) | Practical guide: how to design semantic gate prompts (broad inside, sharp at the edges) |
 | [docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE_SWE.md](docs/JEV_SEMANTIC_GATE_DESIGN_GUIDE_SWE.md) | Same guide in Swedish (Svenska) |
 | [docs/SEMANTIC_OPERATIONS_LAB_DESIGN.md](docs/SEMANTIC_OPERATIONS_LAB_DESIGN.md) | Frozen product and experiment specification |
 | [docs/SEMANTIC_OPERATIONS_LAB_IMPLEMENTATION.md](docs/SEMANTIC_OPERATIONS_LAB_IMPLEMENTATION.md) | Architecture and implementation decisions |
 | [docs/SEMANTIC_OPERATIONS_LAB_EVALUATION.md](docs/SEMANTIC_OPERATIONS_LAB_EVALUATION.md) | Baseline evaluation results (MEASURED / OBSERVED / INTERPRETATION / BUSINESS DECISION) |
+| [milestone2docs](milestone2docs/README.md) | Milestone 2 Decision Pipeline: frozen semantic specification, API contract, implementation notes, synthetic dataset, user guide, evaluation report and acceptance report |
 
 ## Technology
 

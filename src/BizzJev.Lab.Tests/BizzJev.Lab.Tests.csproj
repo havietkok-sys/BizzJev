@@ -14,4 +14,8 @@
   <ItemGroup>
     <ProjectReference Include="..\BizzJev.Lab\BizzJev.Lab.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\BizzJev.Lab\config\decision-pipeline.v1.json" Link="config\decision-pipeline.v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\BizzJev.Lab\config\decision-pipeline-cases.v1.json" Link="config\decision-pipeline-cases.v1.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

@@ -1,122 +1,184 @@
-import { InfoButton } from './PolicyScale';
+import { useViewLevel } from './viewLevel';
+import { EXAMPLE_MESSAGE } from './examples';
+import { HelpTerm } from './HelpTerm';
+import { ProvenanceBadge } from './ProvenanceBadge';
 
+/**
+ * Overview — the story of the lab, told business-first and leveled by presentation level.
+ *
+ *   quick:      hero (condensed) + the example message and what it contains + "Run this
+ *               message" CTA + explore cards. No result is ever simulated here — the CTA
+ *               only navigates to Analyze with the message prefilled.
+ *   business:   + what the demo simulates + the business flow
+ *   technical:  + the technical layer (text → Jev judgments → C# policy → handling)
+ *
+ * Architecture rule kept visible: Jev performs semantic inference; deterministic C# policy is
+ * applied afterwards — C#-derived values are never presented as Jev output (provenance badges).
+ */
 export function Overview() {
+  const { level, atLeast } = useViewLevel();
   return (
-    <>
-      <section className="panel">
-        <h2>Welcome to the Semantic Operations Lab</h2>
-        <p>
-          This demo simulates a <b>fictional telecom company</b> called <b>Nordbo Telecom</b>.
-          Nordbo receives free-text customer feedback through customer service, chat, email and surveys.
-        </p>
-        <p>
-          A single customer message may contain several useful pieces of information at the same time. For example:
-        </p>
-        <blockquote>
-          “My broadband has failed three times this week. Support was friendly but could not fix it,
-          and I have started looking at Telia’s offers.”
-        </blockquote>
-        <p>This one message may simultaneously contain:</p>
-        <ul>
-          <li>a technical problem</li>
-          <li>a recurring problem</li>
-          <li>an unresolved problem</li>
-          <li>a positive support experience</li>
-          <li>competitor consideration</li>
-          <li>churn risk (a risk that the customer may leave)</li>
-        </ul>
-        <p>
-          The goal of the system is <b>NOT</b> to force the message into one category.
-          The goal is to <b>preserve the useful information</b> contained in the text.
-        </p>
+    <div className="overview">
+      <section className="panel ov-hero">
+        <img src="/BizzJev.png" alt="BizzJev lab logo" className="ov-logo" />
+        <div className="ov-hero-text">
+          <p className="ov-kicker">A customer-support lab, simulated</p>
+          <h2 className="ov-title">Nordbo Telecom — the first seconds after a customer writes</h2>
+          {atLeast('business') ? (
+            <>
+              <p className="ov-lead">
+                Customers contact Nordbo by chat, email, web forms and surveys. This lab simulates what happens at
+                <b> first intake</b>: one piece of free text is turned into the structured signals that determine the
+                next handling step — with a person kept in charge of every decision.
+              </p>
+              <div className="ov-channels">
+                <span className="ov-chip">💬 chat</span>
+                <span className="ov-chip">✉️ email</span>
+                <span className="ov-chip">📝 web form</span>
+                <span className="ov-chip">📊 survey</span>
+              </div>
+            </>
+          ) : (
+            <p className="ov-lead" style={{ marginBottom: 0 }}>
+              One customer message becomes the signals that decide the next handling step — a person stays in charge.
+              Try it with the example below.
+            </p>
+          )}
+        </div>
       </section>
 
-      <section className="panel">
-        <h2>What does Jev do here?</h2>
-        <p>
-          The same customer message is checked by several independent semantic detectors called <b>gates</b>.
-          Each gate asks one narrow question, for example:
-        </p>
-        <ul>
-          <li>Is there a billing problem?</li>
-          <li>Is there a technical problem?</li>
-          <li>Is the customer considering leaving?</li>
-          <li>Is the customer actually asking to cancel?</li>
-          <li>Was the support experience positive?</li>
-        </ul>
-        <p>
-          Each gate returns a <b>signal between 0 and 1</b>. The gates do not compete with each other;
-          several signals may be present at the same time. Example:
-        </p>
-        <pre>{`Technical problem       0.97
-Recurring problem       0.91
-Churn risk              0.78
-Cancellation intent     0.14`}</pre>
-        <p>
-          This means the system can preserve several useful facts from one customer message instead of
-          forcing everything into a single label.
-        </p>
-      </section>
+      {atLeast('business') && (
+        <section className="panel">
+          <h2>What this demo simulates</h2>
+          <div className="ov-trio">
+            <div className="ov-mini">
+              <div className="ov-mini-icon">📨</div>
+              <b>One message, many needs</b>
+              <p>A single customer message often contains several different needs at once — a fault, an invoice question, a cancellation, a mood.</p>
+            </div>
+            <div className="ov-mini">
+              <div className="ov-mini-icon">🧩</div>
+              <b>Free text → structured signals</b>
+              <p>Instead of one forced category, the text becomes several typed signals that describe what it actually contains.</p>
+            </div>
+            <div className="ov-mini">
+              <div className="ov-mini-icon">🧭</div>
+              <b>A proposed next step</b>
+              <p>Company rules turn the signals into a proposed next handling step. Proposals only — a human decides and nothing is executed.</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="panel">
-        <h2>Jev signal vs business decision</h2>
-        <p>Jev produces the semantic signal. <b>The business decides what to do with that signal.</b></p>
-        <p>Example:</p>
-        <pre>{`Churn risk signal = 0.63`}</pre>
-        <p>Nordbo may configure:</p>
-        <pre>{`Below 0.40   →  No action
-0.40–0.84    →  Human review
-0.85+        →  Accepted automatically`}</pre>
-        <p>
-          Changing these thresholds does <b>NOT</b> change Jev’s original signal.
-          It only changes how Nordbo chooses to respond to it.
+        <h2>One realistic message</h2>
+        <div className="ov-message-row">
+          <div className="ov-bubble" role="img" aria-label="Example customer message">
+            <span className="ov-bubble-from">Customer · chat</span>
+            <p>{EXAMPLE_MESSAGE}</p>
+          </div>
+          <div className="ov-breakout-arrow" aria-hidden="true">↓</div>
+          <p className="ov-breakout-label">The same message contains several meanings at once:</p>
+          <div className="ov-signals">
+            <span className="ov-signal">⚠️ Technical problem</span>
+            <span className="ov-signal">🔁 Recurring problem</span>
+            <span className="ov-signal">📌 Unresolved issue</span>
+            <span className="ov-signal">🙂 Positive support experience</span>
+            <span className="ov-signal">🔭 Competitor consideration</span>
+            <span className="ov-signal">🚶 Churn risk — may leave</span>
+          </div>
+        </div>
+        <p className="ov-callout">
+          The system does <b>not</b> force this message into one simple category — all of these needs are preserved, because they may each need different handling.
         </p>
-        <p>Different businesses may deliberately choose different thresholds depending on:</p>
-        <ul>
-          <li>how serious a missed case would be</li>
-          <li>how serious a false alarm would be</li>
-          <li>how much human review is available</li>
-          <li>whether the result triggers automatic action</li>
-        </ul>
-        <p className="dim small">Try this on the Analyze screen: drag the threshold circles and watch the decision change while the signal stays still. <InfoButton topic="scale" /></p>
+        <div className="save-row" style={{ marginTop: 12 }}>
+          <a className="ov-cta" href="#/analyze">Run this message through the demo →</a>
+          <span className="dim small">opens Analyze with this message preloaded — nothing runs until you click Analyze</span>
+        </div>
       </section>
 
-      <section className="panel">
-        <h2>Why is there a Review state?</h2>
-        <p>Not every semantic decision needs to be automated. If a signal is relevant but not strong
-          enough for automatic handling, the case can be sent to a person. The three policy states are:</p>
-        <ul>
-          <li><b>NO</b> — no workflow is triggered.</li>
-          <li><b>REVIEW</b> — a person should inspect the case.</li>
-          <li><b>YES</b> — the signal is strong enough for the configured workflow to accept automatically.</li>
-        </ul>
-        <p>Human review is an intentional safety feature, not a system failure.</p>
-      </section>
+      {atLeast('business') && (
+        <section className="panel">
+          <h2>From message to next step — the business flow</h2>
+          <ol className="ov-flow">
+            <li className="ov-stage"><b>Customer communication</b><span>chat · email · form · survey</span></li>
+            <li className="ov-arrow" aria-hidden="true">→</li>
+            <li className="ov-stage"><b>First intake</b><span>the message arrives</span></li>
+            <li className="ov-arrow" aria-hidden="true">→</li>
+            <li className="ov-stage"><b>Structured semantic signals</b><span>what the message contains</span></li>
+            <li className="ov-arrow" aria-hidden="true">→</li>
+            <li className="ov-stage"><b>Deterministic company policy</b><span>Nordbo’s rules &amp; thresholds</span></li>
+            <li className="ov-arrow" aria-hidden="true">→</li>
+            <li className="ov-stage ov-stage-last"><b>Proposed next action</b><span>a human stays in charge</span></li>
+          </ol>
+          <p className="dim small">Every stage after “structured signals” is Nordbo’s own deterministic logic — transparent, configurable and reproducible.</p>
+        </section>
+      )}
+
+      {level === 'technical' && (
+        <section className="panel">
+          <h2>Under the hood — the technical layer</h2>
+          <p className="dim small">The same flow, seen from the inside. An AI model (Jev) does the semantic reading; ordinary C# code does everything after it.</p>
+          <ol className="ov-flow ov-flow-tech">
+            <li className="ov-stage">
+              <b>Shared customer text</b>
+              <span>sent unchanged, once</span>
+              <ProvenanceBadge p="sentToJev" />
+            </li>
+            <li className="ov-arrow" aria-hidden="true">→</li>
+            <li className="ov-stage">
+              <b>Jev semantic judgments</b>
+              <span className="ov-prims">
+                <span className="ov-prim">Choice <HelpTerm term="choice" /> · which team first</span>
+                <span className="ov-prim">Score <HelpTerm term="score" /> · how urgent (0–3)</span>
+                <span className="ov-prim">Noul <HelpTerm term="noul" /> · explicit cancellation?</span>
+              </span>
+              <ProvenanceBadge p="jevOutput" />
+            </li>
+            <li className="ov-arrow" aria-hidden="true">→</li>
+            <li className="ov-stage">
+              <b>Deterministic C# policy</b>
+              <span>thresholds, review rules, priorities</span>
+              <ProvenanceBadge p="cSharpDerived" />
+            </li>
+            <li className="ov-arrow" aria-hidden="true">→</li>
+            <li className="ov-stage ov-stage-last">
+              <b>Proposed business handling</b>
+              <span>route · prioritize · review · hand off</span>
+              <ProvenanceBadge p="cSharpDerived" />
+            </li>
+          </ol>
+          <p className="ov-callout">
+            <b>Jev performs the semantic inference</b> — reading the text and returning typed judgments with probabilities.
+            <b> BizzJev’s C# applies deterministic company policy afterwards.</b> Values like priority labels, YES/REVIEW/NO and
+            review flags are computed by Nordbo’s rules <ProvenanceBadge p="cSharpDerived" /> — they are never direct Jev output, and the
+            question definitions and thresholds are Nordbo’s choices <ProvenanceBadge p="projectPolicy" />, not model defaults.
+          </p>
+        </section>
+      )}
 
       <section className="panel">
-        <h2>Different signals have different goals</h2>
-        <h3>Churn Risk</h3>
-        <p>Missing a customer who is about to leave may be expensive. Nordbo may therefore prefer to
-          include some uncertain churn candidates rather than miss genuine risk.</p>
-        <h3>Cancellation Intent</h3>
-        <p>A genuine cancellation request should not be missed. But ordinary frustration should also not
-          be mistaken for an actual request to cancel.</p>
-        <h3>Routing (billing, technical, contract, support)</h3>
-        <p>All four routing gates should work consistently. A strong average score should not hide one
-          unreliable route — that is why the evaluation always highlights the weakest routing gate.</p>
-        <h3>Analytics</h3>
-        <p>Signals used mainly for trends and reporting may tolerate slightly more noise because they do
-          not directly trigger a high-risk action.</p>
+        <h2>Explore the lab</h2>
+        <div className="ov-explore">
+          <a className="ov-card" href="#/analyze">
+            <b>🔬 Analyze</b>
+            <span>Paste any customer message and watch every signal, threshold and proposed action at work. Drag thresholds — the signals never change.</span>
+          </a>
+          <a className="ov-card" href="#/decision-pipeline">
+            <b>🧭 Decision Pipeline</b>
+            <span>One message → three typed judgments (team, urgency, cancellation) → one explainable C# decision, with zero-cost policy replay.</span>
+          </a>
+          <a className="ov-card" href="#/studio">
+            <b>🛠️ Gate Studio</b>
+            <span>Inspect and edit what each detector means, test drafts against saved cases, and version every change without losing the baseline.</span>
+          </a>
+          <a className="ov-card" href="#/library">
+            <b>📚 Evaluation Library</b>
+            <span>Run the synthetic case set and see how the detectors score — with plain-language explanations of every metric.</span>
+          </a>
+        </div>
+        <p className="dim small">All example messages and evaluation cases are synthetic fixtures written for the fictional Nordbo Telecom.</p>
       </section>
-
-      <section className="panel">
-        <h2>Where to go next</h2>
-        <ul>
-          <li><a href="#/analyze">Analyze</a> — paste any customer message and watch all gates, thresholds and actions at work.</li>
-          <li><a href="#/library">Evaluation Library</a> — see how the gates scored on a fixed set of test messages. The
-            “How to read these results” box there explains every number in plain language. <InfoButton topic="tp" /></li>
-        </ul>
-      </section>
-    </>
+    </div>
   );
 }

@@ -1,0 +1,2199 @@
+{
+  "id": "20260921-214337239-test",
+  "split": "TEST",
+  "startedUtc": "2026-09-21T21:43:37.2399688+00:00",
+  "endedUtc": "2026-09-21T21:43:42.3121734+00:00",
+  "status": "completed",
+  "semanticVersion": "pipeline-v1",
+  "policyVersion": "pipeline-policy-v1",
+  "datasetVersion": "decision-pipeline-cases-v1",
+  "datasetSha256": "cccca6ff34816d0c363e926c9b99be0553632195d934bc7a22d6032bf3e84f67",
+  "model": "jev-1.13.0",
+  "settings": {
+    "routingConfidenceMin": 0.8,
+    "routingMarginMin": 0.2,
+    "urgencyConfidenceMin": 0.7,
+    "cancellationNoBelow": 0.2,
+    "cancellationYesAtLeast": 0.8,
+    "elevatedAtLeast": 1.5,
+    "urgentAtLeast": 2.5,
+    "urgentRiskAtLeast": 0.2
+  },
+  "attempted": 16,
+  "completed": 16,
+  "unattempted": 0,
+  "outboundAttempts": 16,
+  "cases": [
+    {
+      "caseId": "dp-t01",
+      "split": "TEST",
+      "family": "mobile-outage-refund",
+      "reversalPair": "rp3",
+      "customerText": "My mobile data has not worked at all since this morning and I need it for work. Also, my last invoice included a charge for a router I never received.",
+      "expected": {
+        "routing": {
+          "category": "Technical"
+        },
+        "urgency": {
+          "level": 2
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "route_technical_first",
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Technical",
+          "probabilities": {
+            "Technical": 1.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 2.0,
+          "probabilities": {
+            "0": 0.0,
+            "1": 0.0,
+            "2": 0.99,
+            "3": 0.01
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.99
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.03
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Technical",
+        "routingReviewRequired": false,
+        "proposedPriority": "Elevated",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Technical for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_ELEVATED",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Technical; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_ELEVATED",
+            "text": "score 2 \u003E= elevatedAtLeast 1.5 and \u003C urgentAtLeast 2.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0.01 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.03 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 746.5264,
+      "usage": {
+        "inputTokens": 1739,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 66,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Technical\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Technical\u0022:1.0,\u0022Other\u0022:0.0,\u0022Support\u0022:0.0,\u0022Contract\u0022:0.0,\u0022Billing\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:2.0,\u0022confidence\u0022:0.99,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.0,\u00221\u0022:0.0,\u00222\u0022:0.99,\u00223\u0022:0.01}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.03}},\u0022usage\u0022:{\u0022input_tokens\u0022:1739,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t02",
+      "split": "TEST",
+      "family": "mobile-outage-refund",
+      "reversalPair": "rp3",
+      "customerText": "My last invoice included a charge for a router I never received. My mobile data has not worked at all since this morning and I need it for work.",
+      "expected": {
+        "routing": {
+          "category": "Technical"
+        },
+        "urgency": {
+          "level": 2
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "route_technical_first",
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Technical",
+          "probabilities": {
+            "Technical": 1.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 2.01,
+          "probabilities": {
+            "0": 0.0,
+            "1": 0.0,
+            "2": 0.98,
+            "3": 0.02
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.98
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Technical",
+        "routingReviewRequired": false,
+        "proposedPriority": "Elevated",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Technical for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_ELEVATED",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Technical; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_ELEVATED",
+            "text": "score 2.01 \u003E= elevatedAtLeast 1.5 and \u003C urgentAtLeast 2.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0.02 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 258.1992,
+      "usage": {
+        "inputTokens": 1737,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 67,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Technical\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Support\u0022:0.0,\u0022Other\u0022:0.0,\u0022Billing\u0022:0.0,\u0022Contract\u0022:0.0,\u0022Technical\u0022:1.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:2.01,\u0022confidence\u0022:0.98,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.0,\u00221\u0022:0.0,\u00222\u0022:0.98,\u00223\u0022:0.02}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1737,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t03",
+      "split": "TEST",
+      "family": "refund-done-question",
+      "reversalPair": null,
+      "customerText": "The refund for the incorrect charge arrived last week, thank you. Could you also tell me the current price of the basic plan?",
+      "expected": {
+        "routing": {
+          "category": "Contract"
+        },
+        "urgency": {
+          "level": 0
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Contract",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.06,
+            "Contract": 0.91,
+            "Support": 0.0,
+            "Other": 0.03
+          },
+          "confidence": 0.88,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.0,
+          "probabilities": {
+            "0": 1.0,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 1.0
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Contract",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Contract for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Contract; confidence 0.88; margin 0.85"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 0.88 \u003E= 0.8 and margin 0.85 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 326.0721,
+      "usage": {
+        "inputTokens": 1732,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 68,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Contract\u0022,\u0022confidence\u0022:0.88,\u0022probabilities\u0022:{\u0022Support\u0022:0.0,\u0022Technical\u0022:0.0,\u0022Billing\u0022:0.06,\u0022Other\u0022:0.03,\u0022Contract\u0022:0.91}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.0,\u0022confidence\u0022:1.0,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:1.0,\u00221\u0022:0.0,\u00222\u0022:0.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1732,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t04",
+      "split": "TEST",
+      "family": "downgrade-request",
+      "reversalPair": null,
+      "customerText": "Please move my subscription from the premium package down to the standard package starting next billing cycle. Nothing is broken.",
+      "expected": {
+        "routing": {
+          "category": "Contract"
+        },
+        "urgency": {
+          "level": 0
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Contract",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.0,
+            "Contract": 1.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.0,
+          "probabilities": {
+            "0": 1.0,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 1.0
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.51
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Contract",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "REVIEW",
+        "overallDisposition": "human_review",
+        "reviewReasons": [
+          {
+            "code": "cancellation_uncertain",
+            "detail": "p 0.51 is between cancellationNoBelow 0.2 and cancellationYesAtLeast 0.8"
+          }
+        ],
+        "proposedActions": [
+          {
+            "type": "human_review",
+            "label": "Hand off to a person for review before any action (reasons: cancellation_uncertain; proposed team Contract; proposed priority Normal)"
+          },
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Contract for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_REVIEW",
+          "OUTCOME_HUMAN_REVIEW"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Contract; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_REVIEW",
+            "text": "p 0.51 \u003E= cancellationNoBelow 0.2 and \u003C cancellationYesAtLeast 0.8 -\u003E REVIEW"
+          },
+          {
+            "ruleId": "OUTCOME_HUMAN_REVIEW",
+            "text": "pipeline ok with review reasons (cancellation_uncertain) -\u003E human review"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 269.7167,
+      "usage": {
+        "inputTokens": 1728,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 69,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Contract\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Billing\u0022:0.0,\u0022Technical\u0022:0.0,\u0022Contract\u0022:1.0,\u0022Support\u0022:0.0,\u0022Other\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.0,\u0022confidence\u0022:1.0,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:1.0,\u00221\u0022:0.0,\u00222\u0022:0.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.51}},\u0022usage\u0022:{\u0022input_tokens\u0022:1728,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t05",
+      "split": "TEST",
+      "family": "expired-card",
+      "reversalPair": null,
+      "customerText": "My payment failed because my card expired. How do I update my payment method so my service is not interrupted?",
+      "expected": {
+        "routing": {
+          "category": "Billing"
+        },
+        "urgency": {
+          "level": 1
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Billing",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 1.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 1.58,
+          "probabilities": {
+            "0": 0.07,
+            "1": 0.33,
+            "2": 0.55,
+            "3": 0.05
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.49
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Billing",
+        "routingReviewRequired": false,
+        "proposedPriority": "Elevated",
+        "urgencyReviewRequired": true,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "human_review",
+        "reviewReasons": [
+          {
+            "code": "urgency_uncertain",
+            "detail": "confidence 0.49 \u003C urgencyConfidenceMin 0.7"
+          }
+        ],
+        "proposedActions": [
+          {
+            "type": "human_review",
+            "label": "Hand off to a person for review before any action (reasons: urgency_uncertain; proposed team Billing; proposed priority Elevated)"
+          },
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Billing for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_ELEVATED",
+          "URGENCY_REVIEW",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_HUMAN_REVIEW"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Billing; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_ELEVATED",
+            "text": "score 1.58 \u003E= elevatedAtLeast 1.5 and \u003C urgentAtLeast 2.5"
+          },
+          {
+            "ruleId": "URGENCY_REVIEW",
+            "text": "confidence 0.49 \u003C 0.7; distribution 0:0.07, 1:0.33, 2:0.55, 3:0.05"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0.05 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_HUMAN_REVIEW",
+            "text": "pipeline ok with review reasons (urgency_uncertain) -\u003E human review"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 254.5919,
+      "usage": {
+        "inputTokens": 1728,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 70,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Billing\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Contract\u0022:0.0,\u0022Other\u0022:0.0,\u0022Technical\u0022:0.0,\u0022Billing\u0022:1.0,\u0022Support\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:1.58,\u0022confidence\u0022:0.49,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.07,\u00221\u0022:0.33,\u00222\u0022:0.55,\u00223\u0022:0.05}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1728,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t06",
+      "split": "TEST",
+      "family": "callback-unanswered",
+      "reversalPair": null,
+      "customerText": "I asked for a callback two days ago about my invoice and nobody called me back. I still do not understand the invoice.",
+      "expected": {
+        "routing": {
+          "category": "Billing"
+        },
+        "urgency": {
+          "level": 1
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Billing",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.99,
+            "Contract": 0.0,
+            "Support": 0.01,
+            "Other": 0.0
+          },
+          "confidence": 0.99,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.7,
+          "probabilities": {
+            "0": 0.31,
+            "1": 0.69,
+            "2": 0.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.69
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Billing",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": true,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "human_review",
+        "reviewReasons": [
+          {
+            "code": "urgency_uncertain",
+            "detail": "confidence 0.69 \u003C urgencyConfidenceMin 0.7"
+          }
+        ],
+        "proposedActions": [
+          {
+            "type": "human_review",
+            "label": "Hand off to a person for review before any action (reasons: urgency_uncertain; proposed team Billing; proposed priority Normal)"
+          },
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Billing for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENCY_REVIEW",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_HUMAN_REVIEW"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Billing; confidence 0.99; margin 0.98"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 0.99 \u003E= 0.8 and margin 0.98 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0.7 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENCY_REVIEW",
+            "text": "confidence 0.69 \u003C 0.7; distribution 0:0.31, 1:0.69, 2:0, 3:0"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_HUMAN_REVIEW",
+            "text": "pipeline ok with review reasons (urgency_uncertain) -\u003E human review"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 271.852,
+      "usage": {
+        "inputTokens": 1731,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 71,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Billing\u0022,\u0022confidence\u0022:0.99,\u0022probabilities\u0022:{\u0022Other\u0022:0.0,\u0022Contract\u0022:0.0,\u0022Billing\u0022:0.99,\u0022Technical\u0022:0.0,\u0022Support\u0022:0.01}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.7,\u0022confidence\u0022:0.69,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.31,\u00221\u0022:0.69,\u00222\u0022:0.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1731,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t07",
+      "split": "TEST",
+      "family": "tv-addon-cancel",
+      "reversalPair": null,
+      "customerText": "Cancel my TV add-on immediately, but keep my mobile and broadband subscriptions active.",
+      "expected": {
+        "routing": {
+          "category": "Contract"
+        },
+        "urgency": {
+          "level": 0
+        },
+        "cancellation": {
+          "label": "YES"
+        },
+        "business": [
+          "cancellation_handling_proposed_only",
+          "cancellation_scope_limited_to_named_addon"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Contract",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.0,
+            "Contract": 1.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.07,
+          "probabilities": {
+            "0": 0.96,
+            "1": 0.03,
+            "2": 0.0,
+            "3": 0.01
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.93
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.99
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Contract",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "YES",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Contract for initial handling (proposed; not executed)"
+          },
+          {
+            "type": "cancellation_handling",
+            "label": "Review and handle only the cancellation scope requested in the customer\u0027s message."
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_YES",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Contract; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0.07 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0.01 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_YES",
+            "text": "p 0.99 \u003E= cancellationYesAtLeast 0.8 -\u003E YES"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 285.0554,
+      "usage": {
+        "inputTokens": 1722,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 72,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Contract\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Other\u0022:0.0,\u0022Technical\u0022:0.0,\u0022Support\u0022:0.0,\u0022Contract\u0022:1.0,\u0022Billing\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.07,\u0022confidence\u0022:0.93,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.96,\u00221\u0022:0.03,\u00222\u0022:0.0,\u00223\u0022:0.01}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.99}},\u0022usage\u0022:{\u0022input_tokens\u0022:1722,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t08",
+      "split": "TEST",
+      "family": "not-renew",
+      "reversalPair": null,
+      "customerText": "I do not want my sports package to renew when the season ends next month. Please make sure it is not renewed.",
+      "expected": {
+        "routing": {
+          "category": "Contract"
+        },
+        "urgency": {
+          "level": 0
+        },
+        "cancellation": {
+          "label": "YES"
+        },
+        "business": [
+          "cancellation_handling_proposed_only",
+          "cancellation_scope_limited_to_named_addon"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Contract",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.0,
+            "Contract": 1.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.12,
+          "probabilities": {
+            "0": 0.92,
+            "1": 0.06,
+            "2": 0.0,
+            "3": 0.02
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.88
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.98
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Contract",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "YES",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Contract for initial handling (proposed; not executed)"
+          },
+          {
+            "type": "cancellation_handling",
+            "label": "Review and handle only the cancellation scope requested in the customer\u0027s message."
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_YES",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Contract; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0.12 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0.02 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_YES",
+            "text": "p 0.98 \u003E= cancellationYesAtLeast 0.8 -\u003E YES"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 254.1057,
+      "usage": {
+        "inputTokens": 1730,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 73,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Contract\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Contract\u0022:1.0,\u0022Support\u0022:0.0,\u0022Billing\u0022:0.0,\u0022Technical\u0022:0.0,\u0022Other\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.12,\u0022confidence\u0022:0.88,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.92,\u00221\u0022:0.06,\u00222\u0022:0.0,\u00223\u0022:0.02}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.98}},\u0022usage\u0022:{\u0022input_tokens\u0022:1730,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t09",
+      "split": "TEST",
+      "family": "deadline-today",
+      "reversalPair": null,
+      "customerText": "My broadband has been down since this morning and I work from home. I have an important client video meeting at 3pm today; without a connection I will lose the contract.",
+      "expected": {
+        "routing": {
+          "category": "Technical"
+        },
+        "urgency": {
+          "level": 3
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "urgent_indication_required",
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Technical",
+          "probabilities": {
+            "Technical": 1.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 3.0,
+          "probabilities": {
+            "0": 0.0,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 1.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 1.0
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Technical",
+        "routingReviewRequired": false,
+        "proposedPriority": "Urgent",
+        "urgencyReviewRequired": false,
+        "urgentRisk": true,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "urgent_attention",
+            "label": "Keep urgent attention visible: mean-derived priority is Urgent and urgent-risk tail P(level 3) 1 \u003E= 0.2"
+          },
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Technical for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_URGENT",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Technical; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_URGENT",
+            "text": "score 3 \u003E= urgentAtLeast 2.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 1 \u003E= urgentRiskAtLeast 0.2 -\u003E urgentRisk true"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 248.8881,
+      "usage": {
+        "inputTokens": 1742,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 74,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Technical\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Other\u0022:0.0,\u0022Billing\u0022:0.0,\u0022Support\u0022:0.0,\u0022Technical\u0022:1.0,\u0022Contract\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:3.0,\u0022confidence\u0022:1.0,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.0,\u00221\u0022:0.0,\u00222\u0022:0.0,\u00223\u0022:1.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1742,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t10",
+      "split": "TEST",
+      "family": "negation-pause",
+      "reversalPair": null,
+      "customerText": "Do not cancel my subscription. I only want to pause it for two months while I am abroad.",
+      "expected": {
+        "routing": {
+          "category": "Contract"
+        },
+        "urgency": {
+          "level": 0
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Contract",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.01,
+            "Contract": 0.99,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 0.99,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.11,
+          "probabilities": {
+            "0": 0.9,
+            "1": 0.1,
+            "2": 0.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.89
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.06
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Contract",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Contract for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Contract; confidence 0.99; margin 0.98"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 0.99 \u003E= 0.8 and margin 0.98 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0.11 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.06 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 264.7813,
+      "usage": {
+        "inputTokens": 1726,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 75,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Contract\u0022,\u0022confidence\u0022:0.99,\u0022probabilities\u0022:{\u0022Contract\u0022:0.99,\u0022Other\u0022:0.0,\u0022Billing\u0022:0.01,\u0022Technical\u0022:0.0,\u0022Support\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.11,\u0022confidence\u0022:0.89,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.9,\u00221\u0022:0.1,\u00222\u0022:0.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.06}},\u0022usage\u0022:{\u0022input_tokens\u0022:1726,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t11",
+      "split": "TEST",
+      "family": "dropout-week",
+      "reversalPair": "rp4",
+      "customerText": "My broadband has been dropping out several times a day for a week. I can still work, but it is very frustrating and slow.",
+      "expected": {
+        "routing": {
+          "category": "Technical"
+        },
+        "urgency": {
+          "level": 1
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Technical",
+          "probabilities": {
+            "Technical": 1.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 1.0,
+          "probabilities": {
+            "0": 0.0,
+            "1": 1.0,
+            "2": 0.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 1.0
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Technical",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Technical for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Technical; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 1 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 294.0743,
+      "usage": {
+        "inputTokens": 1733,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 76,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Technical\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Billing\u0022:0.0,\u0022Other\u0022:0.0,\u0022Support\u0022:0.0,\u0022Technical\u0022:1.0,\u0022Contract\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:1.0,\u0022confidence\u0022:1.0,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.0,\u00221\u0022:1.0,\u00222\u0022:0.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1733,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t12",
+      "split": "TEST",
+      "family": "dropout-week",
+      "reversalPair": "rp4",
+      "customerText": "It is very frustrating and slow. I can still work, but my broadband has been dropping out several times a day for a week.",
+      "expected": {
+        "routing": {
+          "category": "Technical"
+        },
+        "urgency": {
+          "level": 1
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Technical",
+          "probabilities": {
+            "Technical": 1.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 1.04,
+          "probabilities": {
+            "0": 0.0,
+            "1": 0.96,
+            "2": 0.04,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.96
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Technical",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Technical for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Technical; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 1.04 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 318.7534,
+      "usage": {
+        "inputTokens": 1733,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 77,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Technical\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Contract\u0022:0.0,\u0022Support\u0022:0.0,\u0022Other\u0022:0.0,\u0022Technical\u0022:1.0,\u0022Billing\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:1.04,\u0022confidence\u0022:0.96,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.0,\u00221\u0022:0.96,\u00222\u0022:0.04,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1733,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t13",
+      "split": "TEST",
+      "family": "unrelated",
+      "reversalPair": null,
+      "customerText": "Hello, I am writing to say the weather is lovely today. Have a nice week!",
+      "expected": {
+        "routing": {
+          "category": "Other"
+        },
+        "urgency": {
+          "level": 0
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "general_triage",
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Other",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 1.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.0,
+          "probabilities": {
+            "0": 1.0,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 1.0
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.01
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Other",
+        "routingReviewRequired": true,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "human_review",
+        "reviewReasons": [
+          {
+            "code": "general_triage",
+            "detail": "Choice selected Other (confidence 1); Other means general triage, not a department"
+          }
+        ],
+        "proposedActions": [
+          {
+            "type": "human_review",
+            "label": "Hand off to a person for review before any action (reasons: general_triage; proposed team Other; proposed priority Normal)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "GENERAL_TRIAGE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_HUMAN_REVIEW"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Other; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "GENERAL_TRIAGE",
+            "text": "selected Other -\u003E general triage for a human, even when confidence is high"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.01 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_HUMAN_REVIEW",
+            "text": "pipeline ok with review reasons (general_triage) -\u003E human review"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 325.3102,
+      "usage": {
+        "inputTokens": 1724,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 78,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Other\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Billing\u0022:0.0,\u0022Other\u0022:1.0,\u0022Support\u0022:0.0,\u0022Technical\u0022:0.0,\u0022Contract\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.0,\u0022confidence\u0022:1.0,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:1.0,\u00221\u0022:0.0,\u00222\u0022:0.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.01}},\u0022usage\u0022:{\u0022input_tokens\u0022:1724,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t14",
+      "split": "TEST",
+      "family": "resolved-tech-conduct",
+      "reversalPair": null,
+      "customerText": "The technician fixed my broadband this morning and it works perfectly now. However, the agent I spoke to when booking was dismissive and rude, and I want to complain about how I was treated.",
+      "expected": {
+        "routing": {
+          "category": "Support"
+        },
+        "urgency": {
+          "level": 0
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Support",
+          "probabilities": {
+            "Technical": 0.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 1.0,
+            "Other": 0.0
+          },
+          "confidence": 1.0,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 0.03,
+          "probabilities": {
+            "0": 0.97,
+            "1": 0.03,
+            "2": 0.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.97
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Support",
+        "routingReviewRequired": false,
+        "proposedPriority": "Normal",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Support for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_NORMAL",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Support; confidence 1; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 1 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_NORMAL",
+            "text": "score 0.03 \u003C elevatedAtLeast 1.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 276.2416,
+      "usage": {
+        "inputTokens": 1746,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 79,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Support\u0022,\u0022confidence\u0022:1.0,\u0022probabilities\u0022:{\u0022Other\u0022:0.0,\u0022Contract\u0022:0.0,\u0022Support\u0022:1.0,\u0022Technical\u0022:0.0,\u0022Billing\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:0.03,\u0022confidence\u0022:0.97,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.97,\u00221\u0022:0.03,\u00222\u0022:0.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1746,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t15",
+      "split": "TEST",
+      "family": "cabinet-leak",
+      "reversalPair": null,
+      "customerText": "The water leak from your street cabinet is flooding my driveway and it is getting worse by the hour. Someone must come now.",
+      "expected": {
+        "routing": {
+          "category": "Technical"
+        },
+        "urgency": {
+          "level": 3
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "urgent_indication_required",
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Technical",
+          "probabilities": {
+            "Technical": 0.81,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.19
+          },
+          "confidence": 0.76,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 2.98,
+          "probabilities": {
+            "0": 0.0,
+            "1": 0.0,
+            "2": 0.02,
+            "3": 0.98
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 0.98
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Technical",
+        "routingReviewRequired": true,
+        "proposedPriority": "Urgent",
+        "urgencyReviewRequired": false,
+        "urgentRisk": true,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "human_review",
+        "reviewReasons": [
+          {
+            "code": "routing_uncertain",
+            "detail": "confidence 0.76 \u003C routingConfidenceMin 0.8"
+          }
+        ],
+        "proposedActions": [
+          {
+            "type": "human_review",
+            "label": "Hand off to a person for review before any action (reasons: routing_uncertain; proposed team Technical; proposed priority Urgent)"
+          },
+          {
+            "type": "urgent_attention",
+            "label": "Keep urgent attention visible: mean-derived priority is Urgent and urgent-risk tail P(level 3) 0.98 \u003E= 0.2"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_REVIEW",
+          "PRIORITY_URGENT",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_HUMAN_REVIEW"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Technical; confidence 0.76; margin 0.62"
+          },
+          {
+            "ruleId": "ROUTING_REVIEW",
+            "text": "confidence 0.76 \u003C routingConfidenceMin 0.8"
+          },
+          {
+            "ruleId": "PRIORITY_URGENT",
+            "text": "score 2.98 \u003E= urgentAtLeast 2.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0.98 \u003E= urgentRiskAtLeast 0.2 -\u003E urgentRisk true"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_HUMAN_REVIEW",
+            "text": "pipeline ok with review reasons (routing_uncertain) -\u003E human review"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 318.2111,
+      "usage": {
+        "inputTokens": 1731,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 80,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Technical\u0022,\u0022confidence\u0022:0.76,\u0022probabilities\u0022:{\u0022Contract\u0022:0.0,\u0022Technical\u0022:0.81,\u0022Billing\u0022:0.0,\u0022Other\u0022:0.19,\u0022Support\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:2.98,\u0022confidence\u0022:0.98,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.0,\u00221\u0022:0.0,\u00222\u0022:0.02,\u00223\u0022:0.98}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1731,\u0022output_tokens\u0022:89}}"
+    },
+    {
+      "caseId": "dp-t16",
+      "split": "TEST",
+      "family": "undetermined-cause",
+      "reversalPair": null,
+      "customerText": "Either my router is broken or your billing system has blocked me, I cannot tell which. Nothing has worked since Tuesday and I have no other way to get online.",
+      "expected": {
+        "routing": {
+          "ambiguous": true
+        },
+        "urgency": {
+          "level": 2
+        },
+        "cancellation": {
+          "label": "NO"
+        },
+        "business": [
+          "no_invented_facts",
+          "no_cancellation_handling"
+        ]
+      },
+      "outcome": "completed",
+      "error": null,
+      "answers": {
+        "routing": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "selected": "Technical",
+          "probabilities": {
+            "Technical": 1.0,
+            "Billing": 0.0,
+            "Contract": 0.0,
+            "Support": 0.0,
+            "Other": 0.0
+          },
+          "confidence": 0.99,
+          "margin": null
+        },
+        "urgency": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "score": 2.0,
+          "probabilities": {
+            "0": 0.0,
+            "1": 0.0,
+            "2": 1.0,
+            "3": 0.0
+          },
+          "legend": {
+            "0": "No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.",
+            "1": "A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.",
+            "2": "A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.",
+            "3": "Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient."
+          },
+          "confidence": 1.0
+        },
+        "cancellationRequested": {
+          "raw": null,
+          "valid": true,
+          "error": null,
+          "probability": 0.02
+        }
+      },
+      "decision": {
+        "pipelineStatus": "ok",
+        "proposedTeam": "Technical",
+        "routingReviewRequired": false,
+        "proposedPriority": "Elevated",
+        "urgencyReviewRequired": false,
+        "urgentRisk": false,
+        "cancellationDisposition": "NO",
+        "overallDisposition": "policy_eligible",
+        "reviewReasons": [],
+        "proposedActions": [
+          {
+            "type": "route_to_team",
+            "label": "Propose routing to Technical for initial handling (proposed; not executed)"
+          }
+        ],
+        "matchedRuleIds": [
+          "ROUTING_SELECTED",
+          "ROUTING_ELIGIBLE",
+          "PRIORITY_ELEVATED",
+          "URGENT_RISK",
+          "CANCELLATION_NO",
+          "OUTCOME_POLICY_ELIGIBLE"
+        ],
+        "explanations": [
+          {
+            "ruleId": "ROUTING_SELECTED",
+            "text": "selected Technical; confidence 0.99; margin 1"
+          },
+          {
+            "ruleId": "ROUTING_ELIGIBLE",
+            "text": "confidence 0.99 \u003E= 0.8 and margin 1 \u003E= 0.2"
+          },
+          {
+            "ruleId": "PRIORITY_ELEVATED",
+            "text": "score 2 \u003E= elevatedAtLeast 1.5 and \u003C urgentAtLeast 2.5"
+          },
+          {
+            "ruleId": "URGENT_RISK",
+            "text": "P(level 3) 0 \u003C urgentRiskAtLeast 0.2 -\u003E urgentRisk false"
+          },
+          {
+            "ruleId": "CANCELLATION_NO",
+            "text": "p 0.02 \u003C cancellationNoBelow 0.2 -\u003E NO"
+          },
+          {
+            "ruleId": "OUTCOME_POLICY_ELIGIBLE",
+            "text": "pipeline ok and no review reasons -\u003E complete recommendation meets demo policy checks (not execution permission)"
+          }
+        ],
+        "errors": []
+      },
+      "elapsedMs": 301.5161,
+      "usage": {
+        "inputTokens": 1739,
+        "outputTokens": 89
+      },
+      "budgetAttempt": 81,
+      "rawResponse": "{\u0022model\u0022:\u0022jev-1.13.0\u0022,\u0022answers\u0022:{\u0022routing\u0022:{\u0022type\u0022:\u0022choice\u0022,\u0022choice\u0022:\u0022Technical\u0022,\u0022confidence\u0022:0.99,\u0022probabilities\u0022:{\u0022Contract\u0022:0.0,\u0022Technical\u0022:1.0,\u0022Support\u0022:0.0,\u0022Billing\u0022:0.0,\u0022Other\u0022:0.0}},\u0022urgency\u0022:{\u0022type\u0022:\u0022score\u0022,\u0022score\u0022:2.0,\u0022confidence\u0022:1.0,\u0022legend\u0022:{\u00220\u0022:\u0022No current adverse impact or time-sensitive consequence of delaying handling is described. This includes information requests, future changes without a stated imminent consequence, resolved situations with no remaining impact, and requests that give no evidence of current impact. This level describes absence of stated urgency evidence, not proof that waiting is harmless.\u0022,\u00221\u0022:\u0022A current inconvenience or limited adverse impact is described, but the affected activity remains usable or a usable workaround is described. No imminent deadline consequence, current material worsening or substantial unresolved disruption without a usable workaround is described. A minor impact can fit even when no workaround is needed.\u0022,\u00222\u0022:\u0022A current substantial disruption or loss of the ability to perform the affected activity is described, with no usable workaround described. No additional consequence from a deadline within the next 24 hours and no current material worsening is described. This level includes an ongoing blocking outage without a stated imminent further consequence.\u0022,\u00223\u0022:\u0022Delaying handling is described as causing a concrete additional material consequence because a deadline is within the next 24 hours or the consequence is happening or worsening now. This includes an impending service restriction, a specified essential activity about to be missed or continuing material harm that intervention could limit. A bare demand for an immediate reply, an arbitrary date or angry wording without a described consequence is insufficient.\u0022},\u0022probabilities\u0022:{\u00220\u0022:0.0,\u00221\u0022:0.0,\u00222\u0022:1.0,\u00223\u0022:0.0}},\u0022cancellationRequested\u0022:{\u0022type\u0022:\u0022noul\u0022,\u0022noul\u0022:0.02}},\u0022usage\u0022:{\u0022input_tokens\u0022:1739,\u0022output_tokens\u0022:89}}"
+    }
+  ],
+  "metrics": {
+    "primitiveLevel": {
+      "routing": {
+        "determinateLabels": 15,
+        "agreement": 15,
+        "agreementRate": 1,
+        "confusionExpectedToReturned": {
+          "Technical": {
+            "Technical": 6
+          },
+          "Contract": {
+            "Contract": 5
+          },
+          "Billing": {
+            "Billing": 2
+          },
+          "Other": {
+            "Other": 1
+          },
+          "Support": {
+            "Support": 1
+          }
+        },
+        "ambiguousLabelCaseIds": [
+          "dp-t16"
+        ],
+        "invalidOrMissingRoutingAnswers": 0
+      },
+      "urgency": {
+        "pointLabels": 16,
+        "meanAbsoluteError": 0.08,
+        "intervalLabels": 0,
+        "intervalError": null,
+        "invalidOrMissingScoreAnswers": 0
+      },
+      "cancellationRawNoul": {
+        "definiteLabels": 16,
+        "brierDenominator": 16,
+        "brierScore": 0.01682,
+        "excludedUnclear": 0,
+        "unclearCaseIds": [],
+        "excludedInvalidAnswers": 0
+      }
+    },
+    "policyWorkflow": {
+      "cancellationThresholded": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 0,
+        "tn": 14,
+        "reviewDispositions": 1,
+        "precision": 1,
+        "recall": 1
+      },
+      "reviewRate": 0.3125,
+      "technicalFailureRate": 0,
+      "ambiguityReviewCapture": {
+        "ambiguousCaseIds": [
+          "dp-t16"
+        ],
+        "byOutcome": {
+          "policy_eligible": 1
+        },
+        "confidentPolicyEligibleOnAmbiguous": 1
+      },
+      "automaticCompleteRecommendations": {
+        "accepted": 11,
+        "incorrect": 0,
+        "incorrectRate": 0,
+        "perOutputErrors": {
+          "routing": 0,
+          "urgencyBand": 0,
+          "cancellation": 0
+        },
+        "coverageOfAttempted": 0.6875
+      }
+    },
+    "reversalPairs": [
+      {
+        "pair": "rp3",
+        "cases": [
+          "dp-t01",
+          "dp-t02"
+        ],
+        "routingSameChoice": true,
+        "urgencyScoreDelta": 0.01,
+        "noulDelta": 0.01,
+        "routingDistributionL1Delta": 0.0
+      },
+      {
+        "pair": "rp4",
+        "cases": [
+          "dp-t11",
+          "dp-t12"
+        ],
+        "routingSameChoice": true,
+        "urgencyScoreDelta": 0.04,
+        "noulDelta": 0.00,
+        "routingDistributionL1Delta": 0.0
+      }
+    ],
+    "execution": {
+      "attempted": 16,
+      "completed": 16,
+      "failed": 0,
+      "failedCaseIds": [],
+      "outboundAttempts": 16,
+      "latencyMsCount": 16,
+      "latencyMedianMs": 280.65,
+      "latencyP95Ms": null,
+      "latencyMethod": "median = middle of sorted per-case elapsed (mean of the two middles for even n); p95 = nearest-rank, reported only with \u003E= 20 observations",
+      "totalInputTokens": 27721,
+      "totalOutputTokens": 1424,
+      "unknownUsageCount": 0
+    }
+  }
+}

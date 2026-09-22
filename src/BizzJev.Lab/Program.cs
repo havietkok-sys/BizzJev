@@ -396,6 +396,24 @@ app.MapPost("/api/gates/reset-local", (ResetRequest body) =>
 
 app.MapGet("/api/health", () => Results.Json(new { status = "ok", model, defaultGateSet }));
 
+// ---------- Decision Pipeline (Milestone 2) ----------
+
+DecisionPipelineEndpoints.MapDecisionPipelineEndpoints(app, new DecisionPipelineEndpointOptions
+{
+    ResolveApiKey = () => config["TYPESAFE_API_KEY"],
+    Model = model,
+    TimeoutSeconds = timeout,
+    EnableTechnicalView = enableTechnicalView,
+    Json = json
+});
+DecisionPipelineEvaluationEndpoints.MapDecisionPipelineEvaluationEndpoints(app, new DecisionPipelineEndpointOptions
+{
+    ResolveApiKey = () => config["TYPESAFE_API_KEY"],
+    Model = model,
+    TimeoutSeconds = timeout,
+    EnableTechnicalView = enableTechnicalView,
+    Json = json
+});
 
 app.Run();
 

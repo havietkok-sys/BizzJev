@@ -1,19 +1,34 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api, type GateDef, type PolicyDef, type AnalyzeResponse, type ExpectedLabel, type TestCase } from './api';
-import { PolicyScale, InfoButton, Hover } from './PolicyScale';
+import { PolicyScale, Hover } from './PolicyScale';
 import { Overview } from './Overview';
 import { TechnicalView } from './TechnicalView';
 import { GateStudio } from './GateStudio';
+import { DecisionPipeline } from './DecisionPipeline';
+import { ProvenanceBadge, ProvenanceKey } from './ProvenanceBadge';
+import { HelpTerm } from './HelpTerm';
+import { ViewLevelProvider, ViewLevelSwitcher, useViewLevel } from './viewLevel';
+import { EXAMPLE_MESSAGE, GATE_DISPLAY_NAMES } from './examples';
+import { helpTopics, type HelpTopicId } from './pipelineHelp';
 
-type Screen = 'overview' | 'analyze' | 'library' | 'studio';
+type Screen = 'overview' | 'analyze' | 'pipeline' | 'library' | 'studio';
 
 export default function App() {
+  return (
+    <ViewLevelProvider>
+      <AppShell />
+    </ViewLevelProvider>
+  );
+}
+
+function AppShell() {
   const route = (): Screen =>
     window.location.hash === '#/analyze' ? 'analyze'
+      : window.location.hash === '#/decision-pipeline' ? 'pipeline'
       : window.location.hash === '#/library' ? 'library'
       : window.location.hash === '#/studio' ? 'studio'
       : 'overview';
-  const [screen, setScreen] = useState<Screen>(route);
+  const [screen, setScreen] = useState<Screen>(route());
   useEffect(() => {
     const onHash = () => setScreen(route());
     window.addEventListener('hashchange', onHash);
@@ -26,13 +41,15 @@ export default function App() {
         <nav>
           <a href="#/" className={screen === 'overview' ? 'active' : ''}>Overview</a>
           <a href="#/analyze" className={screen === 'analyze' ? 'active' : ''}>Analyze</a>
+          <a href="#/decision-pipeline" className={screen === 'pipeline' ? 'active' : ''}>Decision Pipeline</a>
           <a href="#/studio" className={screen === 'studio' ? 'active' : ''}>Gate Studio</a>
           <a href="#/library" className={screen === 'library' ? 'active' : ''}>Evaluation Library</a>
         </nav>
-        <span className="dim small">Jev semantic signal → policy → business action</span>
+        <ViewLevelSwitcher />
+        <span className="dim small">signal → policy → action</span>
       </header>
       <main>
-        {screen === 'overview' ? <Overview /> : screen === 'analyze' ? <AnalyzeScreen /> : screen === 'studio' ? <GateStudio /> : <LibraryScreen />}
+        {screen === 'overview' ? <Overview /> : screen === 'analyze' ? <AnalyzeScreen /> : screen === 'pipeline' ? <DecisionPipeline /> : screen === 'studio' ? <GateStudio /> : <LibraryScreen />}
       </main>
     </>
   );
@@ -43,11 +60,13 @@ export default function App() {
 type Thresholds = Record<string, { review: number; accept: number }>;
 
 function AnalyzeScreen() {
+  const { level } = useViewLevel();
   const [gates, setGates] = useState<GateDef[]>([]);
   const [thresholds, setThresholds] = useState<Thresholds>({});
   const [savedThresholds, setSavedThresholds] = useState<Thresholds>({});
   const [policyVersion, setPolicyVersion] = useState('');
   const [text, setText] = useState('');
+  const [exampleLoaded, setExampleLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
@@ -55,7 +74,6 @@ function AnalyzeScreen() {
   const [notes, setNotes] = useState('');
   const [saveMsg, setSaveMsg] = useState('');
   const [expandedGate, setExpandedGate] = useState<string | null>(null);
-  const [view, setView] = useState<'business' | 'technical'>('business');
 
   useEffect(() => {
     api.gates().then((g) => setGates(g.gates)).catch((e) => setError(String(e)));
@@ -66,6 +84,18 @@ function AnalyzeScreen() {
       setSavedThresholds(JSON.parse(JSON.stringify(t)));
       setPolicyVersion(ps[0]?.policyVersion ?? '');
     }).catch((e) => setError(String(e)));
+  }, []);
+
+  // Quick Demo preload: fills the example message only when the field is empty, once on
+  // mount. It is text only — no result exists until the user clicks Analyze, and level
+  // switches later never overwrite the user's own text.
+  useEffect(() => {
+    if (level === 'quick' && text.trim() === '') {
+      setText(EXAMPLE_MESSAGE);
+      setExampleLoaded(true);
+    }
+    // mount-only prefill; `level`/`text` are intentionally captured at mount time
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const analyze = async () => {
@@ -113,6 +143,8 @@ function AnalyzeScreen() {
     return s && (s.review !== t.review || s.accept !== t.accept);
   });
 
+  const technicalLevel = level === 'technical';
+
   return (
     <>
       <section className="panel">
@@ -120,28 +152,19 @@ function AnalyzeScreen() {
         <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste a customer message…" />
         <div className="save-row">
           <button onClick={analyze} disabled={busy || !text.trim()}>{busy ? 'Analyzing…' : 'Analyze'}</button>
-          <span className="dim small">{gates.length} independent gates · one Jev call · no winner-takes-all</span>
+          {level === 'quick'
+            ? <span className="dim small">{exampleLoaded ? 'example message loaded — edit or replace it, then Analyze' : 'paste a message, then Analyze'}</span>
+            : <span className="dim small">{gates.length} independent gates · one Jev call</span>}
         </div>
         {error && <p style={{ color: '#f85149' }}>{error}</p>}
       </section>
 
-      {result && (
-        <section className="panel">
-          <div className="view-toggle">
-            <span className="dim small">Result view:</span>
-            <button className={view === 'business' ? '' : 'secondary'} onClick={() => setView('business')}
-              title="Shows what the system detected and what the business does with it.">Business View</button>
-            <button className={view === 'technical' ? '' : 'secondary'} onClick={() => setView('technical')}
-              title="Shows the underlying Jev request, response, gate definitions, and policy calculations for this exact run.">Technical View</button>
-            <InfoButton topic="viewtoggle" />
-            <span className="dim small">switching views does not rerun Jev</span>
-          </div>
-        </section>
-      )}
+      {result && technicalLevel && <TechnicalView result={result} customerText={text} gates={gates} />}
 
-      {result && view === 'business' && (
+      {result && !technicalLevel && (
         <section className="panel">
-          <h2>Business actions</h2>
+          <h2>Result &amp; next steps <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="gatePolicyResult" /></h2>
+          {level === 'quick' && <QuickSignals result={result} />}
           {result.actions.length === 0 && <p className="dim">No actions triggered.</p>}
           {result.actions.map((a) => (
             <div key={a.sourceGate} className="action-line">
@@ -149,18 +172,19 @@ function AnalyzeScreen() {
               <b>{a.sourceGate}</b> <span className="arrow">→</span> {a.label} <span className="dim small">({a.type})</span>
             </div>
           ))}
-          <p className="dim small" style={{ marginTop: 10 }}>
-            REVIEW routes to a human before any consequential action. <InfoButton topic="reviewfeature" />
-          </p>
+          {!technicalLevel && (
+            <p className="dim small" style={{ marginTop: 10 }}>
+              REVIEW routes to a human before any consequential action. <HelpTerm term="reviewFallback" />
+            </p>
+          )}
         </section>
       )}
 
-      {view === 'business' && (
+      {level === 'business' && (
       <section className="panel">
-        <h2>Policy scale per gate</h2>
+        <h2>Policy scale per gate <ProvenanceKey /></h2>
         <p className="pipeline">
-          <b>JEV SIGNAL</b> (model output) · <b>BUSINESS THRESHOLDS</b> (editable boundaries) · <b>CURRENT POLICY RESULT</b> (interpretation).
-          Moving the boundary handles recomputes NO/REVIEW/YES instantly — Jev is not called again. <InfoButton topic="scale" />
+          <b>Drag the boundary handles</b> — the Jev signal never changes, only the interpretation.
         </p>
         <div className="save-row" style={{ marginBottom: 10 }}>
           <span className="dim small">policy version: {policyVersion || '…'}</span>
@@ -210,50 +234,61 @@ function AnalyzeScreen() {
       </section>
       )}
 
-      {result && view === 'technical' && <TechnicalView result={result} customerText={text} gates={gates} />}
-
-      {result && view === 'business' && (
-        <section className="panel">
-          <h2>Save as evaluation case</h2>
+      {level === 'business' && (
+        <details className="panel">
+          <summary>Save as evaluation case</summary>
           <input type="text" style={{ width: '100%' }} placeholder="Optional notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
           <div className="save-row">
             <button onClick={saveCase} disabled={Object.keys(expected).length === 0}>SAVE AS EVALUATION CASE</button>
             <span className="dim small">{Object.keys(expected).length} gate(s) annotated (YES/NO/UNCLEAR). Untouched gates default to NO.</span>
             {saveMsg && <span>{saveMsg}</span>}
           </div>
-        </section>
+        </details>
       )}
     </>
   );
 }
 
+/**
+ * Quick Demo result block: one chip per signal the policy acted on, derived from the same
+ * run data as every other view (result.signals + result.policy). No raw probabilities —
+ * the wording mirrors the policy zones (detected / needs review).
+ */
+function QuickSignals({ result }: { result: AnalyzeResponse }) {
+  const outcome: Record<string, string> = {};
+  result.policy.forEach((p) => { outcome[p.gateId] = p.result; });
+  const chips = result.signals
+    .filter((s) => s.success && (outcome[s.gateId] === 'yes' || outcome[s.gateId] === 'review'))
+    .map((s) => ({ gateId: s.gateId, detected: outcome[s.gateId] === 'yes' }));
+  if (chips.length === 0) {
+    return <p className="dim small" style={{ margin: '0 0 8px' }}>No signals strong enough to act on in this message.</p>;
+  }
+  return (
+    <p style={{ margin: '0 0 8px' }}>
+      {chips.map((c) => (
+        <span key={c.gateId} className={'sig-chip ' + (c.detected ? 'detected' : 'review')}>
+          {GATE_DISPLAY_NAMES[c.gateId] ?? c.gateId} · {c.detected ? 'detected' : 'needs review'}
+        </span>
+      ))}
+    </p>
+  );
+}
 
 // ---------------- plain-language metric support ----------------
 
-function metricHeader(topic: 'tp' | 'fp' | 'fn' | 'tn' | 'precision' | 'recall' | 'f1' | 'yesmed' | 'nomed', label: string) {
-  const tips: Record<string, string> = {
-    tp: 'The system found something that really was present.',
-    fp: 'The system detected something that was not actually present (false alarm).',
-    fn: 'Something was present, but the system missed it.',
-    tn: 'The system correctly ignored something that was not present.',
-    precision: 'When the system says YES, how often is it right?',
-    recall: 'Of all the real cases, how many did the system find?',
-    f1: 'One score balancing precision and recall.',
-    yesmed: 'Typical Jev signal for cases that really should be YES.',
-    nomed: 'Typical Jev signal for cases that really should be NO.'
-  };
+function metricHeader(topic: HelpTopicId, label: string) {
   return (
     <th>
-      <Hover tip={tips[topic]}>{label}</Hover>
-      <InfoButton topic={topic} />
+      <Hover tip={helpTopics[topic].short}>{label}</Hover>
+      <HelpTerm term={topic} />
     </th>
   );
 }
 
 function HowToReadBox() {
   return (
-    <div className="howto-box">
-      <h3 style={{ marginTop: 0 }}>How to read these results</h3>
+    <details className="howto-box">
+      <summary>How to read these results</summary>
       <pre>{`TP = correctly found          FP = false alarm
 FN = missed real case         TN = correctly ignored
 
@@ -261,12 +296,12 @@ Precision = When we detect something, how often are we right?
 Recall    = Of everything we should detect, how much did we catch?
 F1        = A combined precision/recall score.`}</pre>
       <p className="small dim" style={{ marginBottom: 0 }}>
-        There is no single universally best metric. The important metric depends on the business goal of the gate. <InfoButton topic="f1" />
+        There is no single universally best metric. The important metric depends on the business goal of the gate. <HelpTerm term="f1" />
         <br />
         Cases sent to REVIEW count as <b>not-YES</b> in Precision/Recall/F1 (that is the standard treatment).
-        A REVIEW case has not necessarily been lost &mdash; see Operational Capture below. <InfoButton topic="reviewfeature" />
+        A REVIEW case has not necessarily been lost &mdash; see Operational Capture below. <HelpTerm term="reviewFallback" />
       </p>
-    </div>
+    </details>
   );
 }
 
@@ -285,7 +320,7 @@ function OperationalCapture({ latest }: { latest: NonNullable<Awaited<ReturnType
   if (rows.length === 0) return null;
   return (
     <div className="howto-box">
-      <h3 style={{ marginTop: 0 }}>Operational Capture <InfoButton topic="capture" /> <span className="dim small">(business view &mdash; not a standard ML metric)</span></h3>
+      <h3 style={{ marginTop: 0 }}>Operational Capture <HelpTerm term="operationalCapture" /> <span className="dim small">(business view &mdash; not a standard ML metric)</span></h3>
       <p className="small dim">For every case whose expected result was YES: was it accepted automatically, sent to a human, or missed entirely?
         This does not replace Recall &mdash; it explains how the actual workflow handled uncertain cases.</p>
       <table>
@@ -308,6 +343,7 @@ function OperationalCapture({ latest }: { latest: NonNullable<Awaited<ReturnType
 // ---------------- library screen ----------------
 
 function LibraryScreen() {
+  const { level, atLeast } = useViewLevel();
   const [latest, setLatest] = useState<Awaited<ReturnType<typeof api.latest>> | null>(null);
   const [history, setHistory] = useState<Awaited<ReturnType<typeof api.history>>>([]);
   const [cases, setCases] = useState<{ synthetic: TestCase[]; saved: TestCase[] } | null>(null);
@@ -349,6 +385,46 @@ function LibraryScreen() {
   const types = ['all', ...Array.from(new Set(allCases.map((c) => c.caseType)))];
   const shown = filter === 'all' ? allCases : allCases.filter((c) => c.caseType === filter);
 
+  const historyTable = (
+    <table>
+      <thead><tr><th>Run</th><th>When (UTC)</th><th>Gates</th><th>Policy</th><th>Cases</th><th>API failures</th></tr></thead>
+      <tbody>
+        {history.map((h) => (
+          <tr key={h.id}>
+            <td>{h.id}</td><td>{h.ranAtUtc}</td><td>{h.gateSetVersion}</td><td>{h.policyVersion}</td><td>{h.cases}</td><td>{h.apiFailures}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  const casesContent = (
+    <>
+      <div className="save-row" style={{ marginBottom: 8 }}>
+        <span className="dim small">Filter:</span>
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>{types.map((t) => <option key={t}>{t}</option>)}</select>
+        <span className="dim small">{shown.length} case(s)</span>
+      </div>
+      <table>
+        <thead><tr><th>ID</th><th>Type</th><th>Expected</th><th>Text</th><th></th></tr></thead>
+        <tbody>
+          {shown.map((c) => (
+            <tr key={c.id}>
+              <td>{c.id}</td>
+              <td>{c.caseType}{c.synthetic ? '' : ' ·saved'}</td>
+              <td className="small">{c.expected.map((e) => `${e.gateId}:${e.label}`).join(', ') || '—'}</td>
+              <td className="small dim">{inspect === c.id ? c.customerText : c.customerText.slice(0, 80) + (c.customerText.length > 80 ? '…' : '')}</td>
+              <td className="actions-cell">
+                <button className="secondary" onClick={() => setInspect(inspect === c.id ? null : c.id)}>{inspect === c.id ? 'hide' : 'inspect'}</button>
+                <button className="secondary" disabled={busy} onClick={() => rerunOne(c)}>rerun</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+
   return (
     <>
       <section className="panel">
@@ -356,18 +432,11 @@ function LibraryScreen() {
         <button onClick={runEval} disabled={busy}>{busy ? 'Running…' : 'Run full evaluation (all cases)'}</button>
         {error && <p style={{ color: '#f85149' }}>{error}</p>}
         {history.length > 0 && (
-          <table>
-            <thead><tr><th>Run</th><th>When (UTC)</th><th>Gates</th><th>Policy</th><th>Cases</th><th>API failures</th></tr></thead>
-            <tbody>
-              {history.map((h) => (
-                <tr key={h.id}>
-                  <td>{h.id}</td><td>{h.ranAtUtc}</td><td>{h.gateSetVersion}</td><td>{h.policyVersion}</td><td>{h.cases}</td><td>{h.apiFailures}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          level === 'quick'
+            ? <details className="explainer" style={{ marginTop: 10 }}><summary>{history.length} previous run(s)</summary>{historyTable}</details>
+            : historyTable
         )}
-        {history.length >= 2 && (
+        {atLeast('business') && history.length >= 2 && (
           <div className="save-row" style={{ marginTop: 10 }}>
             <span className="dim small">Compare:</span>
             <select value={from} onChange={(e) => setFrom(e.target.value)}>{history.map((h) => <option key={h.id}>{h.id}</option>)}</select>
@@ -378,7 +447,7 @@ function LibraryScreen() {
         )}
       </section>
 
-      {comparison && (
+      {comparison && atLeast('business') && (
         <section className="panel">
           <h2>Regression comparison ({comparison.fromVersion} → {comparison.toVersion})</h2>
           <p><span style={{ color: 'var(--yes)' }}>fixed: {comparison.fixed.length}</span> · <span style={{ color: '#f85149' }}>broken: {comparison.broken.length}</span> · unchanged: {comparison.unchanged.length}</p>
@@ -404,63 +473,69 @@ function LibraryScreen() {
 
       {latest && (
         <section className="panel">
-          <h2>Latest run metrics — {latest.id} (gates {latest.gateSetVersion}, policy {latest.policyVersion})</h2>
-          <p className="dim small">Weakest routing gate: <b style={{ color: 'var(--review)' }}>{latest.weakestRoutingGate ?? 'n/a'}</b> · cases: {latest.cases} · API failures: {latest.apiFailures}</p>
-          <HowToReadBox />
-          <h3>Per gate</h3>
-          <table>
-            <thead><tr>
-              <th>Gate</th>
-              {metricHeader('tp', 'TP')}{metricHeader('fp', 'FP')}{metricHeader('fn', 'FN')}{metricHeader('tn', 'TN')}
-              <th>UNCLEAR</th>
-              {metricHeader('precision', 'Precision')}{metricHeader('recall', 'Recall')}{metricHeader('f1', 'F1')}
-              {metricHeader('yesmed', 'YES med signal')}{metricHeader('nomed', 'NO med signal')}
-            </tr></thead>
-            <tbody>
-              {latest.perGate.map((m) => (
-                <tr key={m.gateId}>
-                  <td>{m.gateId}</td><td>{m.tp}</td><td>{m.fp}</td><td>{m.fn}</td><td>{m.tn}</td><td>{m.unclear}</td>
-                  <td>{m.precision ?? '—'}</td><td>{m.recall ?? '—'}</td><td>{m.f1 ?? '—'}</td>
-                  <td>{m.yesMedianProbability ?? '—'}</td><td>{m.noMedianProbability ?? '—'}</td>
-                </tr>
+          <h2>Latest run — {latest.id}</h2>
+          <p className="dim small">
+            {latest.cases} cases · API failures: {latest.apiFailures}
+            {atLeast('business') && <> · gates {latest.gateSetVersion} · policy {latest.policyVersion} · weakest routing gate: <b style={{ color: 'var(--review)' }}>{latest.weakestRoutingGate ?? 'n/a'}</b></>}
+          </p>
+          {atLeast('business') && (
+            <>
+              <HowToReadBox />
+              <OperationalCapture latest={latest} />
+              <h3>Per gate</h3>
+              <table>
+                <thead><tr>
+                  <th>Gate</th>
+                  <th>UNCLEAR</th>
+                  {metricHeader('precision', 'Precision')}{metricHeader('recall', 'Recall')}{metricHeader('f1', 'F1')}
+                  {level === 'technical' && (
+                    <>
+                      {metricHeader('tp', 'TP')}{metricHeader('fp', 'FP')}{metricHeader('fn', 'FN')}{metricHeader('tn', 'TN')}
+                      {metricHeader('yesmed', 'YES med signal')}{metricHeader('nomed', 'NO med signal')}
+                    </>
+                  )}
+                </tr></thead>
+                <tbody>
+                  {latest.perGate.map((m) => (
+                    <tr key={m.gateId}>
+                      <td>{m.gateId}</td><td>{m.unclear}</td>
+                      <td>{m.precision ?? '—'}</td><td>{m.recall ?? '—'}</td><td>{m.f1 ?? '—'}</td>
+                      {level === 'technical' && (
+                        <>
+                          <td>{m.tp}</td><td>{m.fp}</td><td>{m.fn}</td><td>{m.tn}</td>
+                          <td>{m.yesMedianProbability ?? '—'}</td><td>{m.noMedianProbability ?? '—'}</td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+          {level === 'technical' && (
+            <>
+              <h3>By case type (F1 per gate)</h3>
+              {latest.byCaseType.map((ct) => (
+                <p key={ct.caseType} className="small">
+                  <b>{ct.caseType}</b>: {ct.gates.filter((g) => g.f1 !== null).map((g) => `${g.gateId}=${g.f1}`).join(' · ') || 'no binary labels'}
+                </p>
               ))}
-            </tbody>
-          </table>
-          <h3>By case type (F1 per gate)</h3>
-          {latest.byCaseType.map((ct) => (
-            <p key={ct.caseType} className="small">
-              <b>{ct.caseType}</b>: {ct.gates.filter((g) => g.f1 !== null).map((g) => `${g.gateId}=${g.f1}`).join(' · ') || 'no binary labels'}
-            </p>
-          ))}
-          <OperationalCapture latest={latest} />
+            </>
+          )}
         </section>
       )}
 
-      <section className="panel">
-        <h2>Evaluation cases</h2>
-        <div className="save-row" style={{ marginBottom: 8 }}>
-          <span className="dim small">Filter:</span>
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>{types.map((t) => <option key={t}>{t}</option>)}</select>
-          <span className="dim small">{shown.length} case(s)</span>
-        </div>
-        <table>
-          <thead><tr><th>ID</th><th>Type</th><th>Expected</th><th>Text</th><th></th></tr></thead>
-          <tbody>
-            {shown.map((c) => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.caseType}{c.synthetic ? '' : ' ·saved'}</td>
-                <td className="small">{c.expected.map((e) => `${e.gateId}:${e.label}`).join(', ') || '—'}</td>
-                <td className="small dim">{inspect === c.id ? c.customerText : c.customerText.slice(0, 80) + (c.customerText.length > 80 ? '…' : '')}</td>
-                <td className="actions-cell">
-                  <button className="secondary" onClick={() => setInspect(inspect === c.id ? null : c.id)}>{inspect === c.id ? 'hide' : 'inspect'}</button>
-                  <button className="secondary" disabled={busy} onClick={() => rerunOne(c)}>rerun</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      {level === 'quick' ? (
+        <details className="panel">
+          <summary>Evaluation cases</summary>
+          {casesContent}
+        </details>
+      ) : (
+        <section className="panel">
+          <h2>Evaluation cases</h2>
+          {casesContent}
+        </section>
+      )}
     </>
   );
 }
