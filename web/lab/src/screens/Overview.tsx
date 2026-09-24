@@ -1,7 +1,7 @@
-import { useViewLevel } from './viewLevel';
-import { EXAMPLE_MESSAGE } from './examples';
-import { HelpTerm } from './HelpTerm';
-import { ProvenanceBadge } from './ProvenanceBadge';
+import { useViewLevel } from '../components/viewLevel';
+import { EXAMPLE_MESSAGE } from '../examples';
+import { HelpTerm } from '../components/HelpTerm';
+import { ProvenanceBadge } from '../components/ProvenanceBadge';
 
 /**
  * Overview — the story of the lab, told business-first and leveled by presentation level.

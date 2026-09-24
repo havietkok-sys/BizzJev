@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace BizzJev.Lab;
+namespace BizzJev.Lab.Infrastructure.Config;
 
 /// File-backed store for locally authored gate versions + the active-version map.
 /// Layout: {root}/{gateId}/v{N}-local.json and {root}/active.json

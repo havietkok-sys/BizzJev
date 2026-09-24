@@ -1,6 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BizzJev.Lab;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateSlimBuilder(args);

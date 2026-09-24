@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { helpTopics, type HelpTopicId } from './pipelineHelp';
-import { provenanceLabels, provenanceShort } from './provenance';
+import { helpTopics, type HelpTopicId } from '../help/pipelineHelp';
+import { provenanceLabels, provenanceShort } from '../help/provenance';
 
 /**
  * Shared "?" help indicator used across the Decision Pipeline UI.

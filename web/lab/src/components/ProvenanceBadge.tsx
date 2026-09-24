@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { provenanceLabels, provenanceLegendLines, provenanceShort, type Provenance } from './provenance';
+import { provenanceLabels, provenanceLegendLines, provenanceShort, type Provenance } from '../help/provenance';
 
 /**
  * Shared provenance badge. One component, one canonical label set (provenance.ts), used

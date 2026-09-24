@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace BizzJev.Lab;
+namespace BizzJev.Lab.Infrastructure.TypeSafe;
 
 /// Runs every active gate as an independent Noul question in ONE batched
 /// POST /v1/systemone request (TypeSafe: independent questions share state, run in

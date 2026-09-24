@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace BizzJev.Lab;
+namespace BizzJev.Lab.Infrastructure.TypeSafe;
 
 /// Outcome of one decision-pipeline call. Transport/HTTP failures carry a failure code and no
 /// answer slots; a received response always yields answer slots (valid or invalid) so valid

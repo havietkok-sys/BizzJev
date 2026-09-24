@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace BizzJev.Lab;
+namespace BizzJev.Lab.Api;
 
 public sealed record DecisionPipelineEndpointOptions
 {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import type { AnalyzeResponse, GateDef } from './api';
-import { HelpTerm } from './HelpTerm';
-import { ProvenanceBadge } from './ProvenanceBadge';
+import type { AnalyzeResponse, GateDef } from '../api';
+import { HelpTerm } from '../components/HelpTerm';
+import { ProvenanceBadge } from '../components/ProvenanceBadge';
 
 function CopyButton({ text, label }: { text: string; label: string }) {
   const [done, setDone] = useState(false);

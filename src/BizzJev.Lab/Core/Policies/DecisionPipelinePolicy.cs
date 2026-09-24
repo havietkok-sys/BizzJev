@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace BizzJev.Lab;
+namespace BizzJev.Lab.Core.Policies;
 
 /// Pure input to the decision policy. Deliberately contains NO customer text: Jev owns semantic
 /// inference; this function only combines already-validated typed answers with thresholds.

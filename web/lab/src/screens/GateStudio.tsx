@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { studioApi as api, type GateDef } from './api';
-import { PolicyScale } from './PolicyScale';
-import { ProvenanceBadge, ProvenanceKey } from './ProvenanceBadge';
-import { HelpTerm } from './HelpTerm';
-import { useViewLevel } from './viewLevel';
-import { GATE_DISPLAY_NAMES as DISPLAY_NAMES } from './examples';
+import { studioApi as api, type GateDef } from '../api';
+import { PolicyScale } from '../components/PolicyScale';
+import { ProvenanceBadge, ProvenanceKey } from '../components/ProvenanceBadge';
+import { HelpTerm } from '../components/HelpTerm';
+import { useViewLevel } from '../components/viewLevel';
+import { GATE_DISPLAY_NAMES as DISPLAY_NAMES } from '../examples';
 
 interface VersionMeta {
   version: string;

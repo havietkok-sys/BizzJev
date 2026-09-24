@@ -1,6 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react';
-import { decideLocal } from './api';
-import { helpTopics } from './pipelineHelp';
+import { decideLocal } from '../api';
+import { helpTopics } from '../help/pipelineHelp';
 import { HelpTerm } from './HelpTerm';
 import { ProvenanceBadge } from './ProvenanceBadge';
 

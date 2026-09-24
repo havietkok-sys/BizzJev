@@ -3,11 +3,11 @@ import {
   pipelineApi, replayAnswerBodies,
   type PipelineDefinition, type PipelineAnalyzeResponse, type PipelineReplayResponse,
   type PipelineDecision, type PipelinePolicySettings, type ChoiceSlot, type ScoreSlot, type NoulSlot
-} from './api';
-import { HelpTerm } from './HelpTerm';
-import { ProvenanceBadge, ProvenanceKey } from './ProvenanceBadge';
-import { Explainer } from './Explainer';
-import { useViewLevel } from './viewLevel';
+} from '../api';
+import { HelpTerm } from '../components/HelpTerm';
+import { ProvenanceBadge, ProvenanceKey } from '../components/ProvenanceBadge';
+import { Explainer } from '../components/Explainer';
+import { useViewLevel } from '../components/viewLevel';
 
 type ResultTab = 'analysis' | 'replay' | 'technical';
 
