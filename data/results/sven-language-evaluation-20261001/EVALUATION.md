@@ -69,12 +69,16 @@ Den svenska och engelska Sven-körningen har Pearson-korrelation 0,409 över 1 1
 
 ## Latens och drift
 
-Sven slutförde alla anrop utan fel, vilket bekräftar att adaptern, batchformatet och svarsmappningen fungerar. Medianlatensen var cirka 2,3 sekunder för engelska och 4,8 sekunder för svenska. Körningen var sekventiell och mätte inte 50 samtidiga användare, köbildning, varm/kall modell eller resursmättnad. Resultatet räcker därför för funktionskontroll men inte som belastningstest.
+Sven slutförde alla anrop utan fel, vilket bekräftar att adaptern, batchformatet och svarsmappningen fungerar. Medianlatensen var cirka 2,3 sekunder för engelska och 4,8 sekunder för svenska.
+
+Latensen kommer från en ooptimerad, lokalt self-hostad utvecklingsserver på en vanlig gamingdator. Ingen produktionsanpassad inferensserver, kvantisering, batchning, modellkompilering, parallellisering eller hårdvaruoptimering utvärderades. Körningen var dessutom sekventiell och mätte inte 50 samtidiga användare, köbildning, varm/kall modell eller resursmättnad. Latensvärdena bekräftar att hela flödet fungerar, men är inte indikativa för Svens möjliga prestanda i en optimerad driftmiljö.
 
 ## Slutsats
 
 Providerarkitekturen är verifierad och Sven/Kev kan användas genom samma webbflöde, policykod och resultatmodell som Jev. Den lokala modellen är tekniskt stabil men når inte jämförbar semantisk kvalitet på den parade regressionssviten i nuvarande konfiguration.
 
 Sven behöver egna thresholds, men även optimala in-sample-thresholds lämnar ett tydligt gap. Innan modellen bedöms som ersättare bör nästa experiment kontrollera om Kev kan ta emot de strukturerade Noul-kriterierna eller en rikare sammanslagen instruktion, därefter kalibrera på ett separat underlag och validera på orörda fall. Upprepade körningar behövs också för att mäta faktisk modellstabilitet över tid; den här körningen mäter konsekvens mellan språk, inte test–retest-konsistens.
+
+Threshold-optimering och semantisk optimering av frågorna kan sannolikt förbättra Sven och kanske ge användbara resultat för en avgränsad tillämpning. Det räcker ändå inte för ett centralt syfte med ett System One-system: att ge konsekventa, generaliserbara semantiska bedömningar av tydligt definierade frågor utan att varje gate måste specialtrimmas mot samma testfall. I den här körningen är rangordningen, språkstabiliteten och överensstämmelsen mellan semantiskt likvärdiga fall för svag. Sven uppfyller därför inte detta krav i nuvarande konfiguration, även om fortsatt optimering kan göra modellen praktiskt användbar i ett smalare flöde.
 
 Den fullständiga interaktiva rapporten finns i [report.html](report.html). Rådata finns i [english.json](english.json) och [swedish.json](swedish.json); kontrollsummor och källor finns i [run-manifest.json](run-manifest.json).
