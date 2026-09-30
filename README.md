@@ -113,6 +113,18 @@ Paste your key into the masked setup prompt. The setup script stores it as `TYPE
 
 For detailed setup, troubleshooting, and a demo walkthrough, see [docs/DEMO_RUN.md](docs/DEMO_RUN.md).
 
+### Local Sven provider
+
+The Noul gate flow can use the local Sven provider through Kev while keeping the same gate definitions, thresholds, evaluation and UI result shape. Start Kev on port 8009, then set:
+
+```powershell
+$env:SYSTEM_ONE_PROVIDER = "sven"
+$env:SVEN_BASE_URL = "http://localhost:8009"
+.\START_DEMO.bat
+```
+
+The default remains `SYSTEM_ONE_PROVIDER=jev`. Sven sends the customer text as Kev `state` and all active Noul gates together in one `POST /v1/systemone` request using model `kev-latest`. The mixed Choice/Score/Noul Decision Pipeline remains on Jev because the current Sven/Kev contract covers Noul questions only.
+
 ### Swedish and English
 
 Use the language control in the demo header to switch between English and Swedish. The choice changes the interface, examples, question definitions and evaluation cases used by the gate analysis. Each result records the language and definition version used for that run; switching the interface language later does not rerun an analysis. The English definitions remain the original baseline, while Swedish definitions have separate versions.

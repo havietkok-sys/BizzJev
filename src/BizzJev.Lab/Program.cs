@@ -17,6 +17,8 @@ var dataDir = Environment.GetEnvironmentVariable("LAB_DATA_DIR")
         ? Path.Combine(Directory.GetCurrentDirectory(), "data", "lab")
         : Path.Combine(FindRepoRoot(), "data", "lab"));
 var defaultGateSet = config["DefaultGateSet"] ?? "v1";
+var systemOneProviderName = (config["SYSTEM_ONE_PROVIDER"] ?? "jev").Trim().ToLowerInvariant();
+var svenBaseUrl = config["SVEN_BASE_URL"] ?? "http://localhost:8009";
 // Disable Technical View in a production deployment by setting EnableTechnicalView=false.
 var enableTechnicalView = !bool.TryParse(config["EnableTechnicalView"], out var etv) || etv;
 var model = config["TypeSafe:Model"] ?? throw new InvalidOperationException("TypeSafe:Model required");
@@ -116,12 +118,18 @@ List<EvaluationCase> ExpandExpected(List<EvaluationCase> cases, IEnumerable<Sema
     }).ToList();
 }
 
-JevGateClient? client = null;
-JevGateClient Jev()
+ISystemOneProvider? systemOneProvider = null;
+ISystemOneProvider SystemOne()
 {
-    var key = config["TYPESAFE_API_KEY"];
-    if (string.IsNullOrWhiteSpace(key)) throw new InvalidOperationException("TYPESAFE_API_KEY missing (user secrets or environment).");
-    return client ??= new JevGateClient(key, model, timeout);
+    return systemOneProvider ??= SystemOneProviderFactory.Select(
+        systemOneProviderName,
+        () =>
+        {
+            var key = config["TYPESAFE_API_KEY"];
+            if (string.IsNullOrWhiteSpace(key)) throw new InvalidOperationException("TYPESAFE_API_KEY missing (user secrets or environment).");
+            return new JevSystemOneProvider(new JevGateClient(key, model, timeout));
+        },
+        () => new SvenSystemOneProvider(svenBaseUrl, timeout));
 }
 
 // ---------- endpoints ----------
@@ -176,7 +184,7 @@ app.MapPost("/api/analyze", async (AnalyzeRequest body) =>
         return Results.BadRequest(new { error = "customerText must be non-empty and at most 8000 characters" });
     var lang = Language(body.Language);
     var gates = LoadActiveGates(lang, out var version).Where(g => g.Active).ToList();
-    var outcome = await Jev().AnalyzeAsync(body.CustomerText, gates, version);
+    var outcome = await SystemOne().EvaluateAsync(body.CustomerText, gates, version);
     var analysis = outcome.Result;
     var policies = LoadPolicies(gates);
     var decisions = PolicyEngine.DecideAll(analysis.Signals, policies);
@@ -236,7 +244,7 @@ app.MapPost("/api/evaluate", async (string? gateSetVersion, string? language, bo
     foreach (var c in cases)
     {
         // Evaluation budgets count outbound requests, so each case gets exactly one attempt.
-        var analysis = (await Jev().AnalyzeAsync(c.CustomerText, gates, version, maxAttempts: 1)).Result;
+        var analysis = (await SystemOne().EvaluateAsync(c.CustomerText, gates, version, maxAttempts: 1)).Result;
         if (analysis.Signals.Any(s => !s.Success)) failures++;
         var decisions = PolicyEngine.DecideAll(analysis.Signals, policies);
         runs.Add(new CaseRun
@@ -360,7 +368,7 @@ app.MapPost("/api/gates/{gateId}/draft-test", async (string gateId, DraftTestReq
     GateStore.ValidateGate(body.Draft);
     var draftGate = body.Draft with { GateId = "draft", PromptVersion = "draft" };
     var activeProbe = activeGate with { GateId = "active", PromptVersion = activeGate.PromptVersion };
-    var outcome = await Jev().AnalyzeAsync(body.CustomerText, [draftGate, activeProbe], "draft-test");
+    var outcome = await SystemOne().EvaluateAsync(body.CustomerText, [draftGate, activeProbe], "draft-test");
     var draft = outcome.Result.Signals.First(s => s.GateId == "draft");
     var active = outcome.Result.Signals.First(s => s.GateId == "active");
     return Results.Json(new
@@ -385,7 +393,7 @@ app.MapPost("/api/gates/{gateId}/draft-evaluate", async (string gateId, DraftEva
     var rows = new List<DraftCaseResult>();
     foreach (var c in cases)
     {
-        var outcome = await Jev().AnalyzeAsync(c.CustomerText, probeGates, "draft-evaluate");
+        var outcome = await SystemOne().EvaluateAsync(c.CustomerText, probeGates, "draft-evaluate");
         var dSig = outcome.Result.Signals.First(s => s.GateId == "draft");
         var aSig = outcome.Result.Signals.First(s => s.GateId == "active");
         var expected = c.Expected.FirstOrDefault(e => e.GateId == gateId)?.Label;
@@ -431,7 +439,7 @@ app.MapPost("/api/gates/reset-local", (ResetRequest body) =>
     return Results.Json(new { status = "reset", activeGateSet = defaultGateSet });
 });
 
-app.MapGet("/api/health", () => Results.Json(new { status = "ok", model, defaultGateSet }));
+app.MapGet("/api/health", () => Results.Json(new { status = "ok", model, defaultGateSet, systemOneProvider = systemOneProviderName }));
 
 // ---------- Decision Pipeline (Milestone 2) ----------
 

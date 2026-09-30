@@ -56,6 +56,18 @@ Use the language control in the header to choose English or Swedish. The selecte
 
 The key authenticates requests to TypeSafe; you do not download or run the Jev model locally. Although BizzJev's web application runs on your computer, analysis sends the submitted text and gate definitions to TypeSafe. You can read the saved results and documentation without making API calls.
 
+### Use local Sven through Kev for Noul gates
+
+Start Kev so that `POST http://localhost:8009/v1/systemone` is available, then launch BizzJev with:
+
+```powershell
+$env:SYSTEM_ONE_PROVIDER = "sven"
+$env:SVEN_BASE_URL = "http://localhost:8009"
+.\START_DEMO.bat
+```
+
+`jev` remains the default provider. Sven receives the original customer input as `state` and all active Noul gates in one request. The existing mixed Decision Pipeline continues to use Jev because its Choice and Score primitives are outside the supplied Sven/Kev Noul contract.
+
 For background on Jev, Noul/Choice/Score, and how this project uses them, see [TypeSafe and Jev in the README](../README.md#what-are-typesafe-and-jev). TypeSafe's [quick start](https://docs.typesafe.ai/introduction/quickstart), [Playground](https://console.typesafe.ai/playground), and [API reference](https://docs.typesafe.ai/api) are useful next steps.
 
 ### Where the key is stored
