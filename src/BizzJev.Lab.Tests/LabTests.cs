@@ -7,10 +7,12 @@ public sealed class StubHandler : HttpMessageHandler
 {
     private readonly Func<JsonDocument, HttpResponseMessage> _respond;
     public JsonDocument? LastRequest { get; private set; }
+    public int Attempts { get; private set; }
     public StubHandler(Func<JsonDocument, HttpResponseMessage> respond) => _respond = respond;
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
     {
+        Attempts++;
         var body = await request.Content!.ReadAsStringAsync(ct);
         LastRequest = JsonDocument.Parse(body);
         return _respond(LastRequest);
@@ -211,6 +213,19 @@ public sealed class JevClientTests
         Assert.False(result.Signals.Single().Success);
         Assert.Equal("HTTP 422", result.Signals.Single().Error);
         Assert.Null(result.Signals.Single().Probability);
+    }
+
+    [Fact]
+    public async Task RetryLimitOneMakesExactlyOneOutboundAttempt()
+    {
+        var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.InternalServerError) { Content = new StringContent("{}") });
+        var client = new JevGateClient(new HttpClient(handler), "jev-test");
+
+        var result = (await client.AnalyzeAsync("hello", [Gate("g1")], "v1", maxAttempts: 1)).Result;
+
+        Assert.Equal(1, handler.Attempts);
+        Assert.False(result.Signals.Single().Success);
+        Assert.Equal("HTTP 500", result.Signals.Single().Error);
     }
 
     [Fact]

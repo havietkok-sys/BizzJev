@@ -4,6 +4,7 @@
 // inference; thresholds, labels and actions are deterministic application policy.
 
 import type { Provenance } from './provenance';
+import type { Language } from '../language';
 
 export type HelpTopicId =
   | 'jev' | 'choice' | 'score' | 'noul' | 'confidence' | 'distribution' | 'margin' | 'pyes'
@@ -504,4 +505,61 @@ export const helpTopics: Record<HelpTopicId, HelpTopic> = {
       'Wire diagnostics and raw payloads additionally respect the server setting EnableTechnicalView=false; with it disabled, those sections stay hidden in every level.'
     ]
   }
+};
+
+export function getHelpTopic(term: HelpTopicId, language: Language): HelpTopic {
+  return language === 'sv' ? { ...helpTopics[term], ...swedishHelpTopics[term] } : helpTopics[term];
+}
+
+function sv(term: string, short: string, ...long: string[]): Pick<HelpTopic, 'term' | 'short' | 'long'> {
+  return { term, short, long: long.length ? long : [short] };
+}
+
+const swedishHelpTopics: Record<HelpTopicId, Pick<HelpTopic, 'term' | 'short' | 'long'>> = {
+  jev: sv('Jev', 'TypeSafe-modellen som läser kundens text och ger typade bedömningar.', 'Jev tolkar textens betydelse och returnerar sannolikheter, val och poäng i ett anrop med tre frågor.', 'Bedömningarna kan vara osäkra eller felaktiga. Appen kontrollerar svarens form och tillämpar egna regler för mänsklig granskning.'),
+  choice: sv('Choice', 'Jev väljer ett alternativ ur en bestämd uppsättning.', 'Här väljer Choice teamet som ska ta emot ärendet först: Technical, Billing, Contract, Support eller Other.', 'Valet och sannolikheterna kommer från Jev. Ordningen mellan teamen står i frågan som skickas till modellen.'),
+  score: sv('Score', 'Jev placerar ärendet på en beskriven skala för brådska från 0 till 3.', 'Poängen avser följderna av att vänta enligt kundens text. Jev returnerar även sannolikheter för nivåerna.', 'Prioritetsnamnet Normal, Förhöjd eller Brådskande räknas fram av C#-reglerna.'),
+  noul: sv('Noul', 'Jev besvarar en ja/nej-fråga som en sannolikhet mellan 0 och 1.', 'Här gäller frågan om kunden faktiskt ber att avsluta en egen tjänst eller ett abonnemang.', 'Noul har inget separat säkerhetsvärde. NEJ, GRANSKA och JA bestäms av regelverkets trösklar.'),
+  confidence: sv('säkerhet', 'Jevs mått på hur samlad sannolikhetsfördelningen är.', 'Ett högt värde är ingen garanti för att bedömningen är rätt. Ett lågt värde kan leda till mänsklig granskning.', 'Choice och Score har säkerhetsvärde; Noul har det inte.'),
+  distribution: sv('sannolikhetsfördelning', 'Jevs sannolikhet för varje val eller nivå.', 'Hela fördelningen visas för att skillnaden mellan vinnaren och övriga alternativ ska synas.', 'Värdena visas som de returnerades och normaliseras inte av appen.'),
+  margin: sv('marginal för teamval', 'Vinnarens sannolikhet minus sannolikheten för närmaste konkurrent.', 'Marginalen räknas i C# från Jevs Choice-svar. En liten marginal kan kräva granskning även om ett team vann.', 'Exakt lika sannolikheter kräver alltid granskning.'),
+  pyes: sv('P(ja)', 'Jevs sannolikhet för en faktisk uppsägningsbegäran.', 'Värdet är Noul-svaret, före appens tröskelregler. Det avser en aktuell begäran, inte allmänt missnöje.', 'Etiketterna NEJ, GRANSKA och JA är regelutfall.'),
+  initialOwner: sv('första ansvariga team', 'Teamet som föreslås ta emot ärendet först när flera frågor finns.', 'Den fasta ordningen i Jev-frågan är Technical, Billing, Contract, Support, Other.', 'Det första teamet är inte nödvändigtvis kundens viktigaste fråga; övriga signaler finns kvar.'),
+  priority: sv('prioritet', 'Normal, Förhöjd eller Brådskande enligt C#-trösklar för Jevs brådskepoäng.', 'Jev ger poäng och fördelning. Appens regler ger prioritetsnamnet.', 'En stor sannolikhet för nivå 3 kan kräva granskning även när medelpoängen ligger lägre.'),
+  cancellationDisposition: sv('utfall för uppsägning', 'Reglernas tolkning av Noul-sannolikheten: NEJ, GRANSKA eller JA.', 'Standardgränserna är under 0,20 för NEJ och minst 0,80 för JA. Däremellan blir det GRANSKA.', 'JA är ett förslag om hantering av den begärda omfattningen; inget sägs upp automatiskt.'),
+  policyEligible: sv('klar enligt reglerna', 'Rekommendationen passerade demots kontroller utan skäl för granskning.', 'Detta är fortfarande bara ett förslag. Appen utför inga kundåtgärder automatiskt.'),
+  humanReview: sv('mänsklig granskning', 'Ett eller flera regelvillkor kräver att en person bedömer ärendet.', 'Osäkert teamval, osäker brådska, tvetydig uppsägning eller behov av allmän sortering kan utlösa granskning.', 'Giltiga signaler visas fortfarande och inga externa åtgärder utförs.'),
+  technicalFailure: sv('tekniskt fel', 'Ett nödvändigt svar saknas eller har ogiltig struktur.', 'Det skiljs från ett giltigt men osäkert svar. Saknad uppsägningsbedömning blir aldrig tyst NEJ.', 'Övriga giltiga svar kan fortfarande visas.'),
+  urgentRisk: sv('risk för brådska', 'En tillräcklig andel sannolikhet på nivå 3 håller en allvarlig signal synlig.', 'Standardgränsen är 0,20 för P(nivå 3). Regeln kan begära granskning trots lägre genomsnittspoäng.', 'Det är en regel i demot, ingen garanti om tjänstenivå.'),
+  reviewReason: sv('skäl för granskning', 'Ett namngivet regelvillkor som skickar ärendet till en person.', 'Skälen räknas fram av C# från Jevs svar och regeltrösklar. De är inte en förklaring som Jev har skrivit.'),
+  proposedAction: sv('föreslagen åtgärd', 'Ett hanteringsförslag som appens regler visar utan att utföra något.', 'Appen skapar inget ärende, skickar inget meddelande och säger inte upp någon tjänst.'),
+  threshold: sv('tröskel', 'Ett gränsvärde som bestämmer hur ett Jev-svar hanteras.', 'Trösklarna hör till appens regler. Omspelning kan pröva andra värden på sparade svar utan ett nytt Jev-anrop.'),
+  semanticVersion: sv('semantisk version', 'Versionen av frågorna som skickades till Jev.', 'Svenska och engelska frågor har varsin version. Versionen följer analysen och krävs för replay.'),
+  policyVersion: sv('regelversion', 'Versionen av C#-reglernas standardvärden.', 'Ett lokalt tröskelförsök märks som en anpassad regelversion. Originalanalysen finns kvar.'),
+  replayCustom: sv('anpassad policy', 'Lokala tröskeländringar som används vid omspelning.', 'De ändrar inte Jevs sparade svar eller den ursprungliga analysen.'),
+  matchedRule: sv('matchad regel', 'En C#-regel som användes för beslutet.', 'Regel-ID:n visas i fast ordning tillsammans med regelmotorns förklaringstext.'),
+  deterministicPolicy: sv('bestämda regler', 'C#-logik som ger samma beslut för samma svar och trösklar.', 'Jev bedömer textens betydelse. Reglerna väljer hantering utifrån de typade svaren.'),
+  replay: sv('omspelning', 'Beslutet räknas om från sparade Jev-svar och valda trösklar.', 'Replay gör inga nya Jev-anrop och kräver samma språkversion som originalanalysen.'),
+  outboundAttempt: sv('utgående försök', 'Antalet försök att anropa Jev.', 'En analys gör högst ett försök utan automatiskt nytt försök. Replay gör noll.'),
+  tokenUsage: sv('tokenanvändning', 'Tokenantal som Jev rapporterade för anropet.', 'Om användningsdata saknas visas värdet som okänt, inte som noll.'),
+  rawRequest: sv('rått anrop', 'Det exakta JSON-innehåll som servern skickade till Jev.', 'Här syns vilka tre frågor och kriterier som användes. Formateringen ändrar inte JSON-värdena.'),
+  rawResponse: sv('rått svar', 'Det exakta JSON-innehåll som Jev returnerade.', 'Svaren valideras innan reglerna tillämpas. Det råa innehållet bevaras för teknisk granskning.'),
+  synthetic: sv('syntetiskt exempel', 'Ett påhittat kundmeddelande för demot.', 'De svenska exemplen illustrerar flödet. Ingen svensk batchmätning har gjorts ännu.'),
+  gateReviewThreshold: sv('granskningströskel', 'Lägsta signalnivå där en person bör granska ärendet.', 'Under gränsen utlöses ingen granskning. En ändring påverkar regelutfallet, inte Jevs signal.'),
+  gateAcceptThreshold: sv('accepteringströskel', 'Gränsen där regelverket accepterar en signal utan mänsklig granskning.', 'Den lämpliga gränsen beror på följderna av fel. Den ändrar inte Jevs bedömning.'),
+  gatePolicyResult: sv('regelutfall', 'NO, REVIEW eller YES från appens tröskelregler.', 'Utfallet är appens tolkning av Jevs signal, inte ett rått modellsvar.'),
+  policyScale: sv('regelskala', 'Två trösklar delar signalen 0–1 i NO, REVIEW och YES.', 'Jevs signal är en fast markör. När trösklar flyttas räknas utfallet om utan nytt Jev-anrop.'),
+  tp: sv('TP – sant positivt', 'Systemet hittade något som faktiskt fanns.', 'Förväntat resultat var YES och systemet gav YES.'),
+  fp: sv('FP – falskt positivt', 'Systemet gav ett falskt larm.', 'Förväntat resultat var NO men systemet gav YES.'),
+  fn: sv('FN – falskt negativt', 'Systemet missade något som faktiskt fanns.', 'Förväntat resultat var YES men systemet gav inte YES.'),
+  tn: sv('TN – sant negativt', 'Systemet avstod korrekt när det som söktes saknades.', 'Förväntat resultat och systemets utfall var NO.'),
+  precision: sv('precision', 'Andelen positiva svar som är rätt.', 'Hög precision betyder få falska larm.'),
+  recall: sv('täckning', 'Andelen verkliga positiva fall som systemet hittade.', 'Hög täckning betyder att få verkliga fall missas.'),
+  f1: sv('F1', 'Ett mått som väger samman precision och täckning.', 'Vilket mått som är viktigast beror på kostnaden för olika fel.'),
+  yesmed: sv('median för YES-signal', 'Den typiska Jev-signalen för fall som borde vara YES.', 'Måttet visar signalernas läge, inte total träffsäkerhet.'),
+  nomed: sv('median för NO-signal', 'Den typiska Jev-signalen för fall som borde vara NO.', 'Jämför med YES-fall för att se hur signalerna skiljs åt.'),
+  operationalCapture: sv('operativ fångst', 'Hur förväntade YES-fall hanterades: automatiskt, via granskning eller missade.', 'Det är ett verksamhetsmått som skiljer sig från precision, täckning och F1.'),
+  gateDesign: sv('utforma en semantisk gate', 'Beskriv det avsedda begreppet brett nog men avgränsa det tydligt.', 'Ett testmått ska utvärdera gaten, inte ändra vad verksamheten menar med begreppet.'),
+  reviewFallback: sv('varför REVIEW finns', 'Osäkra fall skickas till en person för bedömning.', 'Det är ett avsiktligt arbetsflöde, inte ett tekniskt fel.'),
+  viewLevels: sv('snabbvy, verksamhet och teknik', 'Tre sätt att visa samma körning.', 'Byte av vy gör inget nytt Jev-anrop. Teknikvyn visar fler råvärden när servern tillåter det.')
 };

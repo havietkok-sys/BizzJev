@@ -1,5 +1,6 @@
 import { useViewLevel } from '../components/viewLevel';
-import { EXAMPLE_MESSAGE } from '../examples';
+import { exampleMessage } from '../examples';
+import { useLanguage } from '../language';
 import { HelpTerm } from '../components/HelpTerm';
 import { ProvenanceBadge } from '../components/ProvenanceBadge';
 
@@ -17,6 +18,69 @@ import { ProvenanceBadge } from '../components/ProvenanceBadge';
  */
 export function Overview() {
   const { level, atLeast } = useViewLevel();
+  const { language } = useLanguage();
+  if (language === 'sv') return (
+    <div className="overview">
+      <section className="panel ov-hero">
+        <img src="/BizzJev.png" alt="BizzJevs logotyp" className="ov-logo" />
+        <div className="ov-hero-text">
+          <p className="ov-kicker">Ett simulerat labb för kundservice</p>
+          <h2 className="ov-title">Nordbo Telecom — de första sekunderna efter kundens meddelande</h2>
+          <p className="ov-lead">Kunden skriver fritt. Jev tolkar innehållet och Nordbos regler föreslår nästa steg. En människa fattar beslutet.</p>
+        </div>
+      </section>
+      {atLeast('business') && <section className="panel">
+        <h2>Vad demonstrationen visar</h2>
+        <div className="ov-trio">
+          <div className="ov-mini"><div className="ov-mini-icon">📨</div><b>Ett meddelande, flera behov</b><p>Samma text kan innehålla ett tekniskt fel, en fakturafråga och en uppsägning.</p></div>
+          <div className="ov-mini"><div className="ov-mini-icon">🧩</div><b>Fri text blir strukturerade signaler</b><p>Varje relevant betydelse får en egen signal i stället för en enda tvingad kategori.</p></div>
+          <div className="ov-mini"><div className="ov-mini-icon">🧭</div><b>Ett föreslaget nästa steg</b><p>Företagets regler använder signalerna för att föreslå hantering. Inget utförs automatiskt.</p></div>
+        </div>
+      </section>}
+      <section className="panel">
+        <h2>Ett realistiskt meddelande</h2>
+        <div className="ov-message-row">
+          <div className="ov-bubble" role="img" aria-label="Exempel på kundmeddelande"><span className="ov-bubble-from">Kund · chatt</span><p>{exampleMessage(language)}</p></div>
+          <div className="ov-breakout-arrow" aria-hidden="true">↓</div>
+          <p className="ov-breakout-label">Samma meddelande innehåller flera betydelser:</p>
+          <div className="ov-signals">
+            <span className="ov-signal">⚠️ Tekniskt problem</span><span className="ov-signal">🔁 Återkommande problem</span>
+            <span className="ov-signal">📌 Olöst ärende</span><span className="ov-signal">🙂 Positiv supportupplevelse</span>
+            <span className="ov-signal">🔭 Överväger konkurrent</span><span className="ov-signal">🚶 Risk att lämna</span>
+          </div>
+        </div>
+        <p className="ov-callout">Systemet bevarar alla dessa behov eftersom de kan kräva olika hantering.</p>
+        <div className="save-row" style={{ marginTop: 12 }}><a className="ov-cta" href="#/analyze">Analysera meddelandet →</a><span className="dim small">Texten fylls i; analysen startar först när du klickar på Analysera.</span></div>
+      </section>
+      {atLeast('business') && <section className="panel">
+        <h2>Från meddelande till nästa steg</h2>
+        <ol className="ov-flow">
+          <li className="ov-stage"><b>Kundkontakt</b><span>chatt · e-post · formulär · enkät</span></li><li className="ov-arrow" aria-hidden="true">→</li>
+          <li className="ov-stage"><b>Första mottagning</b><span>meddelandet kommer in</span></li><li className="ov-arrow" aria-hidden="true">→</li>
+          <li className="ov-stage"><b>Semantiska signaler</b><span>vad texten innehåller</span></li><li className="ov-arrow" aria-hidden="true">→</li>
+          <li className="ov-stage"><b>Företagets policy</b><span>Nordbos regler och gränser</span></li><li className="ov-arrow" aria-hidden="true">→</li>
+          <li className="ov-stage ov-stage-last"><b>Föreslagen åtgärd</b><span>en människa har kontrollen</span></li>
+        </ol>
+      </section>}
+      {level === 'technical' && <section className="panel">
+        <h2>Under huven — det tekniska flödet</h2>
+        <p>Jev läser texten och svarar med typade bedömningar. C# tillämpar sedan Nordbos fasta policy.</p>
+        <ol className="ov-flow ov-flow-tech">
+          <li className="ov-stage"><b>Kundtext</b><span>skickas oförändrad</span><ProvenanceBadge p="sentToJev" /></li><li className="ov-arrow" aria-hidden="true">→</li>
+          <li className="ov-stage"><b>Jevs semantiska bedömningar</b><span>Choice <HelpTerm term="choice" /> · Score <HelpTerm term="score" /> · Noul <HelpTerm term="noul" /></span><ProvenanceBadge p="jevOutput" /></li><li className="ov-arrow" aria-hidden="true">→</li>
+          <li className="ov-stage"><b>Deterministisk C#-policy</b><span>gränser, granskning och prioritet</span><ProvenanceBadge p="cSharpDerived" /></li><li className="ov-arrow" aria-hidden="true">→</li>
+          <li className="ov-stage ov-stage-last"><b>Föreslagen hantering</b><span>dirigera · prioritera · granska</span><ProvenanceBadge p="cSharpDerived" /></li>
+        </ol>
+        <p className="ov-callout">Frågornas definitioner och gränser är Nordbos val <ProvenanceBadge p="projectPolicy" />. Prioritet och granskningsflaggor beräknas i C# <ProvenanceBadge p="cSharpDerived" />.</p>
+      </section>}
+      <section className="panel"><h2>Utforska labbet</h2><div className="ov-explore">
+        <a className="ov-card" href="#/analyze"><b>🔬 Analysera</b><span>Analysera valfri kundtext och se signaler, gränser och föreslagna åtgärder.</span></a>
+        <a className="ov-card" href="#/decision-pipeline"><b>🧭 Beslutsflöde</b><span>Ett meddelande, tre bedömningar och ett förklarbart C#-beslut.</span></a>
+        <a className="ov-card" href="#/studio"><b>🛠️ Gate Studio</b><span>Granska och redigera detektorernas definitioner och versioner.</span></a>
+        <a className="ov-card" href="#/library"><b>📚 Utvärderingsbibliotek</b><span>Granska testfall och utvärderingsresultat per språk.</span></a>
+      </div><p className="dim small">Alla exempel är syntetiska och skrivna för det fiktiva Nordbo Telecom.</p></section>
+    </div>
+  );
   return (
     <div className="overview">
       <section className="panel ov-hero">
@@ -75,7 +139,7 @@ export function Overview() {
         <div className="ov-message-row">
           <div className="ov-bubble" role="img" aria-label="Example customer message">
             <span className="ov-bubble-from">Customer · chat</span>
-            <p>{EXAMPLE_MESSAGE}</p>
+            <p>{exampleMessage(language)}</p>
           </div>
           <div className="ov-breakout-arrow" aria-hidden="true">↓</div>
           <p className="ov-breakout-label">The same message contains several meanings at once:</p>

@@ -1,0 +1,12 @@
+gate_id,gate_name,en_precision,sv_precision,en_recall,sv_recall,en_f1,sv_f1,f1_delta
+billing_problem,"Fakturaproblem",0.952,0.952,0.769,0.769,0.851,0.851,0.000
+technical_problem,"Tekniskt problem",1,1,0.833,0.8,0.909,0.889,-0.020
+contract_problem,"Avtalsproblem",0.947,0.95,0.75,0.792,0.837,0.864,0.027
+support_interaction_problem,"Supportkontakt",0.833,0.8,0.833,1,0.833,0.889,0.056
+unresolved_issue,"Olöst ärende",0.909,1,0.909,0.864,0.909,0.927,0.018
+recurring_problem,"Återkommande problem",0.727,0.667,0.941,0.941,0.821,0.78,-0.041
+positive_support_experience,"Positiv support",1,1,0.5,0.375,0.667,0.545,-0.122
+negative_support_experience,"Negativ support",0.767,0.8,1,0.87,0.868,0.833,-0.035
+competitor_consideration,"Överväger konkurrent",1,1,0.667,0.583,0.8,0.737,-0.063
+churn_risk,"Risk att lämna",0.941,1,0.889,0.889,0.914,0.941,0.027
+explicit_cancellation_intent,"Uttrycklig uppsägning",0.833,0.833,0.833,0.833,0.833,0.833,0.000

@@ -1,3 +1,7 @@
+import type { Language } from './language';
+
+const languageQuery = (language: Language) => `language=${language}`;
+
 export interface GateDef {
   gateId: string;
   category: string;
@@ -57,6 +61,7 @@ export interface Diagnostics {
 }
 
 export interface AnalyzeResponse {
+  language?: Language;
   signals: Signal[];
   policy: PolicyRow[];
   actions: ActionRow[];
@@ -76,6 +81,7 @@ export interface PolicyDef {
 export interface ExpectedLabel { gateId: string; label: 'YES' | 'NO' | 'UNCLEAR' }
 
 export interface TestCase {
+  language?: Language;
   id: string;
   caseType: string;
   customerText: string;
@@ -93,11 +99,13 @@ export interface GateMetric {
 }
 
 export interface EvaluationSummary {
+  language?: Language;
   id: string;
   ranAtUtc: string;
   gateSetVersion: string;
   policyVersion: string;
   cases: number;
+  outboundAttempts?: number;
   apiFailures: number;
 }
 
@@ -129,18 +137,18 @@ async function req<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  gates: () => req<{ gateSetVersion: string; gates: GateDef[] }>('/api/gates'),
+  gates: (language: Language = 'en') => req<{ language?: Language; gateSetVersion: string; gates: GateDef[] }>(`/api/gates?${languageQuery(language)}`),
   policies: () => req<PolicyDef[]>('/api/policies'),
   putPolicy: (gateId: string, review: number, accept: number) =>
     req<PolicyDef>(`/api/policies/${gateId}`, { method: 'PUT', body: JSON.stringify({ reviewThreshold: review, acceptThreshold: accept }) }),
-  analyze: (customerText: string) =>
-    req<AnalyzeResponse>('/api/analyze', { method: 'POST', body: JSON.stringify({ customerText }) }),
-  testCases: () => req<{ synthetic: TestCase[]; saved: TestCase[] }>('/api/test-cases'),
-  saveCase: (c: TestCase) => req<TestCase>('/api/test-cases', { method: 'POST', body: JSON.stringify(c) }),
-  evaluate: () => req<EvaluationFull>('/api/evaluate', { method: 'POST' }),
-  latest: () => req<EvaluationFull>('/api/evaluation/latest'),
-  history: () => req<EvaluationSummary[]>('/api/evaluation/history'),
-  compare: (from: string, to: string) => req<Comparison>(`/api/evaluation/compare?from=${from}&to=${to}`)
+  analyze: (customerText: string, language: Language = 'en') =>
+    req<AnalyzeResponse>('/api/analyze', { method: 'POST', body: JSON.stringify({ customerText, language }) }),
+  testCases: (language: Language = 'en') => req<{ synthetic: TestCase[]; saved: TestCase[] }>(`/api/test-cases?${languageQuery(language)}`),
+  saveCase: (c: TestCase, language: Language = 'en') => req<TestCase>('/api/test-cases', { method: 'POST', body: JSON.stringify({ ...c, language }) }),
+  evaluate: (language: Language = 'en') => req<EvaluationFull>(`/api/evaluate?${languageQuery(language)}`, { method: 'POST' }),
+  latest: (language: Language = 'en') => req<EvaluationFull>(`/api/evaluation/latest?${languageQuery(language)}`),
+  history: (language: Language = 'en') => req<EvaluationSummary[]>(`/api/evaluation/history?${languageQuery(language)}`),
+  compare: (from: string, to: string, language: Language = 'en') => req<Comparison>(`/api/evaluation/compare?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&${languageQuery(language)}`)
 };
 
 export function decideLocal(probability: number | null, review: number, accept: number): PolicyOutcome {
@@ -188,17 +196,17 @@ export interface DraftEvalResult {
 interface Metric { tp: number; fp: number; fn: number; tn: number; precision: number | null; recall: number | null; f1: number | null }
 
 export const studioApi = {
-  versions: (gateId: string) => req<VersionMeta[]>(`/api/gates/${gateId}/versions`),
-  version: (gateId: string, version: string) => req<VersionFull>(`/api/gates/${gateId}/versions/${version}`),
-  save: (gateId: string, gate: object, parentVersion: string, changeNote: string | null) =>
-    req<VersionFull>(`/api/gates/${gateId}/versions`, { method: 'POST', body: JSON.stringify({ gate, parentVersion, changeNote }) }),
-  setActive: (gateId: string, version: string) =>
-    req<{ gateId: string; activeVersion: string }>(`/api/gates/${gateId}/active`, { method: 'PUT', body: JSON.stringify({ version }) }),
-  draftTest: (gateId: string, draft: object, customerText: string) =>
-    req<DraftTestResult>(`/api/gates/${gateId}/draft-test`, { method: 'POST', body: JSON.stringify({ draft, customerText }) }),
-  draftEvaluate: (gateId: string, draft: object) =>
-    req<DraftEvalResult>(`/api/gates/${gateId}/draft-evaluate`, { method: 'POST', body: JSON.stringify({ draft }) }),
-  resetLocal: () => req<{ status: string }>(`/api/gates/reset-local`, { method: 'POST', body: JSON.stringify({ confirm: true }) })
+  versions: (gateId: string, language: Language = 'en') => req<VersionMeta[]>(`/api/gates/${gateId}/versions?${languageQuery(language)}`),
+  version: (gateId: string, version: string, language: Language = 'en') => req<VersionFull>(`/api/gates/${gateId}/versions/${encodeURIComponent(version)}?${languageQuery(language)}`),
+  save: (gateId: string, gate: object, parentVersion: string, changeNote: string | null, language: Language = 'en') =>
+    req<VersionFull>(`/api/gates/${gateId}/versions`, { method: 'POST', body: JSON.stringify({ gate, parentVersion, changeNote, language }) }),
+  setActive: (gateId: string, version: string, language: Language = 'en') =>
+    req<{ gateId: string; activeVersion: string }>(`/api/gates/${gateId}/active`, { method: 'PUT', body: JSON.stringify({ version, language }) }),
+  draftTest: (gateId: string, draft: object, customerText: string, language: Language = 'en') =>
+    req<DraftTestResult>(`/api/gates/${gateId}/draft-test`, { method: 'POST', body: JSON.stringify({ draft, customerText, language }) }),
+  draftEvaluate: (gateId: string, draft: object, language: Language = 'en') =>
+    req<DraftEvalResult>(`/api/gates/${gateId}/draft-evaluate`, { method: 'POST', body: JSON.stringify({ draft, language }) }),
+  resetLocal: (language: Language = 'en') => req<{ status: string }>(`/api/gates/reset-local`, { method: 'POST', body: JSON.stringify({ confirm: true, language }) })
 };
 
 // ---------- Decision Pipeline (Milestone 2) ----------
@@ -282,6 +290,7 @@ export interface PipelineDiagnostics {
 export interface PipelineExample { id: string; text: string; synthetic: boolean }
 
 export interface PipelineDefinition {
+  language?: Language;
   semanticVersion: string;
   policyVersion: string;
   model: string;
@@ -293,6 +302,7 @@ export interface PipelineDefinition {
 }
 
 export interface PipelineAnalyzeResponse {
+  language?: Language;
   semanticVersion: string;
   policyVersion: string;
   analyzedAtUtc: string;
@@ -303,6 +313,7 @@ export interface PipelineAnalyzeResponse {
 }
 
 export interface PipelineReplayResponse {
+  language?: Language;
   semanticVersion: string;
   policyVersion: string;
   replayedAtUtc: string;
@@ -333,9 +344,9 @@ export function replayAnswerBodies(answers: PipelineAnswers): {
 }
 
 export const pipelineApi = {
-  definition: () => req<PipelineDefinition>('/api/decision-pipeline/definition'),
-  analyze: (customerText: string) =>
-    req<PipelineAnalyzeResponse>('/api/decision-pipeline/analyze', { method: 'POST', body: JSON.stringify({ customerText }) }),
+  definition: (language: Language = 'en') => req<PipelineDefinition>(`/api/decision-pipeline/definition?${languageQuery(language)}`),
+  analyze: (customerText: string, language: Language = 'en') =>
+    req<PipelineAnalyzeResponse>('/api/decision-pipeline/analyze', { method: 'POST', body: JSON.stringify({ customerText, language }) }),
   replay: (body: {
     semanticVersion: string;
     model: string;
@@ -343,5 +354,5 @@ export const pipelineApi = {
     urgency: unknown;
     cancellationRequested: unknown;
     policy?: PipelinePolicySettings;
-  }) => req<PipelineReplayResponse>('/api/decision-pipeline/replay', { method: 'POST', body: JSON.stringify(body) })
+  }, language: Language = 'en') => req<PipelineReplayResponse>('/api/decision-pipeline/replay', { method: 'POST', body: JSON.stringify({ ...body, language }) })
 };

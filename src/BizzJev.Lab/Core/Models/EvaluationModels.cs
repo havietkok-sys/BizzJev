@@ -10,6 +10,7 @@ public sealed class ExpectedLabel
 
 public sealed record EvaluationCase
 {
+    public string Language { get; init; } = "en";
     public required string Id { get; init; }
     public required string CaseType { get; init; }
     public required string CustomerText { get; init; }
@@ -22,6 +23,7 @@ public sealed record EvaluationCase
 
 public sealed class CaseRun
 {
+    public string Language { get; init; } = "en";
     public required string CaseId { get; init; }
     public required string CaseType { get; init; }
     public required string CustomerText { get; init; }
@@ -58,6 +60,7 @@ public sealed class CaseTypeMetric
 
 public sealed class EvaluationResult
 {
+    public string Language { get; init; } = "en";
     public required string Id { get; init; }
     public required DateTimeOffset RanAtUtc { get; init; }
     public required string GateSetVersion { get; init; }
@@ -66,6 +69,7 @@ public sealed class EvaluationResult
     public required IReadOnlyList<CaseTypeMetric> ByCaseType { get; init; }
     public required string? WeakestRoutingGate { get; init; }
     public required int Cases { get; init; }
+    public int OutboundAttempts { get; init; }
     public required int ApiFailures { get; init; }
     public required IReadOnlyList<CaseRun> Runs { get; init; }
 }

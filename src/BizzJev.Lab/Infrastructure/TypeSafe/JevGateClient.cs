@@ -31,10 +31,13 @@ public sealed class JevGateClient
         string customerText,
         IReadOnlyList<SemanticGateDefinition> gates,
         string gateSetVersion,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        int maxAttempts = 3)
     {
         if (string.IsNullOrWhiteSpace(customerText) || customerText.Length > 8000)
             throw new ArgumentException("customerText must be non-empty and at most 8000 characters.");
+        if (maxAttempts is < 1 or > 3)
+            throw new ArgumentOutOfRangeException(nameof(maxAttempts), "maxAttempts must be between 1 and 3.");
         var questions = new Dictionary<string, object>();
         foreach (var gate in gates)
             questions[gate.GateId] = new { type = "noul", instructions = gate.Instructions, criteria = gate.Criteria };
@@ -44,7 +47,7 @@ public sealed class JevGateClient
         var content = new StringContent(payloadJson, Encoding.UTF8, "application/json");
 
         Exception? lastError = null;
-        for (var attempt = 1; attempt <= 3; attempt++)
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
         {
             var timer = Stopwatch.StartNew();
             try
@@ -52,7 +55,7 @@ public sealed class JevGateClient
                 using var response = await _client.PostAsync("https://api.typesafe.ai/v1/systemone", content, ct);
                 var body = await response.Content.ReadAsStringAsync(ct);
                 timer.Stop();
-                if ((int)response.StatusCode is 408 or 429 or >= 500 && attempt < 3)
+                if ((int)response.StatusCode is 408 or 429 or >= 500 && attempt < maxAttempts)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(2 * attempt), ct);
                     continue;
@@ -97,7 +100,7 @@ public sealed class JevGateClient
             {
                 timer.Stop();
                 lastError = e;
-                if (e is HttpRequestException or TaskCanceledException && attempt < 3)
+                if (e is HttpRequestException or TaskCanceledException && attempt < maxAttempts)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(2 * attempt), ct);
                     continue;

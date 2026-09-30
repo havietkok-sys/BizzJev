@@ -33,7 +33,9 @@ var json = new JsonSerializerOptions(JsonSerializerDefaults.Web)
 // ---------- stores ----------
 
 var gateStore = new GateStore(Path.Combine(dataDir, "gates"));
-string ActiveGateSetVersion = defaultGateSet;
+static bool ValidLanguage(string? language) => language is null or "en" or "sv";
+static string Language(string? language) => language ?? "en";
+string BaselineSet(string language) => language == "sv" ? "v1-sv" : defaultGateSet;
 
 List<SemanticGateDefinition> LoadGates(string version)
 {
@@ -46,20 +48,20 @@ List<SemanticGateDefinition> LoadGates(string version)
 }
 
 /// Config baseline with per-gate local active overrides applied (Gate Studio).
-List<SemanticGateDefinition> LoadActiveGates()
+List<SemanticGateDefinition> LoadActiveGates(string language, out string gateSetVersion)
 {
-    var gates = LoadGates(defaultGateSet);
+    var gates = LoadGates(BaselineSet(language));
     var overridden = false;
     for (var i = 0; i < gates.Count; i++)
     {
-        var active = gateStore.ActiveVersion(gates[i].GateId);
+        var active = gateStore.ActiveVersion(gates[i].GateId, language);
         if (active == GateStore.BaselineVersion) continue;
-        var local = gateStore.LoadVersion(gates[i].GateId, active);
+        var local = gateStore.LoadVersion(gates[i].GateId, active, language);
         if (local is null) continue;
         gates[i] = local.Gate;
         overridden = true;
     }
-    ActiveGateSetVersion = overridden ? "mixed-local" : defaultGateSet;
+    gateSetVersion = overridden ? "mixed-local" : BaselineSet(language);
     return gates;
 }
 
@@ -74,11 +76,15 @@ Dictionary<string, PolicyDefinition> LoadPolicies(List<SemanticGateDefinition> g
             : new PolicyDefinition { GateId = g.GateId, PolicyVersion = custom ? "v1-custom" : "v1", ReviewThreshold = g.ReviewThreshold, AcceptThreshold = g.AcceptThreshold, Profile = g.PolicyProfile });
 }
 
-List<EvaluationCase> LoadSyntheticCases()
+List<EvaluationCase> LoadSyntheticCases(string language)
 {
-    var path = Path.Combine(AppContext.BaseDirectory, "config", "testcases.v1.json");
-    var doc = JsonDocument.Parse(File.ReadAllText(path));
-    return doc.RootElement.GetProperty("cases").Deserialize<List<EvaluationCase>>(json)!;
+    var file = language == "sv" ? "testcases.v1-sv.json" : "testcases.v1.json";
+    var path = Path.Combine(AppContext.BaseDirectory, "config", file);
+    using var doc = JsonDocument.Parse(File.ReadAllText(path));
+    if (language == "sv" && (!doc.RootElement.TryGetProperty("language", out var datasetLanguage) || datasetLanguage.GetString() != "sv"))
+        throw new InvalidOperationException("Swedish dataset must declare language 'sv'");
+    return doc.RootElement.GetProperty("cases").Deserialize<List<EvaluationCase>>(json)!
+        .Select(c => c with { Language = language }).ToList();
 }
 
 List<EvaluationCase> LoadSavedCases() =>
@@ -100,7 +106,7 @@ List<EvaluationCase> ExpandExpected(List<EvaluationCase> cases, IEnumerable<Sema
     var gateIds = gates.Select(g => g.GateId).ToList();
     return cases.Select(c => new EvaluationCase
     {
-        Id = c.Id, CaseType = c.CaseType, CustomerText = c.CustomerText,
+        Id = c.Id, CaseType = c.CaseType, CustomerText = c.CustomerText, Language = c.Language,
         Expected = gateIds
             .Where(id => c.Expected.All(e => e.GateId != id))
             .Select(id => new ExpectedLabel { GateId = id, Label = "NO" })
@@ -124,13 +130,16 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.MapGet("/api/gates", (string? version) =>
+app.MapGet("/api/gates", (string? version, string? language) =>
 {
-    var v = version ?? defaultGateSet;
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(language);
+    var v = version ?? BaselineSet(lang);
+    if (v != BaselineSet(lang)) return Results.BadRequest(new { error = "gate set version does not match language" });
     var gates = LoadGates(v);
     return Results.Json(new
     {
-        gateSetVersion = v,
+        gateSetVersion = v, language = lang,
         gates = gates.Select(g => new
         {
             g.GateId, g.Category, g.BusinessGoal, g.SemanticTarget, g.SemanticInterior, g.SemanticBoundaries,
@@ -162,10 +171,11 @@ app.MapPut("/api/policies/{gateId}", (string gateId, ThresholdOverride body) =>
 
 app.MapPost("/api/analyze", async (AnalyzeRequest body) =>
 {
+    if (!ValidLanguage(body.Language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
     if (string.IsNullOrWhiteSpace(body.CustomerText) || body.CustomerText.Length > 8000)
         return Results.BadRequest(new { error = "customerText must be non-empty and at most 8000 characters" });
-    var gates = LoadActiveGates().Where(g => g.Active).ToList();
-    var version = ActiveGateSetVersion;
+    var lang = Language(body.Language);
+    var gates = LoadActiveGates(lang, out var version).Where(g => g.Active).ToList();
     var outcome = await Jev().AnalyzeAsync(body.CustomerText, gates, version);
     var analysis = outcome.Result;
     var policies = LoadPolicies(gates);
@@ -176,20 +186,26 @@ app.MapPost("/api/analyze", async (AnalyzeRequest body) =>
         signals = analysis.Signals.Select(s => new { s.GateId, s.Probability, s.ModelVersion, s.PromptVersion, s.Success, s.Error, s.LatencyMs }),
         policy = decisions.Select(d => new { d.GateId, result = d.Result.ToString().ToLowerInvariant(), d.PolicyVersion, d.ReviewThreshold, d.AcceptThreshold }),
         actions = actions.Select(a => new { a.Type, a.SourceGate, a.Label, trigger = a.Trigger.ToString().ToLowerInvariant() }),
-        gateSetVersion = version,
+        gateSetVersion = version, language = lang,
         analyzedAtUtc = analysis.AnalyzedAtUtc,
         diagnostics = enableTechnicalView ? outcome.Diagnostics : null
     }, json);
 });
 
-app.MapGet("/api/test-cases", () =>
+app.MapGet("/api/test-cases", (string? language) =>
 {
-    var gates = LoadGates(defaultGateSet);
-    return Results.Json(new { synthetic = LoadSyntheticCases(), saved = LoadSavedCases() }, json);
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(language);
+    return Results.Json(new
+    {
+        synthetic = LoadSyntheticCases(lang),
+        saved = LoadSavedCases().Where(c => c.Language == lang).ToList()
+    }, json);
 });
 
 app.MapPost("/api/test-cases", (EvaluationCase body) =>
 {
+    if (!ValidLanguage(body.Language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
     if (string.IsNullOrWhiteSpace(body.CustomerText)) return Results.BadRequest(new { error = "customerText required" });
     if (body.Expected.Any(e => e.Label is not ("YES" or "NO" or "UNCLEAR"))) return Results.BadRequest(new { error = "labels must be YES/NO/UNCLEAR" });
     var gates = LoadGates(defaultGateSet).Select(g => g.GateId).ToHashSet();
@@ -198,25 +214,29 @@ app.MapPost("/api/test-cases", (EvaluationCase body) =>
     var id = body.Id;
     if (string.IsNullOrWhiteSpace(id) || saved.Any(c => c.Id == id))
         id = $"manual-{DateTimeOffset.UtcNow:yyyyMMdd-HHmmssfff}";
-    var sanitized = body with { Id = id, Synthetic = false, CreatedAtUtc = DateTimeOffset.UtcNow };
+    var sanitized = body with { Id = id, Language = Language(body.Language), Synthetic = false, CreatedAtUtc = DateTimeOffset.UtcNow };
     saved.Add(sanitized);
     WriteJson(Path.Combine(dataDir, "evaluation-cases.json"), saved);
     return Results.Json(sanitized, json);
 });
 
-app.MapPost("/api/evaluate", async (string? gateSetVersion) =>
+app.MapPost("/api/evaluate", async (string? gateSetVersion, string? language, bool includeSaved = true) =>
 {
-    var gates = LoadActiveGates().Where(g => g.Active).ToList();
-    var version = ActiveGateSetVersion;
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(language);
+    var gates = LoadActiveGates(lang, out var version).Where(g => g.Active).ToList();
     var gateMap = gates.ToDictionary(g => g.GateId);
     var policies = LoadPolicies(gates);
     var policyVersion = policies.Values.First().PolicyVersion;
-    var cases = ExpandExpected(LoadSyntheticCases().Concat(LoadSavedCases()).ToList(), gates);
+    var sourceCases = LoadSyntheticCases(lang);
+    if (includeSaved) sourceCases.AddRange(LoadSavedCases().Where(c => c.Language == lang));
+    var cases = ExpandExpected(sourceCases, gates);
     var runs = new List<CaseRun>();
     var failures = 0;
     foreach (var c in cases)
     {
-        var analysis = (await Jev().AnalyzeAsync(c.CustomerText, gates, version)).Result;
+        // Evaluation budgets count outbound requests, so each case gets exactly one attempt.
+        var analysis = (await Jev().AnalyzeAsync(c.CustomerText, gates, version, maxAttempts: 1)).Result;
         if (analysis.Signals.Any(s => !s.Success)) failures++;
         var decisions = PolicyEngine.DecideAll(analysis.Signals, policies);
         runs.Add(new CaseRun
@@ -224,47 +244,53 @@ app.MapPost("/api/evaluate", async (string? gateSetVersion) =>
             CaseId = c.Id, CaseType = c.CaseType, CustomerText = c.CustomerText,
             Expected = c.Expected, Rationale = c.Rationale, Notes = c.Notes,
             Signals = analysis.Signals, Policy = decisions, Actions = Actions.Derive(decisions, gateMap),
-            GateSetVersion = version, PolicyVersion = policyVersion
+            GateSetVersion = version, PolicyVersion = policyVersion, Language = lang
         });
         Console.WriteLine($"evaluated {runs.Count}/{cases.Count} ({c.Id})");
     }
     var result = new EvaluationResult
     {
         Id = DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmssfff"),
-        RanAtUtc = DateTimeOffset.UtcNow, GateSetVersion = version, PolicyVersion = policyVersion,
+        RanAtUtc = DateTimeOffset.UtcNow, GateSetVersion = version, PolicyVersion = policyVersion, Language = lang,
         PerGate = Metrics.Compute(runs, gates.Select(g => g.GateId).ToList()),
         ByCaseType = Metrics.ByCaseType(runs, gates.Select(g => g.GateId).ToList()),
         WeakestRoutingGate = Metrics.WeakestRoutingGate(Metrics.Compute(runs, gates.Select(g => g.GateId).ToList()), gateMap),
-        Cases = runs.Count, ApiFailures = failures, Runs = runs
+        Cases = runs.Count, OutboundAttempts = runs.Count, ApiFailures = failures, Runs = runs
     };
     WriteJson(Path.Combine(dataDir, "evaluations", $"{result.Id}.json"), result);
     return Results.Json(result, json);
 });
 
-app.MapGet("/api/evaluation/latest", () =>
+app.MapGet("/api/evaluation/latest", (string? language) =>
 {
-    var file = Directory.GetFiles(Path.Combine(dataDir, "evaluations")).OrderByDescending(f => f).FirstOrDefault();
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var file = Directory.GetFiles(Path.Combine(dataDir, "evaluations")).OrderByDescending(f => f)
+        .FirstOrDefault(f => ReadJson<EvaluationResult>(f)?.Language == Language(language));
     if (file is null) return Results.NotFound(new { error = "no evaluations yet" });
     return Results.Json(ReadJson<EvaluationResult>(file), json);
 });
 
-app.MapGet("/api/evaluation/history", () =>
+app.MapGet("/api/evaluation/history", (string? language) =>
 {
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
     var list = Directory.GetFiles(Path.Combine(dataDir, "evaluations")).OrderByDescending(f => f)
         .Select(f => ReadJson<EvaluationResult>(f))
-        .Where(r => r is not null)
-        .Select(r => new { r!.Id, r.RanAtUtc, r.GateSetVersion, r.PolicyVersion, r.Cases, r.ApiFailures })
+        .Where(r => r is not null && r.Language == Language(language))
+        .Select(r => new { r!.Id, r.RanAtUtc, r.GateSetVersion, r.PolicyVersion, r.Language, r.Cases, r.OutboundAttempts, r.ApiFailures })
         .ToList();
     return Results.Json(list, json);
 });
 
-app.MapGet("/api/evaluation/compare", (string from, string to) =>
+app.MapGet("/api/evaluation/compare", (string from, string to, string? language) =>
 {
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
     var dir = Path.Combine(dataDir, "evaluations");
     EvaluationResult? Load(string id) => Directory.GetFiles(dir).Select(ReadJson<EvaluationResult>).FirstOrDefault(r => r?.Id == id);
     var a = Load(from);
     var b = Load(to);
     if (a is null || b is null) return Results.NotFound(new { error = "unknown evaluation id" });
+    if (a.Language != b.Language || a.Language != Language(language))
+        return Results.BadRequest(new { error = "evaluations must have the same requested language" });
     var gateIds = a.PerGate.Select(g => g.GateId).ToList();
     return Results.Json(Regression.Compare(a.GateSetVersion, b.GateSetVersion, a.Runs.ToList(), b.Runs.ToList(), gateIds), json);
 });
@@ -272,12 +298,14 @@ app.MapGet("/api/evaluation/compare", (string from, string to) =>
 
 // ---------- Gate Studio ----------
 
-app.MapGet("/api/gates/{gateId}/versions", (string gateId) =>
+app.MapGet("/api/gates/{gateId}/versions", (string gateId, string? language) =>
 {
-    var baseline = LoadGates(defaultGateSet).FirstOrDefault(g => g.GateId == gateId)
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(language);
+    var baseline = LoadGates(BaselineSet(lang)).FirstOrDefault(g => g.GateId == gateId)
         ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
-    var locals = gateStore.LoadAllVersions(gateId);
-    var active = gateStore.ActiveVersion(gateId);
+    var locals = gateStore.LoadAllVersions(gateId, lang);
+    var active = gateStore.ActiveVersion(gateId, lang);
     var list = new List<object>
     {
         new { version = GateStore.BaselineVersion, source = "config", parentVersion = "", createdAtUtc = "", changeNote = "Original frozen gate", isActive = active == GateStore.BaselineVersion }
@@ -286,23 +314,27 @@ app.MapGet("/api/gates/{gateId}/versions", (string gateId) =>
     return Results.Json(list, json);
 });
 
-app.MapGet("/api/gates/{gateId}/versions/{version}", (string gateId, string version) =>
+app.MapGet("/api/gates/{gateId}/versions/{version}", (string gateId, string version, string? language) =>
 {
+    if (!ValidLanguage(language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(language);
     if (version == GateStore.BaselineVersion)
     {
-        var g = LoadGates(defaultGateSet).FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
+        var g = LoadGates(BaselineSet(lang)).FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
         return Results.Json(new { version, source = "config", parentVersion = "", createdAtUtc = "", changeNote = "Original frozen gate", gate = g }, json);
     }
-    var local = gateStore.LoadVersion(gateId, version);
+    var local = gateStore.LoadVersion(gateId, version, lang);
     return local is null ? Results.NotFound(new { error = $"unknown version '{version}'" }) : Results.Json(new { local.Version, source = "local", local.ParentVersion, local.CreatedAtUtc, local.ChangeNote, local.Gate }, json);
 });
 
 app.MapPost("/api/gates/{gateId}/versions", (string gateId, SaveVersionRequest body) =>
 {
-    _ = LoadGates(defaultGateSet).FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
+    if (!ValidLanguage(body.Language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(body.Language);
+    _ = LoadGates(BaselineSet(lang)).FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
     try
     {
-        var saved = gateStore.SaveNewVersion(gateId, body.Gate, body.ParentVersion, body.ChangeNote);
+        var saved = gateStore.SaveNewVersion(gateId, body.Gate, body.ParentVersion, body.ChangeNote, lang);
         return Results.Json(new { saved.Version, saved.ParentVersion, saved.CreatedAtUtc, saved.ChangeNote, saved.Gate }, json);
     }
     catch (InvalidOperationException e) { return Results.BadRequest(new { error = e.Message }); }
@@ -310,17 +342,21 @@ app.MapPost("/api/gates/{gateId}/versions", (string gateId, SaveVersionRequest b
 
 app.MapPut("/api/gates/{gateId}/active", (string gateId, SetActiveRequest body) =>
 {
+    if (!ValidLanguage(body.Language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(body.Language);
     try
     {
-        gateStore.SetActive(gateId, body.Version);
-        return Results.Json(new { gateId, activeVersion = gateStore.ActiveVersion(gateId) });
+        gateStore.SetActive(gateId, body.Version, lang);
+        return Results.Json(new { gateId, activeVersion = gateStore.ActiveVersion(gateId, lang), language = lang });
     }
     catch (InvalidOperationException e) { return Results.BadRequest(new { error = e.Message }); }
 });
 
 app.MapPost("/api/gates/{gateId}/draft-test", async (string gateId, DraftTestRequest body) =>
 {
-    var activeGate = LoadActiveGates().FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
+    if (!ValidLanguage(body.Language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(body.Language);
+    var activeGate = LoadActiveGates(lang, out _).FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
     GateStore.ValidateGate(body.Draft);
     var draftGate = body.Draft with { GateId = "draft", PromptVersion = "draft" };
     var activeProbe = activeGate with { GateId = "active", PromptVersion = activeGate.PromptVersion };
@@ -331,19 +367,21 @@ app.MapPost("/api/gates/{gateId}/draft-test", async (string gateId, DraftTestReq
     {
         draftSignal = draft.Probability, draftOk = draft.Success,
         activeSignal = active.Probability, activeOk = active.Success,
-        activeVersion = activeGate.PromptVersion,
+        activeVersion = activeGate.PromptVersion, language = lang,
         difference = draft.Probability is double d1 && active.Probability is double a1 ? Math.Round(d1 - a1, 3) : (double?)null
     }, json);
 });
 
 app.MapPost("/api/gates/{gateId}/draft-evaluate", async (string gateId, DraftEvaluateRequest body) =>
 {
-    var activeGate = LoadActiveGates().FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
+    if (!ValidLanguage(body.Language)) return Results.BadRequest(new { error = "language must be 'en' or 'sv'" });
+    var lang = Language(body.Language);
+    var activeGate = LoadActiveGates(lang, out _).FirstOrDefault(g => g.GateId == gateId) ?? throw new InvalidOperationException($"unknown gate '{gateId}'");
     GateStore.ValidateGate(body.Draft);
     var draftGate = body.Draft with { GateId = "draft", PromptVersion = "draft" };
     var activeProbe = activeGate with { GateId = "active", PromptVersion = activeGate.PromptVersion };
     var probeGates = new[] { draftGate, activeProbe };
-    var cases = ExpandExpected(LoadSyntheticCases().Concat(LoadSavedCases()).ToList(), probeGates);
+    var cases = ExpandExpected(LoadSyntheticCases(lang).Concat(LoadSavedCases().Where(c => c.Language == lang)).ToList(), probeGates);
     var rows = new List<DraftCaseResult>();
     foreach (var c in cases)
     {
@@ -423,12 +461,12 @@ public sealed record ThresholdOverride
     public DateTimeOffset UpdatedAtUtc { get; init; }
 }
 
-public sealed record AnalyzeRequest(string CustomerText, string? GateSetVersion);
+public sealed record AnalyzeRequest(string CustomerText, string? GateSetVersion, string? Language = null);
 
-public sealed record SaveVersionRequest(SemanticGateDefinition Gate, string ParentVersion, string? ChangeNote);
-public sealed record SetActiveRequest(string Version);
-public sealed record DraftTestRequest(SemanticGateDefinition Draft, string CustomerText);
-public sealed record DraftEvaluateRequest(SemanticGateDefinition Draft);
+public sealed record SaveVersionRequest(SemanticGateDefinition Gate, string ParentVersion, string? ChangeNote, string? Language = null);
+public sealed record SetActiveRequest(string Version, string? Language = null);
+public sealed record DraftTestRequest(SemanticGateDefinition Draft, string CustomerText, string? Language = null);
+public sealed record DraftEvaluateRequest(SemanticGateDefinition Draft, string? Language = null);
 public sealed record ResetRequest(bool Confirm);
 
 public sealed class DraftCaseResult

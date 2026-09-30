@@ -215,6 +215,8 @@ public sealed class DecisionPipelineEvaluationCaseRun
 
 public sealed class DecisionPipelineEvaluationRun
 {
+    // Historical English run files have no language field.
+    public string Language { get; init; } = "en";
     public required string Id { get; init; }
     public required string Split { get; init; }
     public required DateTimeOffset StartedUtc { get; init; }
@@ -337,6 +339,7 @@ public sealed class DecisionPipelineEvaluationRunner
 
         var run = new DecisionPipelineEvaluationRun
         {
+            Language = "en",
             Id = runId,
             Split = split.ToUpperInvariant(),
             StartedUtc = started,

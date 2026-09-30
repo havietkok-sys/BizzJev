@@ -41,6 +41,8 @@ Works on Windows 10/11. The launcher is a `.bat` file; on other platforms, see t
 
 4. **The demo opens automatically in your browser** at http://localhost:5099
 
+Use the language control in the header to choose English or Swedish. The selected language determines which question definitions and paired evaluation cases the backend uses. Results keep the language and definition version from their original run, even if you switch the interface afterward. Both languages support full gate evaluation.
+
 ---
 
 ## API Key
@@ -235,9 +237,9 @@ Edit any field to create an **unsaved draft**. Use **Test Draft** to run the dra
 
 ### 6. Evaluation Library
 
-Go to the **Evaluation Library** tab. Click **Run full evaluation** to score all gates against the 100 built-in synthetic cases plus any locally saved user cases. Inspect per-gate metrics (TP, FP, FN, TN, Precision, Recall, F1), metrics by case type, the weakest routing gate, and the Operational Capture view (how many expected-YES cases were automatic YES vs human REVIEW vs missed).
+Go to the **Evaluation Library** tab. Choose English or Swedish, then click **Run full evaluation** to score all gates against that language's 100 built-in synthetic cases plus any locally saved user cases. Inspect per-gate metrics (TP, FP, FN, TN, Precision, Recall, F1), metrics by case type, the weakest routing gate, and the Operational Capture view (how many expected-YES cases were automatic YES vs human REVIEW vs missed).
 
-The built-in [dataset](../src/BizzJev.Lab/config/testcases.v1.json) contains constructed customer messages and expected labels for the fictional Nordbo Telecom. These are not real customer complaints and are separate from the CFPB data used in earlier experiments; see [Data sources and demo examples](../README.md#data-sources-and-demo-examples). User-saved cases contain whatever text the user supplied, so their origin is not guaranteed to be synthetic. Results on the built-in set demonstrate behavior on those scenarios, not accuracy on real customer data.
+The built-in [English dataset](../src/BizzJev.Lab/config/testcases.v1.json) and paired [Swedish dataset](../src/BizzJev.Lab/config/testcases.v1-sv.json) contain constructed customer messages and identical expected labels for the fictional Nordbo Telecom. These are not real customer complaints and are separate from the CFPB data used in earlier experiments; see [Data sources and demo examples](../README.md#data-sources-and-demo-examples). User-saved cases contain whatever text the user supplied, so their origin is not guaranteed to be synthetic. Results on the built-in set demonstrate behavior on those scenarios, not accuracy on real customer data. The measured paired language run is available as a standalone [HTML report](../data/results/swedish-language-evaluation-20260930/report.html).
 
 ### 7. Decision Pipeline (mixed Choice + Score + Noul in one request)
 

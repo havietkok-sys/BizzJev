@@ -459,10 +459,11 @@ public sealed class DecisionPipelineDiagnostics
 
 // ---------- Endpoint request/response contracts ----------
 
-public sealed record DecisionPipelineAnalyzeRequest(string CustomerText);
+public sealed record DecisionPipelineAnalyzeRequest(string CustomerText, string Language = "en");
 
 public sealed class DecisionPipelineDefinitionResponse
 {
+    public string Language { get; init; } = "en";
     public required string SemanticVersion { get; init; }
     public required string PolicyVersion { get; init; }
     public required string Model { get; init; }
@@ -483,6 +484,7 @@ public sealed record DecisionPipelineExample
 
 public sealed class DecisionPipelineAnalyzeResponse
 {
+    public string Language { get; init; } = "en";
     public required string SemanticVersion { get; init; }
     public required string PolicyVersion { get; init; }
     public required DateTimeOffset AnalyzedAtUtc { get; init; }
@@ -494,6 +496,7 @@ public sealed class DecisionPipelineAnalyzeResponse
 
 public sealed class DecisionPipelineReplayRequest
 {
+    public string Language { get; init; } = "en";
     public required string SemanticVersion { get; init; }
     /// The model recorded for the original run; replay supplies metadata, never a Jev call.
     public required string Model { get; init; }
@@ -507,6 +510,7 @@ public sealed class DecisionPipelineReplayRequest
 
 public sealed class DecisionPipelineReplayResponse
 {
+    public string Language { get; init; } = "en";
     public required string SemanticVersion { get; init; }
     public required string PolicyVersion { get; init; }
     public required DateTimeOffset ReplayedAtUtc { get; init; }

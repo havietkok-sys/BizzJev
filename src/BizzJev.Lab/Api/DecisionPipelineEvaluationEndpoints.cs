@@ -26,10 +26,11 @@ public static class DecisionPipelineEvaluationEndpoints
 
         DecisionPipelineEvaluationRunner Runner()
         {
-            client ??= new DecisionPipelineClient(
-                app.Configuration["TYPESAFE_API_KEY"] ?? throw new InvalidOperationException("TYPESAFE_API_KEY missing (user secrets or environment)."),
-                options.Model, options.TimeoutSeconds);
-            return new DecisionPipelineEvaluationRunner(pipelineDir, definition, dataset, budget, () => client, options.Model, options.EnableTechnicalView);
+            return new DecisionPipelineEvaluationRunner(pipelineDir, definition, dataset, budget,
+                () => client ??= new DecisionPipelineClient(
+                    app.Configuration["TYPESAFE_API_KEY"] ?? throw new InvalidOperationException("TYPESAFE_API_KEY missing (user secrets or environment)."),
+                    options.Model, options.TimeoutSeconds),
+                options.Model, options.EnableTechnicalView);
         }
 
         app.MapGet("/api/decision-pipeline/evaluations/cases", () =>
@@ -48,12 +49,19 @@ public static class DecisionPipelineEvaluationEndpoints
         app.MapPost("/api/decision-pipeline/evaluations", async (JsonElement body, CancellationToken ct) =>
         {
             string? split = null;
+            string? language = "en";
             try
             {
                 if (body.ValueKind == JsonValueKind.Object && body.TryGetProperty("split", out var s) && s.ValueKind == JsonValueKind.String)
                     split = s.GetString();
+                if (body.ValueKind == JsonValueKind.Object && body.TryGetProperty("language", out var l))
+                    language = l.ValueKind == JsonValueKind.String ? l.GetString() : null;
             }
             catch (JsonException) { split = null; }
+            if (language is not ("en" or "sv"))
+                return Results.Json(new ApiErrorBody("language must be 'en' or 'sv'", "invalid_language"), options.Json, statusCode: 400);
+            if (language == "sv")
+                return Results.Json(new ApiErrorBody("Swedish batch evaluation requires a versioned Swedish dataset", "dataset_unavailable"), options.Json, statusCode: 409);
             if (split is null || !dataset.Cases.Any(c => c.Split.Equals(split, StringComparison.OrdinalIgnoreCase)))
                 return Results.Json(new ApiErrorBody("body must be { \"split\": \"DESIGN\" | \"TEST\" }", "invalid_body"), options.Json, statusCode: 400);
             var caseCount = dataset.Cases.Count(c => c.Split.Equals(split, StringComparison.OrdinalIgnoreCase));
@@ -76,7 +84,7 @@ public static class DecisionPipelineEvaluationEndpoints
             var runner = Runner();
             return Results.Json(runner.ListRunIds().Select(id => runner.LoadRun(id)).Where(r => r is not null).Select(r => new
             {
-                r!.Id, r.Split, r.Status, r.StartedUtc, r.EndedUtc, r.DatasetVersion, r.SemanticVersion, r.PolicyVersion,
+                r!.Id, r.Language, r.Split, r.Status, r.StartedUtc, r.EndedUtc, r.DatasetVersion, r.SemanticVersion, r.PolicyVersion,
                 r.Attempted, r.Completed, r.Unattempted, r.OutboundAttempts
             }), options.Json);
         });

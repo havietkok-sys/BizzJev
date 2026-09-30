@@ -71,6 +71,20 @@ public sealed class GateStoreTests : IDisposable
     }
 
     [Fact]
+    public void SwedishLocalVersionsAndActiveChoiceDoNotChangeEnglish()
+    {
+        var en = _store.SaveNewVersion("churn_risk", Gate() with { Instructions = "English" }, "v1", null);
+        var sv = _store.SaveNewVersion("churn_risk", Gate() with { Instructions = "Svenska" }, "v1", null, "sv");
+        Assert.Equal("v2-local", en.Version);
+        Assert.Equal("v2-local", sv.Version);
+        _store.SetActive("churn_risk", sv.Version, "sv");
+        Assert.Equal("v1", _store.ActiveVersion("churn_risk"));
+        Assert.Equal(sv.Version, _store.ActiveVersion("churn_risk", "sv"));
+        Assert.Equal("English", _store.LoadVersion("churn_risk", en.Version)!.Gate.Instructions);
+        Assert.Equal("Svenska", _store.LoadVersion("churn_risk", sv.Version, "sv")!.Gate.Instructions);
+    }
+
+    [Fact]
     public void ValidationRejectsBrokenGates()
     {
         Assert.Throws<InvalidOperationException>(() => _store.SaveNewVersion("churn_risk", Gate() with { Instructions = " " }, "v1", null));

@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { provenanceLabels, provenanceLegendLines, provenanceShort, type Provenance } from '../help/provenance';
+import { provenanceLabels, provenanceLegendLines, provenanceShort, swedishProvenance, type Provenance } from '../help/provenance';
+import { useLanguage, localized } from '../language';
 
 /**
  * Shared provenance badge. One component, one canonical label set (provenance.ts), used
@@ -7,9 +8,10 @@ import { provenanceLabels, provenanceLegendLines, provenanceShort, type Provenan
  * Block-label a group of same-provenance values instead of repeating per line where unambiguous.
  */
 export function ProvenanceBadge({ p, children }: { p: Provenance; children?: ReactNode }) {
+  const { language } = useLanguage();
   return (
-    <span className={`prov-badge prov-${p}`} title={provenanceShort[p]}>
-      {children ?? provenanceLabels[p]}
+    <span className={`prov-badge prov-${p}`} title={localized(language, provenanceShort[p], swedishProvenance.short[p])}>
+      {children ?? localized(language, provenanceLabels[p], swedishProvenance.labels[p])}
     </span>
   );
 }
@@ -21,26 +23,30 @@ export function ProvenanceBadge({ p, children }: { p: Provenance; children?: Rea
  */
 export function ProvenanceKey() {
   const [open, setOpen] = useState(false);
+  const { language } = useLanguage();
+  const line = (p: Provenance) => localized(language, provenanceLegendLines[p], swedishProvenance.legend[p]);
   return (
     <span className="prov-key-wrap">
-      <button type="button" className="info" aria-label="What do the provenance badges mean?"
-        title="What do the provenance badges mean?" onClick={() => setOpen(true)}>?</button>
+      <button type="button" className="info" aria-label={localized(language, 'What do the provenance badges mean?', 'Vad betyder ursprungsmärkningarna?')}
+        title={localized(language, 'What do the provenance badges mean?', 'Vad betyder ursprungsmärkningarna?')} onClick={() => setOpen(true)}>?</button>
       {open && (
         <div className="modal-backdrop" onClick={() => setOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <h3>
-              Data provenance
-              <button className="secondary" style={{ float: 'right' }} onClick={() => setOpen(false)}>close</button>
+              {localized(language, 'Data provenance', 'Datans ursprung')}
+              <button className="secondary" style={{ float: 'right' }} onClick={() => setOpen(false)}>{localized(language, 'close', 'stäng')}</button>
             </h3>
             <ul>
-              <li><ProvenanceBadge p="sentToJev" /> {provenanceLegendLines.sentToJev}</li>
-              <li><ProvenanceBadge p="jevOutput" /> {provenanceLegendLines.jevOutput}</li>
-              <li><ProvenanceBadge p="cSharpDerived" /> {provenanceLegendLines.cSharpDerived}</li>
-              <li><ProvenanceBadge p="projectPolicy" /> {provenanceLegendLines.projectPolicy}</li>
+              <li><ProvenanceBadge p="sentToJev" /> {line('sentToJev')}</li>
+              <li><ProvenanceBadge p="jevOutput" /> {line('jevOutput')}</li>
+              <li><ProvenanceBadge p="cSharpDerived" /> {line('cSharpDerived')}</li>
+              <li><ProvenanceBadge p="projectPolicy" /> {line('projectPolicy')}</li>
             </ul>
             <p className="small dim" style={{ marginBottom: 0 }}>
-              The categories describe origin, not authorship: semantic definitions are project-authored <i>and</i> SENT TO JEV.
-              Explained in <code>docs/DATA_PROVENANCE.md</code> in the repository.
+              {localized(language,
+                'The categories describe origin, not authorship: semantic definitions are project-authored and SENT TO JEV. Explained in',
+                'Kategorierna beskriver ursprung, inte upphov: semantiska definitioner skrivs i projektet och SKICKAS TILL JEV. Förklaras i')}{' '}
+              <code>docs/DATA_PROVENANCE.md</code>.
             </p>
           </div>
         </div>

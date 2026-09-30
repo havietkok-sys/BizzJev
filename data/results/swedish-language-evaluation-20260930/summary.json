@@ -1,0 +1,19 @@
+{
+  "generated": "2026-09-30T22:03:35.631Z",
+  "calls": 200,
+  "model": "jev-1.13.0",
+  "english": {
+    "macroF1": 0.8401818181818181,
+    "microF1": 0.8535353535353535,
+    "exact": 0.35,
+    "failures": 0
+  },
+  "swedish": {
+    "macroF1": 0.8262727272727273,
+    "microF1": 0.8431876606683805,
+    "exact": 0.35,
+    "failures": 0
+  },
+  "meanAbsoluteProbabilityDelta": 0.03575454545454552,
+  "largeDisagreements": 80
+}

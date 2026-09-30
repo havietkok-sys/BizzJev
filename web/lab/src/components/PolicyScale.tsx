@@ -1,8 +1,9 @@
 import { useRef, useState, type ReactNode } from 'react';
 import { decideLocal } from '../api';
-import { helpTopics } from '../help/pipelineHelp';
+import { getHelpTopic } from '../help/pipelineHelp';
 import { HelpTerm } from './HelpTerm';
 import { ProvenanceBadge } from './ProvenanceBadge';
+import { useLanguage, localized } from '../language';
 
 const ZONE_TIPS = {
   no: 'NO zone: the signal is below the review threshold, so this workflow does not act on it.',
@@ -33,6 +34,8 @@ interface PolicyScaleProps {
  * Moving handles recomputes ONLY the deterministic policy interpretation — Jev is never called.
  */
 export function PolicyScale({ gateId, profile, gateVersion, probability, review, accept, onThresholds, children }: PolicyScaleProps) {
+  const { language } = useLanguage();
+  const l = (en: string, sv: string) => localized(language, en, sv);
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<'review' | 'accept' | null>(null);
   const outcome = decideLocal(probability, review, accept);
@@ -73,30 +76,30 @@ export function PolicyScale({ gateId, profile, gateVersion, probability, review,
       <div className="gate-head">
         <div className="gate-title">
           <Hover tip={profile ?? gateId}><b>{gateId}</b></Hover>
-          {gateVersion && <a className="dim small" href="#/studio"> · Gate version: {gateVersion} · Open in Gate Studio</a>}
-          <span className="dim small"> · policy scale <ProvenanceBadge p="projectPolicy" /></span>
+          {gateVersion && <a className="dim small" href="#/studio"> · {l('Gate version', 'Gate-version')}: {gateVersion} · {l('Open in Gate Studio', 'Öppna i Gate Studio')}</a>}
+          <span className="dim small"> · {l('policy scale', 'policyskala')} <ProvenanceBadge p="projectPolicy" /></span>
           <HelpTerm term="policyScale" />
         </div>
         <div className={`pill ${probability === null ? 'no' : outcome}`} style={{ minWidth: 210 }}>
           {probability === null
-            ? <>THRESHOLDS ONLY — not analyzed yet <ProvenanceBadge p="projectPolicy" /></>
-            : <>CURRENT RESULT: {outcome.toUpperCase()} <ProvenanceBadge p="cSharpDerived" /></>}
+            ? <>{l('THRESHOLDS ONLY — not analyzed yet', 'ENDAST GRÄNSER — ännu inte analyserat')} <ProvenanceBadge p="projectPolicy" /></>
+            : <>{l('CURRENT RESULT', 'AKTUELLT RESULTAT')}: {outcome === 'review' ? l('REVIEW', 'GRANSKA') : outcome === 'yes' ? l('YES', 'JA') : l('NO', 'NEJ')} <ProvenanceBadge p="cSharpDerived" /></>}
         </div>
       </div>
 
       <div className="jev-line">
-        <span className="dim small">Jev signal <ProvenanceBadge p="jevOutput" />:</span>{' '}
+        <span className="dim small">Jev-signal <ProvenanceBadge p="jevOutput" />:</span>{' '}
         {probability === null
-          ? <span className="dim small">not analyzed yet — thresholds below still define business policy</span>
-          : <Hover tip={helpTopics.jev.short}><span className="prob">{probability.toFixed(2)}</span></Hover>}
-        <span className="dim small"> (model output — thresholds never change this number)</span>
+          ? <span className="dim small">{l('not analyzed yet — thresholds below still define business policy', 'ännu inte analyserat — gränserna nedan definierar ändå företagets policy')}</span>
+          : <Hover tip={getHelpTopic('jev', language).short}><span className="prob">{probability.toFixed(2)}</span></Hover>}
+        <span className="dim small"> {l('(model output — thresholds never change this number)', '(modellsvar — gränserna ändrar aldrig detta tal)')}</span>
       </div>
 
       {/* zone headers: NO | REVIEW | YES — widths match the zones below */}
       <div className="zone-row">
-        <Hover tip={ZONE_TIPS.no}><div className="zone-label z-no" style={{ width: pct(zoneWidths[0]) }}>NO</div></Hover>
-        <Hover tip={ZONE_TIPS.review}><div className="zone-label z-review" style={{ width: pct(zoneWidths[1]) }}>REVIEW</div></Hover>
-        <Hover tip={ZONE_TIPS.yes}><div className="zone-label z-yes" style={{ width: pct(zoneWidths[2]) }}>YES</div></Hover>
+        <Hover tip={l(ZONE_TIPS.no, 'NEJ-zon: signalen är under granskningsgränsen, så inget görs.') }><div className="zone-label z-no" style={{ width: pct(zoneWidths[0]) }}>{l('NO', 'NEJ')}</div></Hover>
+        <Hover tip={l(ZONE_TIPS.review, 'GRANSKA-zon: en människa behöver bedöma ärendet.') }><div className="zone-label z-review" style={{ width: pct(zoneWidths[1]) }}>{l('REVIEW', 'GRANSKA')}</div></Hover>
+        <Hover tip={l(ZONE_TIPS.yes, 'JA-zon: signalen är över acceptansgränsen.') }><div className="zone-label z-yes" style={{ width: pct(zoneWidths[2]) }}>{l('YES', 'JA')}</div></Hover>
       </div>
 
       {/* the shared 0–1 bar: colored zones, threshold handles, Jev marker */}
@@ -113,7 +116,7 @@ export function PolicyScale({ gateId, profile, gateVersion, probability, review,
 
         {/* Jev marker: separate, NOT draggable */}
         {probability !== null && (
-          <div className="jev-marker" style={{ left: pct(probability) }} title={helpTopics.jev.short}>
+          <div className="jev-marker" style={{ left: pct(probability) }} title={getHelpTopic('jev', language).short}>
             <span className="jev-value">{probability.toFixed(2)}</span>
             <span className="jev-caret">▼</span>
           </div>
@@ -124,12 +127,12 @@ export function PolicyScale({ gateId, profile, gateVersion, probability, review,
           className={'handle h-review' + (dragging === 'review' ? ' active' : '')}
           style={{ left: pct(review) }}
           role="slider"
-          aria-label={`${gateId} review threshold`}
+          aria-label={`${gateId} ${l('review threshold', 'granskningsgräns')}`}
           aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(review * 100)}
           tabIndex={0}
           onPointerDown={startDrag('review')}
           onKeyDown={keyNudge('review')}
-          title={helpTopics.gateReviewThreshold.short}
+          title={getHelpTopic('gateReviewThreshold', language).short}
         >
           <span className="handle-value">{review.toFixed(2)}</span>
           <span className="handle-dot" />
@@ -140,12 +143,12 @@ export function PolicyScale({ gateId, profile, gateVersion, probability, review,
           className={'handle h-accept' + (dragging === 'accept' ? ' active' : '')}
           style={{ left: pct(accept) }}
           role="slider"
-          aria-label={`${gateId} accept threshold`}
+          aria-label={`${gateId} ${l('accept threshold', 'acceptansgräns')}`}
           aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(accept * 100)}
           tabIndex={0}
           onPointerDown={startDrag('accept')}
           onKeyDown={keyNudge('accept')}
-          title={helpTopics.gateAcceptThreshold.short}
+          title={getHelpTopic('gateAcceptThreshold', language).short}
         >
           <span className="handle-value">{accept.toFixed(2)}</span>
           <span className="handle-dot" />
@@ -155,9 +158,9 @@ export function PolicyScale({ gateId, profile, gateVersion, probability, review,
 
       {/* plain-English meaning under each zone, aligned to the same widths */}
       <div className="zone-row">
-        <Hover tip={ZONE_TIPS.no}><div className="zone-desc" style={{ width: pct(zoneWidths[0]) }}>No action</div></Hover>
-        <Hover tip={ZONE_TIPS.review}><div className="zone-desc" style={{ width: pct(zoneWidths[1]) }}>Human review</div></Hover>
-        <Hover tip={ZONE_TIPS.yes}><div className="zone-desc" style={{ width: pct(zoneWidths[2]) }}>Accepted automatically</div></Hover>
+        <Hover tip={l(ZONE_TIPS.no, 'NEJ-zon: ingen åtgärd.') }><div className="zone-desc" style={{ width: pct(zoneWidths[0]) }}>{l('No action', 'Ingen åtgärd')}</div></Hover>
+        <Hover tip={l(ZONE_TIPS.review, 'GRANSKA-zon: en människa granskar ärendet.') }><div className="zone-desc" style={{ width: pct(zoneWidths[1]) }}>{l('Human review', 'Mänsklig granskning')}</div></Hover>
+        <Hover tip={l(ZONE_TIPS.yes, 'JA-zon: accepteras automatiskt.') }><div className="zone-desc" style={{ width: pct(zoneWidths[2]) }}>{l('Accepted automatically', 'Accepteras automatiskt')}</div></Hover>
       </div>
 
       {children}

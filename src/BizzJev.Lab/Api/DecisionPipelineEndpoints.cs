@@ -21,14 +21,15 @@ public static class DecisionPipelineEndpoints
     public static void MapDecisionPipelineEndpoints(this WebApplication app, DecisionPipelineEndpointOptions options)
     {
         var definition = DecisionPipelineConfig.Load(Path.Combine(AppContext.BaseDirectory, "config", "decision-pipeline.v1.json"));
+        var swedishDefinition = DecisionPipelineConfig.Load(Path.Combine(AppContext.BaseDirectory, "config", "decision-pipeline.sv.v1.json"));
         var examples = LoadExamples();
 
         DecisionPipelineClient? client = null;
         DecisionPipelineClient ClientFor(string apiKey)
             => client ??= new DecisionPipelineClient(apiKey, options.Model, options.TimeoutSeconds);
 
-        app.MapGet("/api/decision-pipeline/definition", ()
-            => HandleDefinition(definition, examples, options));
+        app.MapGet("/api/decision-pipeline/definition", (HttpRequest request)
+            => HandleDefinition(definition, examples, options, request.Query["language"].FirstOrDefault() ?? "en", swedishDefinition));
 
         app.MapPost("/api/decision-pipeline/analyze", async (HttpRequest request) =>
             await HandleAnalyzeAsync(
@@ -38,14 +39,16 @@ public static class DecisionPipelineEndpoints
                 ClientFor,
                 options.EnableTechnicalView,
                 options.Json,
-                request.HttpContext.RequestAborted));
+                request.HttpContext.RequestAborted,
+                swedishDefinition));
 
         app.MapPost("/api/decision-pipeline/replay", async (HttpRequest request) =>
             HandleReplay(
                 await new StreamReader(request.Body).ReadToEndAsync(request.HttpContext.RequestAborted),
                 definition,
                 options.EnableTechnicalView,
-                options.Json));
+                options.Json,
+                swedishDefinition));
 
         // The eight synthetic DESIGN examples for the UI picker (task 05 selection).
         static List<DecisionPipelineExample> LoadExamples()
@@ -77,12 +80,31 @@ public static class DecisionPipelineEndpoints
         }
     }
 
+    private static readonly IReadOnlyDictionary<string, string> SwedishExampleTexts = new Dictionary<string, string>
+    {
+        ["dp-d01"] = "Mitt internet ligger helt nere och jag har ingen annan uppkoppling. Jag har också debiterats två gånger den här månaden.",
+        ["dp-d03"] = "Mitt bredband ligger helt nere och jag har inget alternativ. Säg upp mitt bredbandsabonnemang, tack.",
+        ["dp-d05"] = "Kan ni stänga mitt konto i slutet av nästa månad? Det finns inget aktuellt problem eller någon tidsgräns före dess.",
+        ["dp-d10"] = "Säg upp mitt sporttillägg vid månadsskiftet, men behåll mitt bredbandsabonnemang.",
+        ["dp-d12"] = "Kundportalen är långsam, men jag kan fortfarande betala min faktura som vanligt och det finns ingen tidsgräns.",
+        ["dp-d13"] = "Min betalda faktura är markerad som obetald. Om det inte rättas kommer min tjänst att stängas av om två timmar.",
+        ["dp-d14"] = "Något är fel. Hjälp mig.",
+        ["dp-d19"] = "Mitt bredband ligger helt nere och jag har inget alternativ. Jag missar mitt vårdbesök på distans om två timmar om tjänsten inte återställs."
+    };
+
     internal static IResult HandleDefinition(
         DecisionPipelineDefinitionConfig definition,
         IReadOnlyList<DecisionPipelineExample> examples,
-        DecisionPipelineEndpointOptions options)
-        => Results.Json(new DecisionPipelineDefinitionResponse
+        DecisionPipelineEndpointOptions options,
+        string language = "en",
+        DecisionPipelineDefinitionConfig? swedishDefinition = null)
+    {
+        if (!ValidLanguage(language))
+            return Error("language must be 'en' or 'sv'", "invalid_language", options.Json, StatusCodes.Status400BadRequest);
+        definition = language == "sv" ? swedishDefinition ?? throw new InvalidOperationException("Swedish definition is required") : definition;
+        return Results.Json(new DecisionPipelineDefinitionResponse
         {
+            Language = language!,
             SemanticVersion = definition.SemanticVersion,
             PolicyVersion = definition.PolicyVersion,
             Model = options.Model,
@@ -90,8 +112,11 @@ public static class DecisionPipelineEndpoints
             PolicyDefaults = definition.Policy,
             RoutingCategories = definition.RoutingCategories,
             ScoreLevelDescriptions = definition.ScoreLevelDescriptions,
-            Examples = examples
+            Examples = language == "sv"
+                ? examples.Select(e => e with { Text = SwedishExampleTexts[e.Id] }).ToList()
+                : examples
         }, options.Json);
+    }
 
     internal static async Task<IResult> HandleAnalyzeAsync(
         string? requestBody,
@@ -100,11 +125,16 @@ public static class DecisionPipelineEndpoints
         Func<string, DecisionPipelineClient> clientFactory,
         bool enableTechnicalView,
         JsonSerializerOptions json,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        DecisionPipelineDefinitionConfig? swedishDefinition = null)
     {
         var parsed = ParseObjectBody(requestBody, out var parseError);
         if (parsed is null)
             return Error(parseError, "invalid_body", json, StatusCodes.Status400BadRequest);
+        var language = ReadLanguage(parsed);
+        if (!ValidLanguage(language))
+            return Error("language must be 'en' or 'sv'", "invalid_language", json, StatusCodes.Status400BadRequest);
+        definition = language == "sv" ? swedishDefinition ?? throw new InvalidOperationException("Swedish definition is required") : definition;
         if (!parsed.TryGetPropertyValue("customerText", out var textNode) || textNode is not JsonValue textValue || textValue.GetValueKind() != JsonValueKind.String)
             return Error("request body must contain a string field 'customerText'", "invalid_body", json, StatusCodes.Status400BadRequest);
         var customerText = textValue.GetValue<string>();
@@ -138,6 +168,7 @@ public static class DecisionPipelineEndpoints
         });
         return Results.Json(new DecisionPipelineAnalyzeResponse
         {
+            Language = language!,
             SemanticVersion = definition.SemanticVersion,
             PolicyVersion = definition.PolicyVersion,
             AnalyzedAtUtc = DateTimeOffset.UtcNow,
@@ -155,11 +186,16 @@ public static class DecisionPipelineEndpoints
         string? requestBody,
         DecisionPipelineDefinitionConfig definition,
         bool enableTechnicalView,
-        JsonSerializerOptions json)
+        JsonSerializerOptions json,
+        DecisionPipelineDefinitionConfig? swedishDefinition = null)
     {
         var parsed = ParseObjectBody(requestBody, out var parseError);
         if (parsed is null)
             return Error(parseError, "invalid_body", json, StatusCodes.Status400BadRequest);
+        var language = ReadLanguage(parsed);
+        if (!ValidLanguage(language))
+            return Error("language must be 'en' or 'sv'", "invalid_language", json, StatusCodes.Status400BadRequest);
+        definition = language == "sv" ? swedishDefinition ?? throw new InvalidOperationException("Swedish definition is required") : definition;
 
         var semanticVersion = StringProperty(parsed, "semanticVersion");
         if (semanticVersion is null || semanticVersion != definition.SemanticVersion)
@@ -201,6 +237,7 @@ public static class DecisionPipelineEndpoints
         });
         return Results.Json(new DecisionPipelineReplayResponse
         {
+            Language = language!,
             SemanticVersion = definition.SemanticVersion,
             PolicyVersion = custom ? definition.PolicyVersion + "-custom" : definition.PolicyVersion,
             ReplayedAtUtc = DateTimeOffset.UtcNow,
@@ -239,6 +276,11 @@ public static class DecisionPipelineEndpoints
 
     private static string? StringProperty(JsonObject obj, string name)
         => obj.TryGetPropertyValue(name, out var node) && node is JsonValue v && v.GetValueKind() == JsonValueKind.String ? v.GetValue<string>() : null;
+
+    private static string? ReadLanguage(JsonObject obj)
+        => obj.ContainsKey("language") ? StringProperty(obj, "language") : "en";
+
+    private static bool ValidLanguage(string? language) => language is "en" or "sv";
 
     private static JsonNode? NamedNode(JsonObject obj, string name)
         => obj.TryGetPropertyValue(name, out var node) ? node : null;

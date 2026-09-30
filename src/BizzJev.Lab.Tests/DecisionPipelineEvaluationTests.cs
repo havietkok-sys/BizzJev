@@ -288,8 +288,18 @@ public sealed class DecisionPipelineEvaluationRunnerTests
     public async Task ZeroBudgetRunsNothingAndStopsAtCeiling()
     {
         // ceiling 0 -> no dispatch at all, all cases unattempted, status stopped_budget
-        var (runner, handler, _, dir) = Make(ceiling: 0, initialConsumedFileState: 0, _ => Ok(ValidBody));
+        var (runner, handler, budget, dir) = Make(ceiling: 0, initialConsumedFileState: 0, _ => Ok(ValidBody));
         var run = await runner.RunSplitAsync("TEST");
+        Assert.Equal("en", run.Language);
+        var oldFile = Path.Combine(dir, "evaluations", run.Id + ".json");
+        var oldJson = JsonNode.Parse(File.ReadAllText(oldFile))!.AsObject();
+        oldJson.Remove("language");
+        File.WriteAllText(oldFile, oldJson.ToJsonString());
+        Assert.Equal("en", runner.LoadRun(run.Id)!.Language);
+        var keylessReader = new DecisionPipelineEvaluationRunner(dir, Config(), Dataset(), budget,
+            () => throw new InvalidOperationException("read-only history must not request a key"), "jev-test", false);
+        Assert.Equal("en", keylessReader.LoadRun(run.Id)!.Language);
+        Assert.Contains(run.Id, keylessReader.ListRunIds());
         Assert.Equal("stopped_budget", run.Status);
         Assert.Equal(0, handler.Attempts);
         Assert.Equal(16, run.Unattempted);

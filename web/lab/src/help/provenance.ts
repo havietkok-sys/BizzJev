@@ -32,3 +32,19 @@ export const provenanceLegendLines: Record<Provenance, string> = {
   cSharpDerived: 'deterministic values calculated locally from validated Jev output',
   projectPolicy: 'local business/demo rules applied after Jev returns its output'
 };
+
+export const swedishProvenance = {
+  labels: { sentToJev: 'SKICKAT TILL JEV', jevOutput: 'JEV-SVAR', cSharpDerived: 'BERÄKNAT I C#', projectPolicy: 'PROJEKTPOLICY' },
+  short: {
+    sentToJev: 'Detta innehåll ingår i anropet till Jev. Det kan ändå vara skrivet av projektet.',
+    jevOutput: 'Kommer direkt från Jev och har ännu inte omvandlats till ett lokalt beslut.',
+    cSharpDerived: 'Beräknas deterministiskt av BizzJev från Jevs svar och aktuell policy.',
+    projectPolicy: 'En lokal regel som används efter Jevs svar. Gränsen skickas inte till Jev om det inte anges uttryckligen.'
+  },
+  legend: {
+    sentToJev: 'data eller semantiska definitioner som skickas till Jev',
+    jevOutput: 'värden som kommer direkt från Jev',
+    cSharpDerived: 'deterministiska värden beräknade lokalt från validerade Jev-svar',
+    projectPolicy: 'lokala verksamhetsregler som tillämpas efter Jevs svar'
+  }
+} satisfies { labels: Record<Provenance, string>; short: Record<Provenance, string>; legend: Record<Provenance, string> };

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
+import { useLanguage, localized } from '../language';
 
 /**
  * Global presentation level — the only mode concept in the application.
@@ -65,17 +66,23 @@ const LEVEL_META: Record<ViewLevel, { label: string; title: string }> = {
 
 export function ViewLevelSwitcher() {
   const { level, setLevel } = useViewLevel();
+  const { language } = useLanguage();
+  const swedish: Record<ViewLevel, { label: string; title: string }> = {
+    quick: { label: 'Snabb demo', title: 'Ett meddelande, en körning, resultat och nästa steg.' },
+    business: { label: 'Verksamhet', title: 'Visar tillförlitlighet, gränser, dirigering och mänsklig granskning. Jev körs inte igen vid byte.' },
+    technical: { label: 'Tekniskt', title: 'Visar exakt anrop och svar, tider, regelspår och versioner. Jev körs inte igen vid byte.' }
+  };
   return (
-    <span className="level-switch" role="group" aria-label="Presentation level">
+    <span className="level-switch" role="group" aria-label={localized(language, 'Presentation level', 'Presentationsnivå')}>
       {(Object.keys(LEVEL_META) as ViewLevel[]).map((l) => (
         <button
           key={l}
           type="button"
           className={l === level ? 'level-btn active' : 'level-btn'}
           aria-pressed={l === level}
-          title={LEVEL_META[l].title}
+          title={localized(language, LEVEL_META[l].title, swedish[l].title)}
           onClick={() => setLevel(l)}
-        >{LEVEL_META[l].label}</button>
+        >{localized(language, LEVEL_META[l].label, swedish[l].label)}</button>
       ))}
     </span>
   );

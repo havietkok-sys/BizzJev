@@ -65,7 +65,7 @@ The system detects all of them at once. Several signals may be present simultane
 
 ### Data sources and demo examples
 
-The demo ships with **100 synthetic customer messages** for the fictional Nordbo Telecom, with predefined expected labels in [testcases.v1.json](src/BizzJev.Lab/config/testcases.v1.json). These are constructed test scenarios, not real customer complaints or CFPB records. A full evaluation runs these built-in cases plus any cases the user has saved locally; the origin of user-supplied text depends on what the user enters. Results on the synthetic set do not establish accuracy on real customer data.
+The demo ships with **100 paired synthetic customer messages** for the fictional Nordbo Telecom, with predefined expected labels in English [testcases.v1.json](src/BizzJev.Lab/config/testcases.v1.json) and Swedish [testcases.v1-sv.json](src/BizzJev.Lab/config/testcases.v1-sv.json). These are constructed test scenarios, not real customer complaints or CFPB records. A full evaluation runs the selected language's built-in cases plus any cases the user has saved locally; the origin of user-supplied text depends on what the user enters. Results on the synthetic set do not establish accuracy on real customer data.
 
 The separate CFPB experiments use **real consumer complaint narratives** from the [CFPB Consumer Complaint Database Narratives Archive](https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/). The source is the archive's **CCDB Export July 2026**, stored locally as `data/raw/cfpb/CCDB_Export_20_July_2026.csv`, with Debt collection cases selected by the preparation scripts. These records are not the demo's built-in dataset. See the [CFPB data model and taxonomy report](docs/CFPB_DATA_MODEL_AND_TAXONOMY.md) for source details and label interpretation.
 
@@ -112,6 +112,12 @@ START_DEMO.bat
 Paste your key into the masked setup prompt. The setup script stores it as `TYPESAFE_API_KEY` in local .NET User Secrets, outside the repository. Do not put it in source files, `appsettings.json`, or frontend configuration. You can also run `START_DEMO.bat` directly: it offers key setup if none is configured, then starts the demo and opens your browser.
 
 For detailed setup, troubleshooting, and a demo walkthrough, see [docs/DEMO_RUN.md](docs/DEMO_RUN.md).
+
+### Swedish and English
+
+Use the language control in the demo header to switch between English and Swedish. The choice changes the interface, examples, question definitions and evaluation cases used by the gate analysis. Each result records the language and definition version used for that run; switching the interface language later does not rerun an analysis. The English definitions remain the original baseline, while Swedish definitions have separate versions.
+
+The paired 100-case live evaluation used exactly 200 Jev requests with model `jev-1.13.0`: Swedish macro-F1 was **82.6%** versus **84.0%** for English, with **0 API failures**. Read the [short evaluation](docs/SWEDISH_LANGUAGE_EVALUATION.md), standalone [HTML report](data/results/swedish-language-evaluation-20260930/report.html), [summary JSON](data/results/swedish-language-evaluation-20260930/summary.json), or [gate metrics CSV](data/results/swedish-language-evaluation-20260930/gate-metrics.csv). This is a synthetic regression set, not a production-accuracy claim.
 
 ## Prototype Scope
 
@@ -177,6 +183,8 @@ For documents available in both languages, the English version uses the base fil
 | [docs/SEMANTIC_OPERATIONS_LAB_DESIGN.md](docs/SEMANTIC_OPERATIONS_LAB_DESIGN.md) | Frozen product and experiment specification |
 | [docs/SEMANTIC_OPERATIONS_LAB_IMPLEMENTATION.md](docs/SEMANTIC_OPERATIONS_LAB_IMPLEMENTATION.md) | Architecture and implementation decisions |
 | [docs/SEMANTIC_OPERATIONS_LAB_EVALUATION.md](docs/SEMANTIC_OPERATIONS_LAB_EVALUATION.md) | Baseline evaluation results (MEASURED / OBSERVED / INTERPRETATION / BUSINESS DECISION) |
+| [Swedish language evaluation](docs/SWEDISH_LANGUAGE_EVALUATION.md) | Short assessment and decision from the paired English/Swedish run |
+| [Swedish/English paired evaluation](data/results/swedish-language-evaluation-20260930/report.html) | Standalone visual report for the 200-request paired language run |
 | [milestone2docs](milestone2docs/README.md) | Milestone 2 Decision Pipeline: frozen semantic specification, API contract, implementation notes, synthetic dataset, user guide, evaluation report and acceptance report |
 
 ## Technology

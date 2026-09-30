@@ -21,6 +21,9 @@ public sealed class DecisionPipelineEndpointTests
     private static DecisionPipelineDefinitionConfig Config() =>
         DecisionPipelineConfig.Load(Path.Combine(AppContext.BaseDirectory, "config", "decision-pipeline.v1.json"));
 
+    private static DecisionPipelineDefinitionConfig SwedishConfig() =>
+        DecisionPipelineConfig.Load(Path.Combine(AppContext.BaseDirectory, "config", "decision-pipeline.sv.v1.json"));
+
     private static DecisionPipelineEndpointOptions Options(bool technicalView = true) => new()
     {
         ResolveApiKey = () => "test-key",
@@ -348,5 +351,71 @@ public sealed class DecisionPipelineEndpointTests
             System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
         Assert.NotNull(method);
         Assert.All(method!.GetParameters(), p => Assert.True(p.ParameterType != typeof(DecisionPipelineClient)));
+    }
+
+    [Fact]
+    public async Task SwedishDefinitionAndAnalysisSendAllThreeSwedishQuestionsInOneCall()
+    {
+        var english = Config();
+        var swedish = SwedishConfig();
+        Assert.NotEqual(english.SemanticVersion, swedish.SemanticVersion);
+        Assert.Equal(english.Policy, swedish.Policy);
+        Assert.Equal(english.RoutingCategories, swedish.RoutingCategories);
+        var (definitionStatus, definitionBody) = await Execute(
+            DecisionPipelineEndpoints.HandleDefinition(english, Examples(), Options(), "sv", swedish));
+        Assert.Equal(200, definitionStatus);
+        Assert.Equal("sv", (string?)definitionBody["language"]);
+        Assert.Equal("pipeline-sv-v1", (string?)definitionBody["semanticVersion"]);
+        Assert.Contains("Mitt internet", (string?)definitionBody["examples"]![0]!["text"]);
+
+        var handler = new CountingHandler(_ => Ok(ValidResponseBody));
+        var result = await DecisionPipelineEndpoints.HandleAnalyzeAsync(
+            """{ "language": "sv", "customerText": "Mitt internet fungerar inte." }""",
+            english, Options().ResolveApiKey, _ => new DecisionPipelineClient(new HttpClient(handler), "jev-test"),
+            true, Json, swedishDefinition: swedish);
+        var (status, body) = await Execute(result);
+        Assert.Equal(200, status);
+        Assert.Equal("sv", (string?)body["language"]);
+        Assert.Equal("pipeline-sv-v1", (string?)body["semanticVersion"]);
+        Assert.Equal(1, handler.Attempts);
+        var payload = JsonNode.Parse(handler.LastBody!)!;
+        Assert.Equal(["routing", "urgency", "cancellationRequested"], payload["questions"]!.AsObject().Select(q => q.Key));
+        foreach (var question in payload["questions"]!.AsObject())
+            Assert.Contains("kund", (string?)question.Value!["instructions"], StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("Välj", ((string?)payload["questions"]!["routing"]!["instructions"])![..4]);
+        Assert.Contains("aktuellt fel", (string?)payload["questions"]!["routing"]!["criteria"]!["Technical"]);
+        Assert.Contains("negativ påverkan", (string?)payload["questions"]!["urgency"]!["criteria"]![0]);
+        Assert.Contains("faktisk aktuell begäran", (string?)payload["questions"]!["cancellationRequested"]!["criteria"]!["true"]);
+        Assert.Equal("Technical", (string?)body["answers"]!["routing"]!["selected"]);
+    }
+
+    [Fact]
+    public async Task LanguageAndVersionAreValidatedBeforeAnyJevCallAndReplayUsesSavedLanguage()
+    {
+        var handler = new CountingHandler(_ => Ok(ValidResponseBody));
+        var bad = await DecisionPipelineEndpoints.HandleAnalyzeAsync(
+            """{ "language": "de", "customerText": "hello" }""",
+            Config(), Options().ResolveApiKey, _ => new DecisionPipelineClient(new HttpClient(handler), "jev-test"),
+            true, Json, swedishDefinition: SwedishConfig());
+        var (badStatus, badBody) = await Execute(bad);
+        Assert.Equal(400, badStatus);
+        Assert.Equal("invalid_language", (string?)badBody["code"]);
+        Assert.Equal(0, handler.Attempts);
+
+        var oldEnglish = await Execute(DecisionPipelineEndpoints.HandleReplay(ReplayBody, Config(), true, Json, SwedishConfig()));
+        Assert.Equal(200, oldEnglish.Status);
+        Assert.Equal("en", (string?)oldEnglish.Body["language"]);
+
+        var swedishReplay = JsonNode.Parse(ReplayBody)!.AsObject();
+        swedishReplay["language"] = "sv";
+        swedishReplay["semanticVersion"] = "pipeline-sv-v1";
+        var (status, body) = await Execute(DecisionPipelineEndpoints.HandleReplay(swedishReplay.ToJsonString(), Config(), true, Json, SwedishConfig()));
+        Assert.Equal(200, status);
+        Assert.Equal("sv", (string?)body["language"]);
+        Assert.Equal(0, (int)body["outboundAttempts"]!);
+        swedishReplay["semanticVersion"] = "pipeline-v1";
+        var (mismatchStatus, mismatchBody) = await Execute(DecisionPipelineEndpoints.HandleReplay(swedishReplay.ToJsonString(), Config(), true, Json, SwedishConfig()));
+        Assert.Equal(400, mismatchStatus);
+        Assert.Equal("semantic_version_mismatch", (string?)mismatchBody["code"]);
     }
 }

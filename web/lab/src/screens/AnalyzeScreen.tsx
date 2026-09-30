@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, type GateDef, type PolicyDef, type AnalyzeResponse, type ExpectedLabel } from '../api';
 import { PolicyScale } from '../components/PolicyScale';
 import { TechnicalView } from './TechnicalView';
 import { ProvenanceBadge, ProvenanceKey } from '../components/ProvenanceBadge';
 import { HelpTerm } from '../components/HelpTerm';
 import { useViewLevel } from '../components/viewLevel';
-import { EXAMPLE_MESSAGE, GATE_DISPLAY_NAMES } from '../examples';
+import { exampleMessage, gateName } from '../examples';
+import { useLanguage, localized } from '../language';
 
 /**
  * Analyze screen — the "Quick Demo" path of the UI tree. The Quick level shows only
@@ -14,22 +15,27 @@ import { EXAMPLE_MESSAGE, GATE_DISPLAY_NAMES } from '../examples';
  */
 export function AnalyzeScreen() {
   const { level } = useViewLevel();
+  const { language } = useLanguage();
+  const l = (en: string, sv: string) => localized(language, en, sv);
   const [gates, setGates] = useState<GateDef[]>([]);
   const [thresholds, setThresholds] = useState<Record<string, { review: number; accept: number }>>({});
   const [savedThresholds, setSavedThresholds] = useState<Record<string, { review: number; accept: number }>>({});
   const [policyVersion, setPolicyVersion] = useState('');
   const [text, setText] = useState('');
   const [exampleLoaded, setExampleLoaded] = useState(false);
+  const previousLanguage = useRef(language);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
+  const [resultGates, setResultGates] = useState<GateDef[]>([]);
+  const [analyzedText, setAnalyzedText] = useState('');
   const [expected, setExpected] = useState<Record<string, 'YES' | 'NO' | 'UNCLEAR'>>({});
   const [notes, setNotes] = useState('');
   const [saveMsg, setSaveMsg] = useState('');
   const [expandedGate, setExpandedGate] = useState<string | null>(null);
 
   useEffect(() => {
-    api.gates().then((g) => setGates(g.gates)).catch((e) => setError(String(e)));
+    api.gates(language).then((g) => setGates(g.gates)).catch((e) => setError(String(e)));
     api.policies().then((ps: PolicyDef[]) => {
       const t: Record<string, { review: number; accept: number }> = {};
       ps.forEach((p) => { t[p.gateId] = { review: p.reviewThreshold, accept: p.acceptThreshold }; });
@@ -37,23 +43,28 @@ export function AnalyzeScreen() {
       setSavedThresholds(JSON.parse(JSON.stringify(t)));
       setPolicyVersion(ps[0]?.policyVersion ?? '');
     }).catch((e) => setError(String(e)));
-  }, []);
+  }, [language]);
 
   // Quick Demo preload: fills the example message only when the field is empty, once on
   // mount. It is text only — no result exists until the user clicks Analyze, and level
   // switches later never overwrite the user's own text.
   useEffect(() => {
     if (level === 'quick' && text.trim() === '') {
-      setText(EXAMPLE_MESSAGE);
+      setText(exampleMessage(language));
       setExampleLoaded(true);
     }
     // mount-only prefill; `level`/`text` are intentionally captured at mount time
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (exampleLoaded && text === exampleMessage(previousLanguage.current)) setText(exampleMessage(language));
+    previousLanguage.current = language;
+  }, [language, exampleLoaded, text]);
+
   const analyze = async () => {
     setBusy(true); setError(''); setSaveMsg(''); setResult(null); setExpected({}); setNotes('');
-    try { setResult(await api.analyze(text)); }
+    try { const run = await api.analyze(text, language); setResult(run); setResultGates(gates); setAnalyzedText(text); }
     catch (e) { setError(String(e)); }
     finally { setBusy(false); }
   };
@@ -84,11 +95,11 @@ export function AnalyzeScreen() {
     const exp: ExpectedLabel[] = Object.entries(expected).map(([gateId, label]) => ({ gateId, label }));
     try {
       await api.saveCase({
-        id: '', caseType: 'manual', customerText: text, expected: exp,
+        id: '', caseType: 'manual', customerText: analyzedText, expected: exp,
         rationale: '', notes, synthetic: false
-      });
-      setSaveMsg('Saved as evaluation case.');
-    } catch (e) { setSaveMsg('Save failed: ' + String(e)); }
+      }, result.language ?? 'en');
+      setSaveMsg(l('Saved as evaluation case.', 'Sparat som utvärderingsfall.'));
+    } catch (e) { setSaveMsg(l('Save failed: ', 'Kunde inte spara: ') + String(e)); }
   };
 
   const dirty = gates.some((g) => {
@@ -101,33 +112,35 @@ export function AnalyzeScreen() {
   return (
     <>
       <section className="panel">
-        <h2>Customer text</h2>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste a customer message…" />
+        <h2>{l('Customer text', 'Kundtext')}</h2>
+        <textarea aria-label={l('Customer text', 'Kundtext')} value={text} onChange={(e) => setText(e.target.value)} placeholder={l('Paste a customer message…', 'Klistra in ett kundmeddelande…')} />
         <div className="save-row">
-          <button onClick={analyze} disabled={busy || !text.trim()}>{busy ? 'Analyzing…' : 'Analyze'}</button>
+          <button onClick={analyze} disabled={busy || !text.trim()}>{busy ? l('Analyzing…', 'Analyserar…') : l('Analyze', 'Analysera')}</button>
           {level === 'quick'
-            ? <span className="dim small">{exampleLoaded ? 'example message loaded — edit or replace it, then Analyze' : 'paste a message, then Analyze'}</span>
-            : <span className="dim small">{gates.length} independent gates · one Jev call</span>}
+            ? <span className="dim small">{exampleLoaded ? l('example message loaded — edit or replace it, then Analyze', 'exempelmeddelande laddat — redigera eller ersätt det och analysera') : l('paste a message, then Analyze', 'klistra in ett meddelande och analysera')}</span>
+            : <span className="dim small">{gates.length} {l('independent gates · one Jev call', 'oberoende gater · ett Jev-anrop')}</span>}
         </div>
         {error && <p style={{ color: '#f85149' }}>{error}</p>}
       </section>
 
-      {result && technicalLevel && <TechnicalView result={result} customerText={text} gates={gates} />}
+      {result && technicalLevel && <TechnicalView result={result} customerText={analyzedText} gates={resultGates} />}
+
+      {result && <p className="dim small" role="status">{l('Analyzed with', 'Analyserat med')} {result.language === 'sv' ? 'svenska' : 'English'} · {result.gateSetVersion}</p>}
 
       {result && !technicalLevel && (
         <section className="panel">
-          <h2>Result &amp; next steps <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="gatePolicyResult" /></h2>
+          <h2>{l('Result & next steps', 'Resultat och nästa steg')} <ProvenanceBadge p="cSharpDerived" /> <HelpTerm term="gatePolicyResult" /></h2>
           {level === 'quick' && <QuickSignals result={result} />}
-          {result.actions.length === 0 && <p className="dim">No actions triggered.</p>}
+          {result.actions.length === 0 && <p className="dim">{l('No actions triggered.', 'Inga åtgärder utlöstes.')}</p>}
           {result.actions.map((a) => (
             <div key={a.sourceGate} className="action-line">
               <span className={a.trigger === 'yes' ? 'mark-yes' : 'mark-review'}>{a.trigger === 'yes' ? '✓' : '!'}</span>{' '}
-              <b>{a.sourceGate}</b> <span className="arrow">→</span> {a.label} <span className="dim small">({a.type})</span>
+              <b>{gateName(a.sourceGate, language)}</b> <span className="arrow">→</span> {a.label} <span className="dim small">({a.type})</span>
             </div>
           ))}
           {!technicalLevel && (
             <p className="dim small" style={{ marginTop: 10 }}>
-              REVIEW routes to a human before any consequential action. <HelpTerm term="reviewFallback" />
+              {l('REVIEW routes to a human before any consequential action.', 'GRANSKA skickar ärendet till en människa innan någon betydande åtgärd vidtas.')} <HelpTerm term="reviewFallback" />
             </p>
           )}
         </section>
@@ -135,23 +148,23 @@ export function AnalyzeScreen() {
 
       {level === 'business' && (
       <section className="panel">
-        <h2>Policy scale per gate <ProvenanceKey /></h2>
+        <h2>{l('Policy scale per gate', 'Policyskala per gate')} <ProvenanceKey /></h2>
         <p className="pipeline">
-          <b>Drag the boundary handles</b> — the Jev signal never changes, only the interpretation.
+          <b>{l('Drag the boundary handles', 'Dra gränsmarkörerna')}</b> — {l('the Jev signal never changes, only the interpretation.', 'Jev-signalen ändras inte, bara tolkningen.')}
         </p>
         <div className="save-row" style={{ marginBottom: 10 }}>
-          <span className="dim small">policy version: {policyVersion || '…'}</span>
-          <button className="secondary" onClick={saveThresholds} disabled={!dirty}>Save thresholds as policy</button>
-          <span className="dim small">{dirty ? 'unsaved threshold changes (interpretation only)' : 'thresholds match saved policy'}</span>
+          <span className="dim small">{l('policy version', 'policyversion')}: {policyVersion || '…'}</span>
+          <button className="secondary" onClick={saveThresholds} disabled={!dirty}>{l('Save thresholds as policy', 'Spara gränser som policy')}</button>
+          <span className="dim small">{dirty ? l('unsaved threshold changes (interpretation only)', 'osparade gränsändringar (endast tolkning)') : l('thresholds match saved policy', 'gränserna matchar sparad policy')}</span>
         </div>
-        {gates.map((g) => {
+        {(result ? resultGates : gates).map((g) => {
           const t = thresholds[g.gateId];
           if (!t) return null;
           const prob = probByGate[g.gateId] ?? null;
           return (
             <PolicyScale
               key={g.gateId}
-              gateId={g.gateId}
+              gateId={gateName(g.gateId, language)}
               profile={g.policyProfile}
               gateVersion={g.promptVersion}
               probability={prob}
@@ -162,21 +175,21 @@ export function AnalyzeScreen() {
               {result && (
                 <div className="gate-extra">
                   <div className="expected-row">
-                    <span className="dim small">Expected (manual):</span>
+                    <span className="dim small">{l('Expected (manual):', 'Förväntat (manuellt):')}</span>
                     {(['YES', 'NO', 'UNCLEAR'] as const).map((l) => (
                       <label key={l} className="expected small">
                         <input type="radio" name={`exp-${g.gateId}`} checked={expected[g.gateId] === l} onChange={() => setExpected({ ...expected, [g.gateId]: l })} />
-                        {l}
+                        {l === 'YES' ? localized(language, 'YES', 'JA') : l === 'NO' ? localized(language, 'NO', 'NEJ') : localized(language, 'UNCLEAR', 'OKLART')}
                       </label>
                     ))}
                     <button className="info" onClick={() => setExpandedGate(expandedGate === g.gateId ? null : g.gateId)}>{expandedGate === g.gateId ? '−' : '+'}</button>
                   </div>
                   {expandedGate === g.gateId && (
                     <div className="small dim gate-meta">
-                      <div><b>goal:</b> {g.businessGoal}</div>
-                      <div><b>semantic interior:</b> {g.semanticInterior}</div>
-                      <div><b>boundaries:</b> {g.semanticBoundaries}</div>
-                      <div><b>profile:</b> {g.policyProfile} · FP: {g.falsePositiveConsequence} · FN: {g.falseNegativeConsequence}</div>
+                      <div><b>{l('goal', 'mål')}:</b> {g.businessGoal}</div>
+                      <div><b>{l('semantic interior', 'semantisk kärna')}:</b> {g.semanticInterior}</div>
+                      <div><b>{l('boundaries', 'gränser')}:</b> {g.semanticBoundaries}</div>
+                      <div><b>{l('profile', 'profil')}:</b> {g.policyProfile} · FP: {g.falsePositiveConsequence} · FN: {g.falseNegativeConsequence}</div>
                     </div>
                   )}
                 </div>
@@ -189,11 +202,11 @@ export function AnalyzeScreen() {
 
       {level === 'business' && (
         <details className="panel">
-          <summary>Save as evaluation case</summary>
-          <input type="text" style={{ width: '100%' }} placeholder="Optional notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <summary>{l('Save as evaluation case', 'Spara som utvärderingsfall')}</summary>
+          <input type="text" style={{ width: '100%' }} placeholder={l('Optional notes', 'Valfria anteckningar')} value={notes} onChange={(e) => setNotes(e.target.value)} />
           <div className="save-row">
-            <button onClick={saveCase} disabled={Object.keys(expected).length === 0}>SAVE AS EVALUATION CASE</button>
-            <span className="dim small">{Object.keys(expected).length} gate(s) annotated (YES/NO/UNCLEAR). Untouched gates default to NO.</span>
+            <button onClick={saveCase} disabled={Object.keys(expected).length === 0}>{l('SAVE AS EVALUATION CASE', 'SPARA SOM UTVÄRDERINGSFALL')}</button>
+            <span className="dim small">{Object.keys(expected).length} {l('gate(s) annotated (YES/NO/UNCLEAR). Untouched gates default to NO.', 'gater märkta (JA/NEJ/OKLART). Orörda gater får NEJ som standard.')}</span>
             {saveMsg && <span>{saveMsg}</span>}
           </div>
         </details>
@@ -208,19 +221,20 @@ export function AnalyzeScreen() {
  * the wording mirrors the policy zones (detected / needs review).
  */
 function QuickSignals({ result }: { result: AnalyzeResponse }) {
+  const { language } = useLanguage();
   const outcome: Record<string, string> = {};
   result.policy.forEach((p) => { outcome[p.gateId] = p.result; });
   const chips = result.signals
     .filter((s) => s.success && (outcome[s.gateId] === 'yes' || outcome[s.gateId] === 'review'))
     .map((s) => ({ gateId: s.gateId, detected: outcome[s.gateId] === 'yes' }));
   if (chips.length === 0) {
-    return <p className="dim small" style={{ margin: '0 0 8px' }}>No signals strong enough to act on in this message.</p>;
+    return <p className="dim small" style={{ margin: '0 0 8px' }}>{localized(language, 'No signals strong enough to act on in this message.', 'Inga signaler är tillräckligt starka för en åtgärd i detta meddelande.')}</p>;
   }
   return (
     <p style={{ margin: '0 0 8px' }}>
       {chips.map((c) => (
         <span key={c.gateId} className={'sig-chip ' + (c.detected ? 'detected' : 'review')}>
-          {GATE_DISPLAY_NAMES[c.gateId] ?? c.gateId} · {c.detected ? 'detected' : 'needs review'}
+          {gateName(c.gateId, language)} · {c.detected ? localized(language, 'detected', 'upptäckt') : localized(language, 'needs review', 'behöver granskas')}
         </span>
       ))}
     </p>

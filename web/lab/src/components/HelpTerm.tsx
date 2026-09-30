@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { helpTopics, type HelpTopicId } from '../help/pipelineHelp';
-import { provenanceLabels, provenanceShort } from '../help/provenance';
+import { getHelpTopic, type HelpTopicId } from '../help/pipelineHelp';
+import { provenanceLabels, provenanceShort, swedishProvenance } from '../help/provenance';
+import { useLanguage, localized } from '../language';
 
 /**
  * Shared "?" help indicator used across the Decision Pipeline UI.
@@ -13,7 +14,8 @@ import { provenanceLabels, provenanceShort } from '../help/provenance';
  * Documentation only — this component contains no semantic or policy logic.
  */
 export function HelpTerm({ term, label }: { term: HelpTopicId; label?: string }) {
-  const topic = helpTopics[term];
+  const { language } = useLanguage();
+  const topic = getHelpTopic(term, language);
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -53,7 +55,7 @@ export function HelpTerm({ term, label }: { term: HelpTopicId; label?: string })
         ref={triggerRef}
         type="button"
         className="help-term"
-        aria-label={`What does "${label ?? topic.term}" mean? Help`}
+        aria-label={language === 'sv' ? `Vad betyder "${label ?? topic.term}"? Hjälp` : `What does "${label ?? topic.term}" mean? Help`}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls={open ? titleId : undefined}
@@ -67,13 +69,13 @@ export function HelpTerm({ term, label }: { term: HelpTopicId; label?: string })
             <h3 id={titleId}>
               {topic.term}
               {topic.provenance && (
-                <span className="help-source" title={provenanceShort[topic.provenance]}>
-                  Source: <code>{provenanceLabels[topic.provenance]}</code>
+                <span className="help-source" title={localized(language, provenanceShort[topic.provenance], swedishProvenance.short[topic.provenance])}>
+                  {localized(language, 'Source', 'Källa')}: <code>{localized(language, provenanceLabels[topic.provenance], swedishProvenance.labels[topic.provenance])}</code>
                 </span>
               )}
-              <button className="secondary" onClick={close}>Close</button>
+              <button className="secondary" onClick={close}>{localized(language, 'Close', 'Stäng')}</button>
             </h3>
-            {topic.provenance && <p className="dim small" style={{ marginTop: 0 }}>{provenanceShort[topic.provenance]}</p>}
+            {topic.provenance && <p className="dim small" style={{ marginTop: 0 }}>{localized(language, provenanceShort[topic.provenance], swedishProvenance.short[topic.provenance])}</p>}
             {topic.long.map((p, i) => <p key={i} className={i === 0 ? 'help-lead' : undefined}>{p}</p>)}
           </div>
         </div>
