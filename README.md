@@ -125,6 +125,8 @@ $env:SVEN_BASE_URL = "http://localhost:8009"
 
 The default remains `SYSTEM_ONE_PROVIDER=jev`. Sven sends the customer text as Kev `state` and all active Noul gates together in one `POST /v1/systemone` request using model `kev-latest`. The mixed Choice/Score/Noul Decision Pipeline remains on Jev because the current Sven/Kev contract covers Noul questions only.
 
+The saved 200-request Sven evaluation, including threshold-independent AUROC, in-sample calibration analysis, latency, per-gate results and the Jev baseline comparison, is available as a [written evaluation](data/results/sven-language-evaluation-20261001/EVALUATION.md) and [standalone HTML report](data/results/sven-language-evaluation-20261001/report.html).
+
 ### Swedish and English
 
 Use the language control in the demo header to switch between English and Swedish. The choice changes the interface, examples, question definitions and evaluation cases used by the gate analysis. Each result records the language and definition version used for that run; switching the interface language later does not rerun an analysis. The English definitions remain the original baseline, while Swedish definitions have separate versions.

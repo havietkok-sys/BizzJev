@@ -1,0 +1,21 @@
+{
+  "generated": "2026-09-30T23:20:10.599Z",
+  "files": {
+    "svenEnglish": {
+      "path": "data/results/sven-language-evaluation-20261001/english.json",
+      "sha256": "54953d918550eff64122ba0d94fab719e779af2f2fe324417fb15ca6204298a5"
+    },
+    "svenSwedish": {
+      "path": "data/results/sven-language-evaluation-20261001/swedish.json",
+      "sha256": "8737d2392a61f5d8099dda086f212ee24fa0633f17c39436df9ddacae7038e69"
+    },
+    "jevEnglish": {
+      "path": "data/results/swedish-language-evaluation-20260930/english.json",
+      "sha256": "8f2547eaca5a484555ef88a5de04e9c5940d43b52c58072f20883cd1be683113"
+    },
+    "jevSwedish": {
+      "path": "data/results/swedish-language-evaluation-20260930/swedish.json",
+      "sha256": "2b5d1cee732b3ecb5e48e7c410ab339c52343116d28a271c354a095a0113a8a9"
+    }
+  }
+}

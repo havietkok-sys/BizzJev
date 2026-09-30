@@ -1,0 +1,110 @@
+{
+  "generated": "2026-09-30T23:20:10.599Z",
+  "provider": "sven",
+  "endpoint": "http://127.0.0.1:8009/v1/systemone",
+  "model": "kev-latest",
+  "calls": 200,
+  "apiFailures": 0,
+  "sven": {
+    "english": {
+      "model": "kev-latest",
+      "macroF1": 0.39199249299194444,
+      "microF1": 0.42735042735042733,
+      "macroAuc": 0.7336015470838522,
+      "brier": 0.2774660138734737,
+      "bestMacroF1": 0.5188047395266647,
+      "bestMicroF1": 0.5089605734767025,
+      "strictExact": 0.02,
+      "binaryExact": 0.11,
+      "calibratedBinaryExact": 0.12,
+      "judgmentAccuracy": 0.7495327102803738,
+      "reviewRate": 0.42990654205607476,
+      "latency": {
+        "meanMs": 2284.659881,
+        "p50Ms": 2260.3204,
+        "p95Ms": 2654.4506
+      }
+    },
+    "swedish": {
+      "model": "kev-latest",
+      "macroF1": 0.17414622414622413,
+      "microF1": 0.2077922077922078,
+      "macroAuc": 0.5935104921947917,
+      "brier": 0.25334306937397444,
+      "bestMacroF1": 0.4137475648622287,
+      "bestMicroF1": 0.42276422764227645,
+      "strictExact": 0.02,
+      "binaryExact": 0.08,
+      "calibratedBinaryExact": 0.04,
+      "judgmentAccuracy": 0.77196261682243,
+      "reviewRate": 0.47289719626168225,
+      "latency": {
+        "meanMs": 4931.513119999998,
+        "p50Ms": 4842.9664,
+        "p95Ms": 5703.6726
+      }
+    }
+  },
+  "jevBaseline": {
+    "english": {
+      "model": "jev-1.13.0",
+      "macroF1": 0.8402283042480353,
+      "microF1": 0.8535353535353535,
+      "macroAuc": 0.9848101370597608,
+      "brier": 0.05432960270622193,
+      "bestMacroF1": 0.9175990635824764,
+      "bestMicroF1": 0.9227053140096618,
+      "strictExact": 0.35,
+      "binaryExact": 0.59,
+      "calibratedBinaryExact": 0.71,
+      "judgmentAccuracy": 0.9457943925233645,
+      "reviewRate": 0.08691588785046729,
+      "latency": {
+        "meanMs": 264.707012,
+        "p50Ms": 258.1989,
+        "p95Ms": 363.2632
+      }
+    },
+    "swedish": {
+      "model": "jev-1.13.0",
+      "macroF1": 0.8263577120313375,
+      "microF1": 0.8431876606683805,
+      "macroAuc": 0.9867326064974423,
+      "brier": 0.05600763907893358,
+      "bestMacroF1": 0.9146576856141985,
+      "bestMicroF1": 0.9152542372881356,
+      "strictExact": 0.35,
+      "binaryExact": 0.57,
+      "calibratedBinaryExact": 0.7,
+      "judgmentAccuracy": 0.9429906542056075,
+      "reviewRate": 0.09532710280373832,
+      "latency": {
+        "meanMs": 260.82022600000005,
+        "p50Ms": 253.0145,
+        "p95Ms": 312.6984
+      }
+    }
+  },
+  "consistency": {
+    "svenLanguages": {
+      "pairs": 1100,
+      "pearson": 0.40919239090404935,
+      "mae": 0.23594845454545463
+    },
+    "jevLanguages": {
+      "pairs": 1100,
+      "pearson": 0.9741399683604702,
+      "mae": 0.03575454545454552
+    },
+    "englishProviders": {
+      "pairs": 1100,
+      "pearson": 0.37681701431370346,
+      "mae": 0.36237081818181827
+    },
+    "swedishProviders": {
+      "pairs": 1100,
+      "pearson": 0.0939858762858552,
+      "mae": 0.36861254545454547
+    }
+  }
+}
