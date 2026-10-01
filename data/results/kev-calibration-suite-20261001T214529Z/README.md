@@ -39,3 +39,7 @@ node scripts\analyze-kev-calibration-suite.mjs data\results\kev-calibration-suit
 ```
 
 This analysis makes no provider calls. A prospective raw-response attempt is recorded separately in `final-run-manifest.json`; it returned HTTP 401 for every request and produced no model judgments. The retrospective result remains useful for threshold validation but does not replace a credentialed raw run or test–retest stability.
+
+## Successful live retry
+
+The immutable authentication failure remains in `final-run-manifest.json` and its original raw files. It returned 50 HTTP 401 responses and no model judgments. Attempt `authenticated-retry-20261002` then evaluated the same frozen config and untouched holdout with 50/50 successful provider responses and no retries. The report now uses those live raw responses for Kev holdout metrics. Test/retest used 10 fixed representative case IDs in both languages over 3 repetitions; all 60 calls succeeded.

@@ -1,2 +1,2 @@
-status,reason,provider_requests
-NOT_RUN,Modal endpoint returned HTTP 401 and no approved credential source was available,0
+status,provider_requests,repetitions,subset_cases,evaluated_series,mean_absolute_delta,max_absolute_delta,label_flips,threshold_crossings
+PASS,60,3,10,220,0,0,0,0

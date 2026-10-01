@@ -1,6 +1,6 @@
 {
   "suiteVersion": "kev-calibration-suite-v1",
-  "phase": "0-3, 5-7, 9-12 partial",
+  "phase": "0-12 complete; phase 4 skipped by diagnostic",
   "createdAtUtc": "2026-10-01T22:03:42.250Z",
   "gitCommit": "281e1d30df7ee771818231d235b5af6255998de2",
   "seed": 20261001,
@@ -126,20 +126,28 @@
   ],
   "finalHoldoutStatus": "UNTOUCHED",
   "finalEvaluation": {
-    "type": "retrospective_saved_probabilities",
+    "type": "live_raw_frozen_retry",
     "holdoutCases": 25,
-    "wordingExperiment": "skipped",
-    "stability": "blocked_http_401",
-    "prospectiveRawAttempt": {
+    "historicalLiveMaxProbabilityDelta": 0,
+    "wordingExperiment": "skipped_no_semantic_justification",
+    "stability": "PASS",
+    "failedAuthenticationAttempt": {
       "providerRequests": 50,
       "successes": 0,
       "failures": 50,
+      "retries": 0
+    },
+    "successfulLiveAttempt": {
+      "attemptId": "authenticated-retry-20261002",
+      "providerRequests": 50,
+      "successes": 50,
+      "failures": 0,
       "retries": 0
     }
   },
   "finalArtifacts": {
     "README.md": {
-      "sha256": "8bab419d74c0b6e76b9f4f0b3deec901aeac47c9bc11d463685da10f35965097"
+      "sha256": "fdeeca28d3862746c4eb3f3ce00eb2b9380388710d2e4f579f86aa68da9429c6"
     },
     "configs/jev-gates-calibrated-v1.json": {
       "sha256": "5368366190a01179943fe76926c099f549da3d3c5bb81ef5b2ff0f20b627d0ab"
@@ -154,16 +162,16 @@
       "sha256": "832908493cae3952367f47be641ce6f2b27ade40ded65386b0aa5b93748e4a67"
     },
     "cost-accounting.json": {
-      "sha256": "c6453eaabee7effe6496b868af7fdeaf4e52d26c19bc6e45cc4779aedf8f2f50"
+      "sha256": "afde529ab08fb0523c204f15caf2422bff52dd0244ff453fca4d92181756370c"
     },
     "stability-results.csv": {
-      "sha256": "f0c5a870234d0a3cad5fbc83dfe1967181f3cf27c8e7688a0e694bce77557e48"
+      "sha256": "a7994846623773e40313d3475d365846663a19f0d43b56277d779dfd5cb75cbd"
     },
     "provider-comparison-calibrated-summary.json": {
-      "sha256": "de037ab5c84c7542c6acf8a9ebee1ef499ad771f432cf6cc7798234d45d2f484"
+      "sha256": "7c6ede0ef9a89fe7b25c8d7f31feacdfd3cd34153c4bc9fca92a49382ada4e3d"
     },
     "provider-comparison-calibrated.html": {
-      "sha256": "6518a2def6ba5414c041f8fe1555bcbeb1f9827473de012cb4c8a404749357ae"
+      "sha256": "ed62854a88fe4812a4ca2b80a276be08429b0c900d1471a08c6cb59ffea178d3"
     },
     "final-run-manifest.json": {
       "sha256": "87060ee3081ad73a7f6d9a997deff530fd97d606852ef592075221497446258b"
@@ -173,10 +181,28 @@
     },
     "raw/final-holdout-sv.jsonl": {
       "sha256": "077f80db1d0a3819e0a6a15b0296164703b3819c322c497f02872ed1f587b13c"
+    },
+    "final-run-manifest-authenticated-retry-20261002.json": {
+      "sha256": "7f56130c3fe117b4f02b75e0a49401a730c7f31e1f2f82cb9ad8c937c64360b1"
+    },
+    "raw/final-holdout-authenticated-retry-20261002-en.jsonl": {
+      "sha256": "6e4ed86f789cd8e0333d50bde9c14b059cd8bd2a5b75e491129581dddb513290"
+    },
+    "raw/final-holdout-authenticated-retry-20261002-sv.jsonl": {
+      "sha256": "6fea68037b07ad0c3347b17474658343c450bc93e50d4bf7150cc8bd06279e5b"
+    },
+    "stability-manifest-stability-20261002.json": {
+      "sha256": "c33487d013261a1385589986ab288262e3f9933cb222b6108662120badefaef8"
+    },
+    "raw/stability-stability-20261002.jsonl": {
+      "sha256": "780b4bc0c26a659f8f77b59697d2bf7fca43dbbc654668e3c82329ea2fcf6645"
+    },
+    "stability-results-stability-20261002.csv": {
+      "sha256": "6be8979b51a4f81f2d64cc2dff7b824cb4864d3184db66a52f315cbabd6f7724"
     }
   },
   "finalAnalysisScript": {
     "path": "scripts/analyze-kev-calibration-suite.mjs",
-    "sha256": "22cf465279a7c11d4a20a040c8df82861d926d622b79f47c7fec712e543947d6"
+    "sha256": "85e790c535e8c11dd24c5bd50c9d971dee0d9517f0dd5c988ee225086adab8ec"
   }
 }

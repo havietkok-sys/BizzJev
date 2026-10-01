@@ -1,9 +1,25 @@
 {
-  "generatedAtUtc": "2026-10-01T22:14:39.423Z",
-  "methodology": "Retrospective leakage-safe holdout: split selected from labels only; thresholds selected on 75 development IDs; frozen configs evaluated on 25 held-out IDs using immutable saved probabilities.",
-  "holdoutType": "retrospective_saved_probabilities",
-  "prospectiveRawHoldoutStatus": "BLOCKED_HTTP_401",
+  "generatedAtUtc": "2026-10-01T22:42:35.003Z",
+  "methodology": "Authenticated live raw retry: thresholds selected on 75 development IDs; the already-frozen config was evaluated without modification on the same 25 held-out IDs in EN and SV.",
+  "holdoutType": "live_raw_frozen_retry",
+  "prospectiveRawHoldoutStatus": "SUCCESS_50_OF_50",
+  "historicalLiveMaxProbabilityDelta": 0,
   "wordingExperiment": "SKIPPED_NO_SEMANTIC_JUSTIFICATION",
+  "attempts": {
+    "failedAuthentication": {
+      "attemptId": "initial",
+      "providerRequests": 50,
+      "successes": 0,
+      "failures": 50
+    },
+    "successfulLive": {
+      "manifest": "final-run-manifest-authenticated-retry-20261002.json",
+      "attemptId": "authenticated-retry-20261002",
+      "providerRequests": 50,
+      "successes": 50,
+      "failures": 0
+    }
+  },
   "tracks": {
     "A-jev-drop-in": {
       "label": "Track A · Jev drop-in",
@@ -395,44 +411,70 @@
     "kev": {
       "en": {
         "all": {
-          "median": 416.2428,
-          "p95": 527.426,
-          "mean": 440.99804400000016,
-          "max": 869.8156
+          "median": 374.0230999999985,
+          "p95": 796.6814999999988,
+          "mean": 2617.93508,
+          "max": 54836.4102
         },
-        "coldStartCandidate": 869.8156,
+        "coldStartCandidate": 54836.4102,
         "warm": {
-          "median": 415.6153,
-          "p95": 450.1553,
-          "mean": 423.1306458333335,
-          "max": 527.426
+          "median": 371.8414499999999,
+          "p95": 636.1281999999992,
+          "mean": 442.16528333333343,
+          "max": 796.6814999999988
         }
       },
       "sv": {
         "all": {
-          "median": 437.2259,
-          "p95": 448.6923,
-          "mean": 437.9794959999999,
-          "max": 450.5575
+          "median": 597.3600000000006,
+          "p95": 1269.8243000000075,
+          "mean": 670.5168319999971,
+          "max": 1632.9978999999948
         },
-        "coldStartCandidate": 431.6345,
+        "coldStartCandidate": null,
         "warm": {
-          "median": 437.3707,
-          "p95": 448.6923,
-          "mean": 438.24387083333323,
-          "max": 450.5575
+          "median": 597.3600000000006,
+          "p95": 1269.8243000000075,
+          "mean": 670.5168319999971,
+          "max": 1632.9978999999948
         }
       }
     }
   },
+  "stability": {
+    "status": "PASS",
+    "providerRequests": 60,
+    "repetitions": 3,
+    "subsetCases": 10,
+    "evaluatedSeries": 220,
+    "meanAbsoluteDelta": 0,
+    "maxAbsoluteDelta": 0,
+    "labelFlips": 0,
+    "thresholdCrossings": 0
+  },
   "cost": {
-    "newSuccessfulProviderRequests": 0,
-    "reusedHistoricalResponses": 50,
+    "newSuccessfulProviderRequests": 110,
+    "liveHoldoutRequests": 50,
+    "stabilityRequests": 60,
+    "reusedHistoricalResponses": 0,
     "offlineThresholdSweeps": true,
     "offlineBootstrapSamples": 2000,
-    "failedCredentiallessRequests": 50,
-    "failedCredentiallessElapsedWallMs": 52778.2208,
-    "usage": "Unavailable in historical parsed artifacts",
+    "failedAuthenticationRequests": 50,
+    "failedAuthenticationElapsedWallMs": 52778.2208,
+    "usage": {
+      "liveHoldout": {
+        "inputTokens": 70062,
+        "outputTokens": 13182
+      },
+      "stability": {
+        "inputTokens": 84111,
+        "outputTokens": 15822
+      },
+      "total": {
+        "inputTokens": 154173,
+        "outputTokens": 29004
+      }
+    },
     "modalComputeUsage": "Unavailable"
   },
   "errorCounts": {
@@ -444,5 +486,5 @@
     "kev": "1a18b454db183ea174b500f8463d3910fdc188bec3e75d695cd85e6f22c19258",
     "jev": "5368366190a01179943fe76926c099f549da3d3c5bb81ef5b2ff0f20b627d0ab"
   },
-  "gitCommit": "f0dffcd31973683dcdf0c32d3165ce0c83378a8a"
+  "gitCommit": "18bf41d446e01be8b742fe4ffd13f216931373c9"
 }

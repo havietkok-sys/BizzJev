@@ -1,0 +1,39 @@
+{
+  "runType": "test-retest-stability",
+  "attemptId": "stability-20261002",
+  "sourceAttempt": "authenticated-retry-20261002",
+  "startedAtUtc": "2026-10-01T22:34:13.584Z",
+  "completedAtUtc": "2026-10-01T22:34:37.046Z",
+  "elapsedWallMs": 23461.9267,
+  "endpoint": "https://haviet-kok--kev-9b-api.modal.run/v1/systemone",
+  "model": "jaredpalmer/kev-9b",
+  "modelAlias": "kev-latest",
+  "configVersion": "kev-gates-v2",
+  "configSha256": "1a18b454db183ea174b500f8463d3910fdc188bec3e75d695cd85e6f22c19258",
+  "gitCommit": "3657506578c70a276f21129abeeea46612617440",
+  "subsetIds": [
+    "ob-01",
+    "ob-19",
+    "mu-02",
+    "mu-05",
+    "vg-04",
+    "bd-03",
+    "cd-03",
+    "lg-07",
+    "ng-05",
+    "ng-09"
+  ],
+  "repetitions": 3,
+  "providerRequests": 60,
+  "successes": 60,
+  "failures": 0,
+  "apiKeyStored": false,
+  "rawFile": {
+    "path": "data/results/kev-calibration-suite-20261001T214529Z/raw/stability-stability-20261002.jsonl",
+    "sha256": "780b4bc0c26a659f8f77b59697d2bf7fca43dbbc654668e3c82329ea2fcf6645"
+  },
+  "resultFile": {
+    "path": "data/results/kev-calibration-suite-20261001T214529Z/stability-results-stability-20261002.csv",
+    "sha256": "6be8979b51a4f81f2d64cc2dff7b824cb4864d3184db66a52f315cbabd6f7724"
+  }
+}

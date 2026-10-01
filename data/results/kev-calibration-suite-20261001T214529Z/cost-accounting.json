@@ -1,10 +1,25 @@
 {
-  "newSuccessfulProviderRequests": 0,
-  "reusedHistoricalResponses": 50,
+  "newSuccessfulProviderRequests": 110,
+  "liveHoldoutRequests": 50,
+  "stabilityRequests": 60,
+  "reusedHistoricalResponses": 0,
   "offlineThresholdSweeps": true,
   "offlineBootstrapSamples": 2000,
-  "failedCredentiallessRequests": 50,
-  "failedCredentiallessElapsedWallMs": 52778.2208,
-  "usage": "Unavailable in historical parsed artifacts",
+  "failedAuthenticationRequests": 50,
+  "failedAuthenticationElapsedWallMs": 52778.2208,
+  "usage": {
+    "liveHoldout": {
+      "inputTokens": 70062,
+      "outputTokens": 13182
+    },
+    "stability": {
+      "inputTokens": 84111,
+      "outputTokens": 15822
+    },
+    "total": {
+      "inputTokens": 154173,
+      "outputTokens": 29004
+    }
+  },
   "modalComputeUsage": "Unavailable"
 }
