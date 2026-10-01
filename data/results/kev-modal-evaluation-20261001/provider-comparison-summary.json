@@ -1,0 +1,208 @@
+{
+  "generated": "2026-10-01T21:37:12.885Z",
+  "methodology": "Same paired 100 English and 100 Swedish cases; current frozen gates, policies and thresholds.",
+  "interpretation": "Both Jev and Kev-9B appear to have reached the practical point where their semantic probability signal is useful. Calibrate provider-specific thresholds first, then evaluate semantically equivalent provider-specific question wording where individual gates still need improvement.",
+  "modalDeployment": {
+    "model": "jaredpalmer/kev-9b",
+    "hosting": "Modal",
+    "deployment": "https://modal.com/apps/haviet-kok/main/deployed/kev-9b",
+    "apiBase": "https://haviet-kok--kev-9b-api.modal.run",
+    "modelAlias": "kev-latest"
+  },
+  "providers": {
+    "jev": {
+      "label": "TypeSafe Jev 1.13",
+      "english": {
+        "model": "jev-1.13.0",
+        "macroF1": 0.8402283042480353,
+        "microF1": 0.8535353535353535,
+        "macroAuc": 0.9848101370597608,
+        "brier": 0.05432960270622193,
+        "bestMacroF1": 0.9175990635824764,
+        "judgmentAccuracy": 0.9457943925233645,
+        "strictExact": 0.35,
+        "binaryExact": 0.59,
+        "reviewRate": 0.08691588785046729,
+        "latency": {
+          "mean": 264.707012,
+          "p50": 258.1989,
+          "p95": 363.2632,
+          "max": 486.2315
+        }
+      },
+      "swedish": {
+        "model": "jev-1.13.0",
+        "macroF1": 0.8263577120313375,
+        "microF1": 0.8431876606683805,
+        "macroAuc": 0.9867326064974423,
+        "brier": 0.05600763907893358,
+        "bestMacroF1": 0.9146576856141985,
+        "judgmentAccuracy": 0.9429906542056075,
+        "strictExact": 0.35,
+        "binaryExact": 0.57,
+        "reviewRate": 0.09532710280373832,
+        "latency": {
+          "mean": 260.82022600000005,
+          "p50": 253.0145,
+          "p95": 312.6984,
+          "max": 593.1525
+        }
+      },
+      "languageConsistency": {
+        "pairs": 1100,
+        "pearson": 0.9741399683604702,
+        "mae": 0.03575454545454552
+      },
+      "vsJev": {
+        "en": {
+          "pairs": 1100,
+          "pearson": 1,
+          "mae": 0
+        },
+        "sv": {
+          "pairs": 1100,
+          "pearson": 1,
+          "mae": 0
+        }
+      }
+    },
+    "local": {
+      "label": "Lokal Kev · äldre, betydligt mindre modell",
+      "english": {
+        "model": "kev-latest",
+        "macroF1": 0.39199249299194444,
+        "microF1": 0.42735042735042733,
+        "macroAuc": 0.7336015470838522,
+        "brier": 0.2774660138734737,
+        "bestMacroF1": 0.5188047395266647,
+        "judgmentAccuracy": 0.7495327102803738,
+        "strictExact": 0.02,
+        "binaryExact": 0.11,
+        "reviewRate": 0.42990654205607476,
+        "latency": {
+          "mean": 2284.659881,
+          "p50": 2260.3204,
+          "p95": 2654.4506,
+          "max": 2776.7207
+        }
+      },
+      "swedish": {
+        "model": "kev-latest",
+        "macroF1": 0.17414622414622413,
+        "microF1": 0.2077922077922078,
+        "macroAuc": 0.5935104921947917,
+        "brier": 0.25334306937397444,
+        "bestMacroF1": 0.4137475648622287,
+        "judgmentAccuracy": 0.77196261682243,
+        "strictExact": 0.02,
+        "binaryExact": 0.08,
+        "reviewRate": 0.47289719626168225,
+        "latency": {
+          "mean": 4931.513119999998,
+          "p50": 4842.9664,
+          "p95": 5703.6726,
+          "max": 6064.0621
+        }
+      },
+      "languageConsistency": {
+        "pairs": 1100,
+        "pearson": 0.40919239090404935,
+        "mae": 0.23594845454545463
+      },
+      "vsJev": {
+        "en": {
+          "pairs": 1100,
+          "pearson": 0.37681701431370346,
+          "mae": 0.36237081818181827
+        },
+        "sv": {
+          "pairs": 1100,
+          "pearson": 0.0939858762858552,
+          "mae": 0.36861254545454547
+        }
+      }
+    },
+    "modal": {
+      "label": "Kev-9B v2 · Modal",
+      "english": {
+        "model": "kev-latest",
+        "macroF1": 0.7663070867799392,
+        "microF1": 0.8087167070217918,
+        "macroAuc": 0.9763087300200962,
+        "brier": 0.09116214576448632,
+        "bestMacroF1": 0.8885858213731255,
+        "judgmentAccuracy": 0.9261682242990654,
+        "strictExact": 0.12,
+        "binaryExact": 0.52,
+        "reviewRate": 0.16261682242990655,
+        "latency": {
+          "mean": 452.14775699999996,
+          "p50": 416.3727,
+          "p95": 444.824,
+          "max": 3346.8295
+        }
+      },
+      "swedish": {
+        "model": "kev-latest",
+        "macroF1": 0.7638378270886556,
+        "microF1": 0.794044665012407,
+        "macroAuc": 0.9713698821539029,
+        "brier": 0.08210485127263217,
+        "bestMacroF1": 0.8711264052581409,
+        "judgmentAccuracy": 0.922429906542056,
+        "strictExact": 0.21,
+        "binaryExact": 0.49,
+        "reviewRate": 0.14299065420560747,
+        "latency": {
+          "mean": 438.1631659999998,
+          "p50": 437.7476,
+          "p95": 448.428,
+          "max": 450.5575
+        }
+      },
+      "languageConsistency": {
+        "pairs": 1100,
+        "pearson": 0.9322283660522144,
+        "mae": 0.08025909090909093
+      },
+      "vsJev": {
+        "en": {
+          "pairs": 1100,
+          "pearson": 0.9107245667520198,
+          "mae": 0.10955972727272753
+        },
+        "sv": {
+          "pairs": 1100,
+          "pearson": 0.9037978542140771,
+          "mae": 0.10314372727272737
+        }
+      }
+    }
+  },
+  "sources": {
+    "jevEnPath": {
+      "path": "data\\results\\swedish-language-evaluation-20260930\\english.json",
+      "sha256": "8f2547eaca5a484555ef88a5de04e9c5940d43b52c58072f20883cd1be683113"
+    },
+    "jevSvPath": {
+      "path": "data\\results\\swedish-language-evaluation-20260930\\swedish.json",
+      "sha256": "2b5d1cee732b3ecb5e48e7c410ab339c52343116d28a271c354a095a0113a8a9"
+    },
+    "localEnPath": {
+      "path": "data\\results\\sven-language-evaluation-20261001\\english.json",
+      "sha256": "54953d918550eff64122ba0d94fab719e779af2f2fe324417fb15ca6204298a5"
+    },
+    "localSvPath": {
+      "path": "data\\results\\sven-language-evaluation-20261001\\swedish.json",
+      "sha256": "8737d2392a61f5d8099dda086f212ee24fa0633f17c39436df9ddacae7038e69"
+    },
+    "modalEnPath": {
+      "path": "data\\results\\kev-modal-evaluation-20261001\\english.json",
+      "sha256": "faedfaf4d87d3fce2f203ed9542d9b55e4a684d42c12f49e4556da9e0bdc2280"
+    },
+    "modalSvPath": {
+      "path": "data\\results\\kev-modal-evaluation-20261001\\swedish.json",
+      "sha256": "66482842f1f832dac5851a4809075a4415bd61aa1fb42e4ba50486dc4569a870"
+    }
+  }
+}
