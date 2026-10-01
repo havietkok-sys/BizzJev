@@ -5,9 +5,12 @@ import { performance } from 'node:perf_hooks';
 import { execFileSync } from 'node:child_process';
 
 const args = process.argv.slice(2);
-const suiteArg = args.find(arg => !arg.startsWith('--'));
+const optionValue = name => { const index = args.indexOf(name); return index < 0 ? null : args[index + 1]; };
+const attemptId = optionValue('--attempt');
+const suiteArg = args.find((arg, index) => !arg.startsWith('--') && args[index - 1] !== '--attempt');
 const dryRun = args.includes('--dry-run');
-if (!suiteArg) throw new Error('Usage: node scripts/run-kev-final-holdout.mjs <suite-directory> [--dry-run]');
+if (!suiteArg) throw new Error('Usage: node scripts/run-kev-final-holdout.mjs <suite-directory> [--attempt <id>] [--dry-run]');
+if (attemptId && !/^[a-z0-9][a-z0-9._-]{0,63}$/i.test(attemptId)) throw new Error('Attempt ID must be 1-64 URL-safe characters');
 
 const root = process.cwd();
 const suiteDir = path.resolve(suiteArg);
@@ -21,14 +24,14 @@ const datasets = {
 const endpoint = `${(process.env.SYSTEMONE_URL || 'https://haviet-kok--kev-9b-api.modal.run').replace(/\/$/, '')}/v1/systemone`;
 const apiKey = process.env.SYSTEMONE_API_KEY || '';
 const rawDir = path.join(suiteDir, 'raw');
-const manifestPath = path.join(suiteDir, 'final-run-manifest.json');
-const outputPaths = { en: path.join(rawDir, 'final-holdout-en.jsonl'), sv: path.join(rawDir, 'final-holdout-sv.jsonl') };
+const manifestPath = path.join(suiteDir, attemptId ? `final-run-manifest-${attemptId}.json` : 'final-run-manifest.json');
+const outputPaths = Object.fromEntries(['en', 'sv'].map(language => [language, path.join(rawDir, attemptId ? `final-holdout-${attemptId}-${language}.jsonl` : `final-holdout-${language}.jsonl`)]));
 const sha256 = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 
 if (config.configVersion !== 'kev-gates-v2') throw new Error(`Unexpected config version: ${config.configVersion}`);
 if (split.finalHoldout.status !== 'UNTOUCHED — no calibrated-threshold metrics computed in Phase 0–2') throw new Error('Final holdout is not marked untouched');
 if (split.finalHoldout.ids.length !== 25 || new Set(split.finalHoldout.ids).size !== 25) throw new Error('Expected 25 unique final holdout IDs');
-if (!dryRun && [manifestPath, ...Object.values(outputPaths)].some(fs.existsSync)) throw new Error('Final run artifact already exists; refusing to rerun or overwrite the frozen holdout');
+if (!dryRun && [manifestPath, ...Object.values(outputPaths)].some(fs.existsSync)) throw new Error(`Final run artifact for attempt ${attemptId ?? 'initial'} already exists; refusing to overwrite it`);
 
 function expandedLabels(testCase) {
   const explicit = Object.fromEntries(testCase.expected.map(item => [item.gateId, item.label]));
@@ -52,7 +55,7 @@ for (const item of planned) {
 }
 
 if (dryRun) {
-  console.log(JSON.stringify({ dryRun: true, providerRequests: 0, endpoint, configVersion: config.configVersion, configSha256: sha256(configPath), cases: planned.length, languages: { en: 25, sv: 25 }, firstPayload: planned[0].payload }, null, 2));
+  console.log(JSON.stringify({ dryRun: true, attemptId: attemptId ?? 'initial', providerRequests: 0, endpoint, configVersion: config.configVersion, configSha256: sha256(configPath), cases: planned.length, languages: { en: 25, sv: 25 }, firstPayload: planned[0].payload }, null, 2));
   process.exit(0);
 }
 
@@ -117,6 +120,7 @@ for (let index = 0; index < planned.length; index++) {
 
 const manifest = {
   runType: 'untouched-final-holdout',
+  attemptId: attemptId ?? 'initial',
   startedAtUtc,
   completedAtUtc: new Date().toISOString(),
   elapsedWallMs: performance.now() - started,
