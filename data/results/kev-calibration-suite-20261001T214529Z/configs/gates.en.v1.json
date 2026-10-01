@@ -1,0 +1,236 @@
+{
+  "gateSetVersion": "v1",
+  "gates": [
+    {
+      "gateId": "billing_problem",
+      "category": "routing",
+      "businessGoal": "Route billing-related messages to the billing workflow so they reach agents who can resolve charges, invoices, refunds and payment errors.",
+      "semanticTarget": "The customer's message presents a problem about charges, invoicing, payments, refunds or price.",
+      "semanticInterior": "Unexpected or wrong charges; duplicated billing; unclear invoice amounts; refund requests and failed refunds; payment failures and retry problems; disputed price changes; fees the customer cannot understand; requests to correct a bill.",
+      "semanticBoundaries": "Exclude: pure contract/subscription term questions (start, renew, change, terminate), technical service failures with no billing angle, and general complaints about the company that do not mention money. A payment problem caused by a technical outage still counts if the message is about the payment.",
+      "falsePositiveConsequence": "Message routed to billing agents who cannot help, delaying resolution.",
+      "falseNegativeConsequence": "Billing problem lands with the wrong team or is answered generically.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "billing_workflow",
+      "actionLabel": "Route to billing workflow",
+      "instructions": "Is the customer presenting a problem about charges, invoices, payments, refunds or pricing - such as unexpected charges, billing errors, refund issues, payment failures, or disputed amounts? Include indirect but clear expressions. Exclude: questions about subscription terms (starting, changing, ending a subscription), technical service problems with no money aspect, and general dissatisfaction without a billing topic.",
+      "criteria": {
+        "true": "YES when the message expresses a billing, charge, invoice, payment, refund or pricing problem",
+        "false": "NO when no billing/money problem is expressed"
+      }
+    },
+    {
+      "gateId": "technical_problem",
+      "category": "routing",
+      "businessGoal": "Route technical/service-fault messages to technical support.",
+      "semanticTarget": "The customer reports a technical or service-quality problem with the product itself.",
+      "semanticInterior": "Internet/broadband outages or instability; slow speeds; WiFi problems; TV streaming failures; email or login problems caused by the service; dropped connections; equipment faults (router, box); repeated service interruptions; setup problems that do not work.",
+      "semanticBoundaries": "Exclude: billing for a working service, subscription-term requests (upgrade/downgrade/cancel), complaints about staff behavior with no service fault, and mentions of past problems that are now resolved unless a new/current fault is reported.",
+      "falsePositiveConsequence": "Non-technical issues sent to technical support, wasting specialist time.",
+      "falseNegativeConsequence": "Service faults not reaching technical support.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "technical_workflow",
+      "actionLabel": "Route to technical support",
+      "instructions": "Is the customer reporting a technical problem or service fault with the product itself - such as outages, unstable or slow internet, WiFi issues, streaming failures, equipment faults, or connection drops? Include current service-quality complaints. Exclude: billing topics, subscription-term requests, staff behavior, and problems the customer says are already resolved.",
+      "criteria": {
+        "true": "YES when a current or recurring technical/service fault is expressed",
+        "false": "NO when no technical/service fault is expressed"
+      }
+    },
+    {
+      "gateId": "contract_problem",
+      "category": "routing",
+      "businessGoal": "Route subscription/contract lifecycle messages to the contract team.",
+      "semanticTarget": "The customer raises an issue about subscription or contract terms and lifecycle.",
+      "semanticInterior": "Starting, upgrading, downgrading or cancelling a subscription; contract duration and renewal questions; unexpected contract changes; transfer of ownership or address; questions about what the agreement allows; problems modifying the subscription; order and installation of new services; documentation requests about the contract.",
+      "semanticBoundaries": "Exclude: price/charge disputes (billing) and service faults (technical). A cancellation request is both a contract topic and a high-value signal handled by its own dedicated gate; this gate still counts contract-lifecycle framing around it.",
+      "falsePositiveConsequence": "Wrong team handles the message.",
+      "falseNegativeConsequence": "Contract questions answered by unqualified staff.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "contract_workflow",
+      "actionLabel": "Route to contract/subscription team",
+      "instructions": "Is the customer raising a subscription or contract issue - such as starting, changing, renewing, transferring or ending a subscription, contract terms, unexpected contract modifications, or orders for new services? Exclude: charge/pricing disputes and technical service faults.",
+      "criteria": {
+        "true": "YES when a subscription/contract lifecycle or terms issue is expressed",
+        "false": "NO when no contract/subscription issue is expressed"
+      }
+    },
+    {
+      "gateId": "support_interaction_problem",
+      "category": "routing",
+      "businessGoal": "Identify messages that are themselves complaints about support interactions, so they reach interaction-quality handling.",
+      "semanticTarget": "The customer complains about how they were treated or handled by the company's support or staff.",
+      "semanticInterior": "Rude or unhelpful staff; being ignored or hung up on; endless transfers or loops; unanswered emails/cases; broken promises to call back; support giving wrong information; long waits with no response; dismissive treatment.",
+      "semanticBoundaries": "Exclude: complaints about the product/service itself without a staff-interaction angle, and pure process questions. Billing or technical problems count here only if the message also complains about how staff handled them.",
+      "falsePositiveConsequence": "Interaction complaints handled as ordinary tickets.",
+      "falseNegativeConsequence": "Service-recovery opportunities missed.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "support_interaction_workflow",
+      "actionLabel": "Route to interaction-quality handling",
+      "instructions": "Is the customer complaining about the treatment or handling by support or staff - e.g. rude or unhelpful responses, being ignored, transferred repeatedly, broken callbacks, wrong information, or unacceptable wait times? Exclude: complaints about the product or service itself with no staff-interaction angle.",
+      "criteria": {
+        "true": "YES when a complaint about support interaction quality is expressed",
+        "false": "NO when no interaction-quality complaint is expressed"
+      }
+    },
+    {
+      "gateId": "unresolved_issue",
+      "category": "context",
+      "businessGoal": "Detect that an issue has been raised before and remains unresolved, to prioritize and avoid re-litigating basics.",
+      "semanticTarget": "The customer communicates that their problem is still not solved after earlier contact.",
+      "semanticInterior": "Explicit 'still not fixed'; repeated contact about the same thing; reference to earlier tickets or promises; 'nobody has replied'; problem recurring after supposed repair; escalations of previously reported issues.",
+      "semanticBoundaries": "Exclude: first-time reports with no prior-contact framing, and resolved problems mentioned as background ('thanks, it works now') unless a new unresolved issue is raised. Do not count merely long-running subscriptions.",
+      "falsePositiveConsequence": "Cases incorrectly prioritized as escalations.",
+      "falseNegativeConsequence": "Frustrated repeat customers treated as new.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "priority_handling",
+      "actionLabel": "Prioritize as unresolved repeat issue",
+      "instructions": "Is the customer saying their issue is still unresolved after previous contact or attempts - e.g. 'still not fixed', repeated contact about the same problem, references to earlier tickets or promises, or no reply to earlier messages? Exclude first-contact reports with no prior-contact framing and problems the customer says are resolved.",
+      "criteria": {
+        "true": "YES when continued non-resolution after earlier contact is expressed",
+        "false": "NO when no prior-contact non-resolution is expressed"
+      }
+    },
+    {
+      "gateId": "recurring_problem",
+      "category": "context",
+      "businessGoal": "Feed trend analytics: problems that keep coming back.",
+      "semanticTarget": "The problem described has happened repeatedly, not just once.",
+      "semanticInterior": "'Again', 'third time this month', 'every week', intermittent faults returning; pattern language ('keeps happening', 'on and off for months'); repeated re-opening of the same fault.",
+      "semanticBoundaries": "Exclude: single incidents, and 'again' that refers only to contacting support while the problem itself is single-event. Frequency of payments/bills is not recurrence of a problem.",
+      "falsePositiveConsequence": "Trend analytics polluted by one-off cases.",
+      "falseNegativeConsequence": "Systemic problems invisible in trends.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "trend_analytics",
+      "actionLabel": "Include in recurring-problem trend analytics",
+      "instructions": "Does the message describe a problem that has occurred repeatedly or keeps returning - e.g. 'again', 'every week', 'keeps happening', 'on and off for months'? Exclude single incidents and 'again' that refers only to contacting support rather than the problem recurring.",
+      "criteria": {
+        "true": "YES when repetition/recurrence of the problem itself is expressed",
+        "false": "NO when the problem is presented as a single occurrence"
+      }
+    },
+    {
+      "gateId": "positive_support_experience",
+      "category": "context",
+      "businessGoal": "Capture positive feedback for recognition and success-metrics.",
+      "semanticTarget": "The customer expresses satisfaction, gratitude or praise.",
+      "semanticInterior": "Thanks; praise for staff or service; acknowledgment that a problem was solved well; compliments on speed, friendliness or competence; 'works great now'.",
+      "semanticBoundaries": "Exclude: politeness formulas with no actual praise ('thanks in advance' as a request opener), sarcasm, and neutral statements of fact. Mixed messages can be positive AND negative simultaneously.",
+      "falsePositiveConsequence": "Inflated satisfaction metrics.",
+      "falseNegativeConsequence": "Good work invisible; no recognition.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "positive_feedback_log",
+      "actionLabel": "Log positive feedback for recognition",
+      "instructions": "Does the customer express genuine satisfaction, gratitude or praise - thanks, compliments about staff, service or a well-solved problem? Exclude politeness formulas that open a request ('thanks in advance'), sarcasm, and neutral factual statements.",
+      "criteria": {
+        "true": "YES when genuine positive sentiment about service/support is expressed",
+        "false": "NO when no genuine positive sentiment is expressed"
+      }
+    },
+    {
+      "gateId": "negative_support_experience",
+      "category": "context",
+      "businessGoal": "Measure dissatisfaction for service-quality tracking.",
+      "semanticTarget": "The customer expresses dissatisfaction, frustration or anger.",
+      "semanticInterior": "Complaints that something is terrible/awful/unacceptable; frustration ('had enough', 'fed up'); anger; disappointment; expressions that the service or treatment is poor.",
+      "semanticBoundaries": "Exclude: neutral problem reports with no affect, and positive messages. Dissatisfaction alone is NOT churn risk - that is a different, stricter concept. Mixed messages can be positive AND negative simultaneously.",
+      "falsePositiveConsequence": "Dissatisfaction metrics inflated by neutral facts.",
+      "falseNegativeConsequence": "Unhappy customers invisible to quality tracking.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "negative_experience_log",
+      "actionLabel": "Include in dissatisfaction analytics",
+      "instructions": "Does the customer express dissatisfaction, frustration, disappointment or anger about the service, product or treatment - e.g. 'terrible', 'fed up', 'had enough', 'unacceptable'? Exclude neutral factual problem reports with no expressed affect.",
+      "criteria": {
+        "true": "YES when negative affect about the service is expressed",
+        "false": "NO when no negative affect is expressed"
+      }
+    },
+    {
+      "gateId": "competitor_consideration",
+      "category": "context",
+      "businessGoal": "Detect explicit competitor comparisons for retention intelligence.",
+      "semanticTarget": "The customer mentions or compares competitor offerings.",
+      "semanticInterior": "Naming competitor offers/prices; comparing features or deals; saying another provider seems better/cheaper; asking whether we can match a competitor; quotes from competitor marketing.",
+      "semanticBoundaries": "Exclude: mentions of other companies that are not telecom competitors (banks, shops), and generic 'better options out there' with no competitor framing. Mentions of our own products do not count.",
+      "falsePositiveConsequence": "Retention intelligence polluted.",
+      "falseNegativeConsequence": "Competitive switching signals missed.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "competitive_intelligence",
+      "actionLabel": "Include in competitor-consideration analytics",
+      "instructions": "Does the customer mention or compare a competing provider's offerings - naming competitor deals, prices or features, saying another provider seems better or cheaper, or asking us to match one? Exclude non-telecom companies and generic dissatisfaction with no competitor framing.",
+      "criteria": {
+        "true": "YES when a competitor's offering is mentioned or compared",
+        "false": "NO when no competitor offering is mentioned"
+      }
+    },
+    {
+      "gateId": "churn_risk",
+      "category": "business_signal",
+      "businessGoal": "Catch as many genuine churn-risk customers as practical; false negatives are expensive, some uncertain candidates are acceptable (catch-most).",
+      "semanticTarget": "The customer's relationship is at risk: they show real indicators of possibly leaving.",
+      "semanticInterior": "Considering leaving or switching; questioning whether to remain a customer; comparing or examining competitor offers with intent interest; conditional intention to leave if problems continue ('if this happens again, I'm switching'); non-renewal thinking; asking what happens at contract end with leaving overtones; explicit evaluation of alternatives; 'how do I keep my number if I move' style portability questions; stating the relationship is at risk.",
+      "semanticBoundaries": "Exclude: generic dissatisfaction alone ('this is terrible' with no leaving overtones), actual explicit requests to cancel now (a distinct, stronger concept), and resolved past churn ('I almost left but stayed'). Conditional/future/considering forms are INSIDE this concept - that is the point of catch-most.",
+      "falsePositiveConsequence": "Extra retention candidates reviewed - acceptable per business profile.",
+      "falseNegativeConsequence": "Saveable customers lost - expensive.",
+      "policyProfile": "catch_most",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.3,
+      "acceptThreshold": 0.7,
+      "actionOnYes": "retention_review",
+      "actionLabel": "Retention workflow (human review before retention action)",
+      "instructions": "Does the message indicate the customer relationship is at risk - considering leaving or switching providers, questioning whether to remain, examining competitor offers with interest, a conditional intention to leave if problems continue, non-renewal thinking, or portability questions with leaving overtones? Include indirect and conditional expressions. Exclude: generic dissatisfaction with no leaving overtones, explicit requests to cancel right now, and past churn the customer says is resolved.",
+      "criteria": {
+        "true": "YES when any real indicator of possibly leaving the company is expressed, including conditional or early-stage ones",
+        "false": "NO when no indicator of possibly leaving is expressed"
+      }
+    },
+    {
+      "gateId": "explicit_cancellation_intent",
+      "category": "business_signal",
+      "businessGoal": "Detect actual cancellation attempts while strongly separating them from dissatisfaction and future/conditional churn (strong-boundary). Making cancellation must stay easy; human review is the failsafe.",
+      "semanticTarget": "The customer is actually asking to terminate/end/cancel the service or subscription, now.",
+      "semanticInterior": "Direct requests: cancel/terminate/end/close my subscription or account; 'I want to quit'; 'stop the service'; 'end my contract'; 'I do not want to continue after this month' as a present instruction; asking for the cancellation process or confirmation that it is done; cancellations framed as of a specific date.",
+      "semanticBoundaries": "Exclude: considering/thinking about switching (churn risk), conditional future intent ('if this happens again, I will cancel'), competitor admiration, anger without a cancellation request, questions about contract end dates with no instruction to cancel, and past cancellations prevented or reversed ('I almost cancelled but stayed'). Negated cancellation ('I am NOT cancelling') is NO.",
+      "falsePositiveConsequence": "Cancellation processed for someone who did not ask - serious customer-harm and possibly regulatory problem.",
+      "falseNegativeConsequence": "Customer who wants to cancel is not processed - also serious; hence human review as failsafe for uncertain signals.",
+      "policyProfile": "strong_boundary",
+      "promptVersion": "v1",
+      "reviewThreshold": 0.45,
+      "acceptThreshold": 0.85,
+      "actionOnYes": "cancellation_process",
+      "actionLabel": "Process cancellation request (human review unless clearly explicit)",
+      "instructions": "Is the customer actually requesting to cancel, terminate, end or close their subscription or service - a present instruction, including a stated end date, a request for the cancellation process, or confirmation that a cancellation should happen? Do not require literal keywords; recognize paraphrases. Exclude: merely considering or thinking about leaving, conditional future intent ('if this happens again, I will cancel'), competitor comparisons, anger without a cancellation request, questions about when a contract ends with no instruction to cancel, explicit negations ('I am not cancelling'), and past almost-cancellations the customer reversed.",
+      "criteria": {
+        "true": "YES when an actual, present request or instruction to end the subscription is expressed",
+        "false": "NO for consideration, conditional future intent, or anything short of an actual cancellation request"
+      }
+    }
+  ]
+}

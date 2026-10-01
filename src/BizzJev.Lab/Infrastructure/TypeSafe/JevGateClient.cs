@@ -13,18 +13,19 @@ public sealed class JevGateClient
 {
     private readonly HttpClient _client;
     private readonly string _model;
+    private readonly Uri _endpoint;
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
-    public JevGateClient(string apiKey, string model, int timeoutSeconds)
-        : this(new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(timeoutSeconds) }, model)
-    {
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-    }
+    public JevGateClient(string apiKey, string model, int timeoutSeconds, string baseUrl = "https://api.typesafe.ai")
+        : this(new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(timeoutSeconds) }, model, baseUrl, apiKey) { }
 
-    internal JevGateClient(HttpClient client, string model)
+    internal JevGateClient(HttpClient client, string model, string baseUrl = "https://api.typesafe.ai", string? apiKey = null)
     {
         _client = client;
         _model = model;
+        _endpoint = new Uri($"{baseUrl.TrimEnd('/')}/v1/systemone", UriKind.Absolute);
+        if (!string.IsNullOrWhiteSpace(apiKey))
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
     public async Task<AnalysisOutcome> AnalyzeAsync(
@@ -52,7 +53,7 @@ public sealed class JevGateClient
             var timer = Stopwatch.StartNew();
             try
             {
-                using var response = await _client.PostAsync("https://api.typesafe.ai/v1/systemone", content, ct);
+                using var response = await _client.PostAsync(_endpoint, content, ct);
                 var body = await response.Content.ReadAsStringAsync(ct);
                 timer.Stop();
                 if ((int)response.StatusCode is 408 or 429 or >= 500 && attempt < maxAttempts)

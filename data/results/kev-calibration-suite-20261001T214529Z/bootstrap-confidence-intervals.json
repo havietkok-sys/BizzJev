@@ -1,0 +1,176 @@
+{
+  "method": "2000 bootstrap samples over case ID; all gates for a sampled case stay grouped",
+  "seed": 20261002,
+  "tracks": {
+    "A-jev-drop-in": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6829988193624558,
+          "upper95": 0.9475524475524474
+        },
+        "macroRocAuc": {
+          "lower95": 0.9690476190476189,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9411764705882353,
+          "upper95": 0.9887218045112782
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.680157721066812,
+          "upper95": 0.9454545454545453
+        },
+        "macroRocAuc": {
+          "lower95": 0.9847142857142857,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9363295880149812,
+          "upper95": 0.985239852398524
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9725592216085625,
+        "upper95": 0.9896964265082989
+      }
+    },
+    "A-kev-drop-in": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6313131313131313,
+          "upper95": 0.8604312354312355
+        },
+        "macroRocAuc": {
+          "lower95": 0.9597257606826985,
+          "upper95": 0.9989711934156378
+        },
+        "gateAccuracy": {
+          "lower95": 0.9157509157509157,
+          "upper95": 0.9774436090225563
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.5577532983950095,
+          "upper95": 0.7939605848696757
+        },
+        "macroRocAuc": {
+          "lower95": 0.9490338400112835,
+          "upper95": 0.9953125
+        },
+        "gateAccuracy": {
+          "lower95": 0.8892988929889298,
+          "upper95": 0.9657794676806084
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9137158262707991,
+        "upper95": 0.9574531801739603
+      }
+    },
+    "B-jev-calibrated": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6621212121212121,
+          "upper95": 0.9423227490213137
+        },
+        "macroRocAuc": {
+          "lower95": 0.9684657499363383,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9323308270676691,
+          "upper95": 0.9814126394052045
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.6279942279942281,
+          "upper95": 0.9175914994096813
+        },
+        "macroRocAuc": {
+          "lower95": 0.9843137254901961,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9194139194139194,
+          "upper95": 0.9776951672862454
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9724084933132752,
+        "upper95": 0.9894631755225208
+      }
+    },
+    "B-kev-calibrated": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6651833015469379,
+          "upper95": 0.9242416080651373
+        },
+        "macroRocAuc": {
+          "lower95": 0.9626190476190477,
+          "upper95": 0.9989473684210527
+        },
+        "gateAccuracy": {
+          "lower95": 0.9194139194139194,
+          "upper95": 0.9737827715355806
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.6173160173160173,
+          "upper95": 0.9383444837990292
+        },
+        "macroRocAuc": {
+          "lower95": 0.9469670537007997,
+          "upper95": 0.9951503673094582
+        },
+        "gateAccuracy": {
+          "lower95": 0.9067164179104478,
+          "upper95": 0.9813432835820896
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9139069499342615,
+        "upper95": 0.9579029526227459
+      }
+    },
+    "C-kev-optimized": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6671522921522922,
+          "upper95": 0.9230196703880914
+        },
+        "macroRocAuc": {
+          "lower95": 0.9613205609544283,
+          "upper95": 0.999
+        },
+        "gateAccuracy": {
+          "lower95": 0.9185185185185185,
+          "upper95": 0.9731800766283525
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.625068870523416,
+          "upper95": 0.9433066933066933
+        },
+        "macroRocAuc": {
+          "lower95": 0.9489729225023342,
+          "upper95": 0.9954626478690649
+        },
+        "gateAccuracy": {
+          "lower95": 0.9047619047619048,
+          "upper95": 0.9813432835820896
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9134421542562718,
+        "upper95": 0.9564281910096238
+      }
+    }
+  }
+}

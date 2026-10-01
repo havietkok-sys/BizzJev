@@ -30,12 +30,12 @@ Write-Host "  .NET SDK $sdkVersion found." -ForegroundColor Green
 
 # --- 2. Check API key ---
 $userSecrets = dotnet user-secrets list --project $Project 2>$null
-$hasKey = $userSecrets -match "TYPESAFE_API_KEY"
+$hasKey = -not [string]::IsNullOrWhiteSpace($env:SYSTEMONE_API_KEY) -or $userSecrets -match "TYPESAFE_API_KEY"
 if (-not $hasKey) {
     Write-Host ""
     Write-Host "  API key not configured." -ForegroundColor Red
     Write-Host ""
-    Write-Host "  The demo needs a TypeSafe/Jev API key to run semantic analysis."
+    Write-Host "  The demo needs SYSTEMONE_API_KEY, or a legacy TYPESAFE_API_KEY user secret, to run semantic analysis."
     Write-Host "  Get a development key at: https://console.typesafe.ai/"
     Write-Host ""
     $answer = Read-Host "  Configure an API key now? (Y/n)"
@@ -43,7 +43,7 @@ if (-not $hasKey) {
         & (Join-Path $PSScriptRoot "set-api-key.ps1")
         # re-check
         $userSecrets = dotnet user-secrets list --project $Project 2>$null
-        $hasKey = $userSecrets -match "TYPESAFE_API_KEY"
+        $hasKey = -not [string]::IsNullOrWhiteSpace($env:SYSTEMONE_API_KEY) -or $userSecrets -match "TYPESAFE_API_KEY"
         if (-not $hasKey) {
             Write-Host "  API key still not configured. Cannot continue." -ForegroundColor Red
             exit 1

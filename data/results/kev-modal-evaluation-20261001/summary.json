@@ -1,0 +1,47 @@
+{
+  "generatedAtUtc": "2026-10-01T21:16:11.8484216Z",
+  "provider": "Kev-9B v2 on Modal",
+  "systemOneUrl": "https://haviet-kok--kev-9b-api.modal.run",
+  "requestContract": "TypeSafe-compatible /v1/systemone",
+  "totalCases": 200,
+  "totalOutboundAttempts": 200,
+  "totalApiFailures": 0,
+  "english": {
+    "runId": "20261001-211421499",
+    "language": "en",
+    "model": "kev-latest",
+    "cases": 100,
+    "outboundAttempts": 100,
+    "apiFailures": 0,
+    "macroF1": 0.7663,
+    "microF1": 0.8087,
+    "judgmentAccuracy": 0.9262,
+    "latencyMs": {
+      "average": 452.1,
+      "p50": 416.3,
+      "p95": 443.8,
+      "max": 3346.8
+    },
+    "weakestRoutingGate": "contract_problem",
+    "sha256": "faedfaf4d87d3fce2f203ed9542d9b55e4a684d42c12f49e4556da9e0bdc2280"
+  },
+  "swedish": {
+    "runId": "20261001-211513955",
+    "language": "sv",
+    "model": "kev-latest",
+    "cases": 100,
+    "outboundAttempts": 100,
+    "apiFailures": 0,
+    "macroF1": 0.7639,
+    "microF1": 0.794,
+    "judgmentAccuracy": 0.9224,
+    "latencyMs": {
+      "average": 438.2,
+      "p50": 437.7,
+      "p95": 446.7,
+      "max": 450.6
+    },
+    "weakestRoutingGate": "technical_problem",
+    "sha256": "66482842f1f832dac5851a4809075a4415bd61aa1fb42e4ba50486dc4569a870"
+  }
+}

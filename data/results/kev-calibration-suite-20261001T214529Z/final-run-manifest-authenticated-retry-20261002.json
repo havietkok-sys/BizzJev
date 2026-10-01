@@ -1,0 +1,33 @@
+{
+  "runType": "untouched-final-holdout",
+  "attemptId": "authenticated-retry-20261002",
+  "startedAtUtc": "2026-10-01T22:32:33.667Z",
+  "completedAtUtc": "2026-10-01T22:33:55.909Z",
+  "elapsedWallMs": 82236.7076,
+  "endpoint": "https://haviet-kok--kev-9b-api.modal.run/v1/systemone",
+  "model": "jaredpalmer/kev-9b",
+  "modelAlias": "kev-latest",
+  "configVersion": "kev-gates-v2",
+  "configSha256": "1a18b454db183ea174b500f8463d3910fdc188bec3e75d695cd85e6f22c19258",
+  "gitCommit": "3657506578c70a276f21129abeeea46612617440",
+  "splitManifestSha256": "bc805478fbfc661331e8fd654a71efd7872cd77554d3d10448d6d7efb74ff3fb",
+  "providerRequests": 50,
+  "successes": 50,
+  "failures": 0,
+  "retries": 0,
+  "languages": {
+    "en": 25,
+    "sv": 25
+  },
+  "apiKeyStored": false,
+  "rawFiles": {
+    "en": {
+      "path": "data/results/kev-calibration-suite-20261001T214529Z/raw/final-holdout-authenticated-retry-20261002-en.jsonl",
+      "sha256": "6e4ed86f789cd8e0333d50bde9c14b059cd8bd2a5b75e491129581dddb513290"
+    },
+    "sv": {
+      "path": "data/results/kev-calibration-suite-20261001T214529Z/raw/final-holdout-authenticated-retry-20261002-sv.jsonl",
+      "sha256": "6fea68037b07ad0c3347b17474658343c450bc93e50d4bf7150cc8bd06279e5b"
+    }
+  }
+}

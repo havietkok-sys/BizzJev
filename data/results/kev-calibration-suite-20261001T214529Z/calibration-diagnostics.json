@@ -1,0 +1,281 @@
+{
+  "createdAtUtc": "2026-10-01T22:03:42.250Z",
+  "scope": "development split only",
+  "diagnosisLegend": {
+    "A": "Good separation; current threshold is the main issue",
+    "B": "Good ordering with probability-scale/calibration issue",
+    "C": "Semantic separation issue; threshold tuning has limited value",
+    "D": "Cross-language inconsistency"
+  },
+  "gates": [
+    {
+      "gateId": "billing_problem",
+      "primaryDiagnosis": "OK",
+      "flags": [],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9827935222672064,
+      "meanPrAuc": 0.9563076013999139,
+      "meanBrier": 0.05135352697183099,
+      "currentCombinedF1": 0.8493150684931505,
+      "calibratedDevelopmentF1": 0.8809523809523809,
+      "thresholdGain": 0.031637312459230404,
+      "currentThreshold": 0.75,
+      "combinedF1Threshold": 0.3818,
+      "language": {
+        "count": 71,
+        "correlation": 0.9674088498603259,
+        "meanAbsoluteDelta": 0.056559154929577464,
+        "meanEn": 0.3211985915492957,
+        "meanSv": 0.31285633802816903,
+        "medianEn": 0.0938,
+        "medianSv": 0.0782
+      }
+    },
+    {
+      "gateId": "technical_problem",
+      "primaryDiagnosis": "A",
+      "flags": [
+        "A"
+      ],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9755989352262644,
+      "meanPrAuc": 0.9545438018667844,
+      "meanBrier": 0.07553323215277778,
+      "currentCombinedF1": 0.8222222222222223,
+      "calibratedDevelopmentF1": 0.8749999999999999,
+      "thresholdGain": 0.05277777777777759,
+      "currentThreshold": 0.75,
+      "combinedF1Threshold": 0.5715,
+      "language": {
+        "count": 72,
+        "correlation": 0.9504196046911007,
+        "meanAbsoluteDelta": 0.07713194444444443,
+        "meanEn": 0.4196652777777778,
+        "meanSv": 0.39199999999999996,
+        "medianEn": 0.21610000000000001,
+        "medianSv": 0.21639999999999998
+      }
+    },
+    {
+      "gateId": "contract_problem",
+      "primaryDiagnosis": "B",
+      "flags": [
+        "B"
+      ],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9262626262626263,
+      "meanPrAuc": 0.8352232305904337,
+      "meanBrier": 0.10628257219178083,
+      "currentCombinedF1": 0.7575757575757577,
+      "calibratedDevelopmentF1": 0.7941176470588235,
+      "thresholdGain": 0.036541889483065804,
+      "currentThreshold": 0.75,
+      "combinedF1Threshold": 0.7287,
+      "language": {
+        "count": 73,
+        "correlation": 0.9056887846532486,
+        "meanAbsoluteDelta": 0.09324931506849314,
+        "meanEn": 0.36271780821917815,
+        "meanSv": 0.34838356164383577,
+        "medianEn": 0.222,
+        "medianSv": 0.2197
+      }
+    },
+    {
+      "gateId": "support_interaction_problem",
+      "primaryDiagnosis": "OK",
+      "flags": [],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9974747474747474,
+      "meanPrAuc": 0.9843434343434343,
+      "meanBrier": 0.06976938519999998,
+      "currentCombinedF1": 0.918918918918919,
+      "calibratedDevelopmentF1": 0.9444444444444444,
+      "thresholdGain": 0.02552552552552545,
+      "currentThreshold": 0.75,
+      "combinedF1Threshold": 0.7602,
+      "language": {
+        "count": 75,
+        "correlation": 0.9332996841742296,
+        "meanAbsoluteDelta": 0.079056,
+        "meanEn": 0.3087466666666666,
+        "meanSv": 0.29264533333333326,
+        "medianEn": 0.2145,
+        "medianSv": 0.2153
+      }
+    },
+    {
+      "gateId": "unresolved_issue",
+      "primaryDiagnosis": "OK",
+      "flags": [],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9602683178534572,
+      "meanPrAuc": 0.9406118585040234,
+      "meanBrier": 0.08088323081081078,
+      "currentCombinedF1": 0.8571428571428571,
+      "calibratedDevelopmentF1": 0.8985507246376812,
+      "thresholdGain": 0.04140786749482406,
+      "currentThreshold": 0.8,
+      "combinedF1Threshold": 0.6646,
+      "language": {
+        "count": 74,
+        "correlation": 0.914873674148844,
+        "meanAbsoluteDelta": 0.09436486486486484,
+        "meanEn": 0.38819864864864856,
+        "meanSv": 0.3507040540540542,
+        "medianEn": 0.26145,
+        "medianSv": 0.21575
+      }
+    },
+    {
+      "gateId": "recurring_problem",
+      "primaryDiagnosis": "B",
+      "flags": [
+        "B"
+      ],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9670698924731183,
+      "meanPrAuc": 0.8594408819737768,
+      "meanBrier": 0.10701133074324325,
+      "currentCombinedF1": 0.7586206896551724,
+      "calibratedDevelopmentF1": 0.761904761904762,
+      "thresholdGain": 0.003284072249589598,
+      "currentThreshold": 0.8,
+      "combinedF1Threshold": 0.7099,
+      "language": {
+        "count": 74,
+        "correlation": 0.9749075749269915,
+        "meanAbsoluteDelta": 0.10424999999999998,
+        "meanEn": 0.3252702702702702,
+        "meanSv": 0.37630135135135145,
+        "medianEn": 0.096,
+        "medianSv": 0.22644999999999998
+      }
+    },
+    {
+      "gateId": "positive_support_experience",
+      "primaryDiagnosis": "A",
+      "flags": [
+        "A"
+      ],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9920634920634921,
+      "meanPrAuc": 0.9502706783956784,
+      "meanBrier": 0.028942976066666667,
+      "currentCombinedF1": 0.5294117647058825,
+      "calibratedDevelopmentF1": 0.888888888888889,
+      "thresholdGain": 0.3594771241830065,
+      "currentThreshold": 0.8,
+      "combinedF1Threshold": 0.6783,
+      "language": {
+        "count": 75,
+        "correlation": 0.9380517416890586,
+        "meanAbsoluteDelta": 0.03456666666666666,
+        "meanEn": 0.15722133333333338,
+        "meanSv": 0.163868,
+        "medianEn": 0.0238,
+        "medianSv": 0.0293
+      }
+    },
+    {
+      "gateId": "negative_support_experience",
+      "primaryDiagnosis": "B",
+      "flags": [
+        "B"
+      ],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9245283018867925,
+      "meanPrAuc": 0.7774612698267995,
+      "meanBrier": 0.1851478723943662,
+      "currentCombinedF1": 0.7532467532467532,
+      "calibratedDevelopmentF1": 0.7777777777777778,
+      "thresholdGain": 0.024531024531024626,
+      "currentThreshold": 0.8,
+      "combinedF1Threshold": 0.8194999999999999,
+      "language": {
+        "count": 71,
+        "correlation": 0.9103902428318755,
+        "meanAbsoluteDelta": 0.1020901408450704,
+        "meanEn": 0.5453661971830985,
+        "meanSv": 0.4799577464788731,
+        "medianEn": 0.5959,
+        "medianSv": 0.4275
+      }
+    },
+    {
+      "gateId": "competitor_consideration",
+      "primaryDiagnosis": "OK",
+      "flags": [],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9991452991452991,
+      "meanPrAuc": 0.9944444444444445,
+      "meanBrier": 0.015386541756756755,
+      "currentCombinedF1": 0.9411764705882353,
+      "calibratedDevelopmentF1": 0.972972972972973,
+      "thresholdGain": 0.031796502384737746,
+      "currentThreshold": 0.8,
+      "combinedF1Threshold": 0.604,
+      "language": {
+        "count": 74,
+        "correlation": 0.9463331102487692,
+        "meanAbsoluteDelta": 0.04034864864864865,
+        "meanEn": 0.1571513513513513,
+        "meanSv": 0.1581486486486486,
+        "medianEn": 0.037000000000000005,
+        "medianSv": 0.02215
+      }
+    },
+    {
+      "gateId": "churn_risk",
+      "primaryDiagnosis": "D",
+      "flags": [
+        "A",
+        "B",
+        "D"
+      ],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9768518518518519,
+      "meanPrAuc": 0.9320550932574623,
+      "meanBrier": 0.19519157955882355,
+      "currentCombinedF1": 0.782608695652174,
+      "calibratedDevelopmentF1": 0.8852459016393442,
+      "thresholdGain": 0.1026372059871703,
+      "currentThreshold": 0.7,
+      "combinedF1Threshold": 0.77245,
+      "language": {
+        "count": 68,
+        "correlation": 0.8316583483510064,
+        "meanAbsoluteDelta": 0.1202529411764706,
+        "meanEn": 0.5734397058823529,
+        "meanSv": 0.5045808823529411,
+        "medianEn": 0.5871999999999999,
+        "medianSv": 0.4293
+      }
+    },
+    {
+      "gateId": "explicit_cancellation_intent",
+      "primaryDiagnosis": "A",
+      "flags": [
+        "A"
+      ],
+      "wordingExperimentCandidate": false,
+      "meanRocAuc": 0.9884057971014493,
+      "meanPrAuc": 0.8314285714285714,
+      "meanBrier": 0.03819290304054054,
+      "currentCombinedF1": 0.4285714285714285,
+      "calibratedDevelopmentF1": 0.8333333333333333,
+      "thresholdGain": 0.40476190476190477,
+      "currentThreshold": 0.85,
+      "combinedF1Threshold": 0.4882,
+      "language": {
+        "count": 74,
+        "correlation": 0.8905341988056809,
+        "meanAbsoluteDelta": 0.06696891891891893,
+        "meanEn": 0.1770567567567568,
+        "meanSv": 0.17559864864864863,
+        "medianEn": 0.1036,
+        "medianSv": 0.10325
+      }
+    }
+  ]
+}

@@ -31,22 +31,22 @@ public sealed class DecisionPipelineCallOutcome
 /// run in parallel; no automatic retries (a retry would be a new, separately-authorized attempt).
 public sealed class DecisionPipelineClient
 {
-    private const string Endpoint = "https://api.typesafe.ai/v1/systemone";
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     private readonly HttpClient _client;
     private readonly string _model;
+    private readonly Uri _endpoint;
 
-    public DecisionPipelineClient(string apiKey, string model, int timeoutSeconds)
-        : this(new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(timeoutSeconds) }, model)
-    {
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-    }
+    public DecisionPipelineClient(string apiKey, string model, int timeoutSeconds, string baseUrl = "https://api.typesafe.ai")
+        : this(new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(timeoutSeconds) }, model, baseUrl, apiKey) { }
 
-    internal DecisionPipelineClient(HttpClient client, string model)
+    internal DecisionPipelineClient(HttpClient client, string model, string baseUrl = "https://api.typesafe.ai", string? apiKey = null)
     {
         _client = client;
         _model = model;
+        _endpoint = new Uri($"{baseUrl.TrimEnd('/')}/v1/systemone", UriKind.Absolute);
+        if (!string.IsNullOrWhiteSpace(apiKey))
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
     }
 
     /// Structural blank-input validation only (whitespace inspection is allowed solely for this);
@@ -81,7 +81,7 @@ public sealed class DecisionPipelineClient
         string? body = null;
         try
         {
-            using var response = await _client.PostAsync(Endpoint, content, ct);
+            using var response = await _client.PostAsync(_endpoint, content, ct);
             body = await response.Content.ReadAsStringAsync(ct);
             timer.Stop();
             ct.ThrowIfCancellationRequested(); // cancelled mid-flight: not a usable result

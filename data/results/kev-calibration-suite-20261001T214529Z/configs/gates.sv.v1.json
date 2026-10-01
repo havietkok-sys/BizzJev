@@ -1,0 +1,236 @@
+{
+  "gateSetVersion": "v1-sv",
+  "gates": [
+    {
+      "gateId": "billing_problem",
+      "category": "routing",
+      "businessGoal": "Skicka betalningsrelaterade meddelanden till fakturaflödet så att rätt handläggare kan lösa debitering, fakturor, återbetalningar och betalningsfel.",
+      "semanticTarget": "Kundens meddelande beskriver ett problem med avgifter, fakturering, betalningar, återbetalningar eller pris.",
+      "semanticInterior": "Oväntade eller felaktiga avgifter; dubbel debitering; oklara fakturabelopp; begäran om eller utebliven återbetalning; misslyckade betalningar; omtvistade prisändringar; obegripliga avgifter; begäran om fakturarättelse.",
+      "semanticBoundaries": "Uteslut rena frågor om avtals- eller abonnemangsvillkor, tekniska fel utan betalningsaspekt och allmänna klagomål utan ekonomisk koppling. Ett betalningsproblem som orsakats av ett tekniskt fel räknas om meddelandet gäller betalningen.",
+      "falsePositiveConsequence": "Meddelandet hamnar hos fakturahandläggare som inte kan hjälpa och lösningen fördröjs.",
+      "falseNegativeConsequence": "Betalningsproblemet hamnar hos fel team eller får ett allmänt svar.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "billing_workflow",
+      "actionLabel": "Skicka till fakturaflödet",
+      "instructions": "Tar kunden upp ett problem med debitering, fakturor, betalningar, återbetalningar eller priser, till exempel oväntade avgifter, fakturafel, utebliven återbetalning, misslyckad betalning eller ett belopp som ifrågasätts? Ta med indirekta men tydliga uttryck. Uteslut frågor om abonnemangsvillkor (att starta, ändra eller avsluta ett abonnemang), tekniska tjänstefel utan ekonomisk aspekt och allmänt missnöje utan koppling till betalning.",
+      "criteria": {
+        "true": "JA när meddelandet uttrycker ett problem med debitering, avgifter, faktura, betalning, återbetalning eller pris.",
+        "false": "NEJ när inget problem med betalning eller pengar uttrycks."
+      }
+    },
+    {
+      "gateId": "technical_problem",
+      "category": "routing",
+      "businessGoal": "Skicka meddelanden om tekniska fel eller tjänstefel till teknisk support.",
+      "semanticTarget": "Kunden rapporterar ett tekniskt problem eller ett kvalitetsproblem med själva tjänsten.",
+      "semanticInterior": "Avbrott eller instabilitet i internet eller bredband; låg hastighet; wifi-problem; tv- eller strömningsfel; e-post- eller inloggningsproblem orsakade av tjänsten; avbrutna anslutningar; fel på router eller box; återkommande avbrott; installation som inte fungerar.",
+      "semanticBoundaries": "Uteslut fakturering för en fungerande tjänst, önskemål om att ändra eller avsluta abonnemang, klagomål på personal utan tjänstefel och gamla problem som nu är lösta om inget nytt eller aktuellt fel rapporteras.",
+      "falsePositiveConsequence": "Andra ärenden skickas till teknisk support och tar specialisttid.",
+      "falseNegativeConsequence": "Tjänstefel når inte teknisk support.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "technical_workflow",
+      "actionLabel": "Skicka till teknisk support",
+      "instructions": "Rapporterar kunden ett tekniskt problem eller ett fel i själva tjänsten, till exempel avbrott, instabilt eller långsamt internet, wifi-problem, strömning som inte fungerar, utrustningsfel eller avbrutna anslutningar? Ta med aktuella klagomål på tjänstens kvalitet. Uteslut fakturafrågor, önskemål om abonnemangsvillkor, personalens bemötande och problem som kunden säger redan är lösta.",
+      "criteria": {
+        "true": "JA när ett aktuellt eller återkommande tekniskt fel eller tjänstefel uttrycks.",
+        "false": "NEJ när inget tekniskt fel eller tjänstefel uttrycks."
+      }
+    },
+    {
+      "gateId": "contract_problem",
+      "category": "routing",
+      "businessGoal": "Skicka frågor om abonnemangets eller avtalets livscykel till avtalsteamet.",
+      "semanticTarget": "Kunden tar upp villkor eller ändringar som rör abonnemang eller avtal.",
+      "semanticInterior": "Starta, uppgradera, nedgradera eller säga upp abonnemang; bindningstid och förnyelse; oväntade avtalsändringar; överlåtelse eller adressändring; frågor om vad avtalet tillåter; problem med att ändra abonnemang; beställning och installation av nya tjänster; begäran om avtalsdokument.",
+      "semanticBoundaries": "Uteslut tvister om pris eller avgifter och tekniska fel. En uppsägning är både en avtalsfråga och en egen viktig signal; den här gaten fångar också avtalsaspekten.",
+      "falsePositiveConsequence": "Fel team hanterar meddelandet.",
+      "falseNegativeConsequence": "Avtalsfrågor besvaras av personal utan rätt kunskap.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "contract_workflow",
+      "actionLabel": "Skicka till avtals- och abonnemangsteamet",
+      "instructions": "Tar kunden upp en fråga eller ett problem om abonnemang eller avtal, till exempel att starta, ändra, förnya, överlåta eller avsluta ett abonnemang, avtalsvillkor, oväntade avtalsändringar eller beställning av nya tjänster? Uteslut tvister om debitering eller pris och tekniska tjänstefel.",
+      "criteria": {
+        "true": "JA när en fråga om abonnemangets eller avtalets livscykel eller villkor uttrycks.",
+        "false": "NEJ när ingen fråga om avtal eller abonnemang uttrycks."
+      }
+    },
+    {
+      "gateId": "support_interaction_problem",
+      "category": "routing",
+      "businessGoal": "Identifiera klagomål på kontakten med supporten så att bemötandet kan följas upp.",
+      "semanticTarget": "Kunden klagar på hur företagets support eller personal har bemött eller hanterat ärendet.",
+      "semanticInterior": "Otrevlig eller ohjälpsam personal; att bli ignorerad eller bortkopplad; upprepade vidarekopplingar; obesvarade mejl eller ärenden; uteblivna återuppringningar; felaktig information; långa väntetider; avfärdande bemötande.",
+      "semanticBoundaries": "Uteslut klagomål på produkten eller tjänsten utan koppling till personalen samt rena processfrågor. Betalnings- eller teknikproblem räknas här bara om kunden också klagar på hanteringen.",
+      "falsePositiveConsequence": "Klagomål på bemötandet hanteras som vanliga ärenden.",
+      "falseNegativeConsequence": "Chansen att reparera kundrelationen missas.",
+      "policyProfile": "balanced_routing",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.35,
+      "acceptThreshold": 0.75,
+      "actionOnYes": "support_interaction_workflow",
+      "actionLabel": "Skicka till uppföljning av bemötande",
+      "instructions": "Klagar kunden på hur support eller personal har bemött eller hanterat ärendet, till exempel otrevliga eller ohjälpsamma svar, att bli ignorerad, upprepade vidarekopplingar, uteblivna återuppringningar, felaktig information eller orimliga väntetider? Uteslut klagomål på själva produkten eller tjänsten utan koppling till kontakten med personalen.",
+      "criteria": {
+        "true": "JA när ett klagomål på kvaliteten i kontakten med support eller personal uttrycks.",
+        "false": "NEJ när inget klagomål på kontakten med support eller personal uttrycks."
+      }
+    },
+    {
+      "gateId": "unresolved_issue",
+      "category": "context",
+      "businessGoal": "Upptäck ärenden som tagits upp tidigare men ännu inte lösts, så att de prioriteras och kunden slipper börja om.",
+      "semanticTarget": "Kunden säger att problemet fortfarande är olöst efter tidigare kontakt.",
+      "semanticInterior": "Uttryckligt \"fortfarande inte löst\"; upprepad kontakt om samma sak; hänvisning till tidigare ärenden eller löften; \"ingen har svarat\"; problem som återkommer efter en påstådd åtgärd; eskalering av redan rapporterade problem.",
+      "semanticBoundaries": "Uteslut första anmälan utan tidigare kontakt och lösta problem som nämns som bakgrund om inget nytt olöst ärende tas upp. Ett långvarigt abonnemang räcker inte.",
+      "falsePositiveConsequence": "Ärenden prioriteras felaktigt som eskaleringar.",
+      "falseNegativeConsequence": "Frustrerade återkommande kunder behandlas som nya.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "priority_handling",
+      "actionLabel": "Prioritera som olöst återkommande ärende",
+      "instructions": "Säger kunden att problemet fortfarande är olöst efter tidigare kontakt eller försök, till exempel \"fortfarande inte åtgärdat\", upprepad kontakt om samma problem, hänvisningar till tidigare ärenden eller löften, eller uteblivna svar på tidigare meddelanden? Uteslut första felanmälningar utan hänvisning till tidigare kontakt och problem som kunden säger är lösta.",
+      "criteria": {
+        "true": "JA när kunden uttrycker att problemet är fortsatt olöst efter tidigare kontakt.",
+        "false": "NEJ när inget fortsatt olöst problem efter tidigare kontakt uttrycks."
+      }
+    },
+    {
+      "gateId": "recurring_problem",
+      "category": "context",
+      "businessGoal": "Följ trender för problem som fortsätter att komma tillbaka.",
+      "semanticTarget": "Det beskrivna problemet har inträffat flera gånger.",
+      "semanticInterior": "\"Igen\", \"tredje gången den här månaden\", \"varje vecka\"; intermittenta fel; uttryck som \"händer hela tiden\" eller \"till och från i månader\"; samma fel öppnas på nytt.",
+      "semanticBoundaries": "Uteslut enstaka händelser och \"igen\" när det bara syftar på ny kontakt med supporten. Återkommande betalningar eller fakturor är inte i sig återkommande problem.",
+      "falsePositiveConsequence": "Trenddata förorenas av engångsärenden.",
+      "falseNegativeConsequence": "Systematiska problem syns inte i trenderna.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "trend_analytics",
+      "actionLabel": "Ta med i trendanalys för återkommande problem",
+      "instructions": "Beskriver meddelandet ett problem som har inträffat flera gånger eller fortsätter att komma tillbaka, till exempel \"igen\", \"varje vecka\", \"händer hela tiden\" eller \"till och från i månader\"? Uteslut enstaka händelser och \"igen\" när det bara syftar på att kontakta supporten igen, inte att själva problemet återkommer.",
+      "criteria": {
+        "true": "JA när det uttrycks att själva problemet upprepas eller återkommer.",
+        "false": "NEJ när problemet framställs som en enstaka händelse."
+      }
+    },
+    {
+      "gateId": "positive_support_experience",
+      "category": "context",
+      "businessGoal": "Fånga positiv återkoppling för uppskattning och kvalitetsmått.",
+      "semanticTarget": "Kunden uttrycker nöjdhet, tacksamhet eller beröm.",
+      "semanticInterior": "Tack; beröm för personal eller tjänst; uppskattning av ett väl löst problem; komplimanger om snabbhet, vänlighet eller kompetens; \"fungerar utmärkt nu\".",
+      "semanticBoundaries": "Uteslut artighetsfraser utan verkligt beröm, som \"tack på förhand\", sarkasm och neutrala faktauppgifter. Ett meddelande kan vara både positivt och negativt.",
+      "falsePositiveConsequence": "Nöjdhetsmått blåses upp.",
+      "falseNegativeConsequence": "Bra arbete blir osynligt och får inget erkännande.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "positive_feedback_log",
+      "actionLabel": "Registrera positiv återkoppling",
+      "instructions": "Uttrycker kunden äkta nöjdhet, tacksamhet eller beröm, till exempel tack, komplimanger om personalen eller tjänsten eller uppskattning för ett väl löst problem? Uteslut artighetsfraser som inleder en begäran (\"tack på förhand\"), sarkasm och neutrala faktauppgifter.",
+      "criteria": {
+        "true": "JA när äkta positiv uppskattning av tjänsten eller supporten uttrycks.",
+        "false": "NEJ när ingen äkta positiv uppskattning uttrycks."
+      }
+    },
+    {
+      "gateId": "negative_support_experience",
+      "category": "context",
+      "businessGoal": "Mät missnöje för uppföljning av tjänstens kvalitet.",
+      "semanticTarget": "Kunden uttrycker missnöje, frustration eller ilska.",
+      "semanticInterior": "Klagomål om att något är hemskt eller oacceptabelt; frustration som \"fått nog\"; ilska; besvikelse; upplevelse av dålig tjänst eller dåligt bemötande.",
+      "semanticBoundaries": "Uteslut neutrala felrapporter utan känslouttryck och rent positiva meddelanden. Missnöje ensamt är inte samma sak som risk att lämna. Blandade meddelanden kan vara både positiva och negativa.",
+      "falsePositiveConsequence": "Missnöjesmått blåses upp av neutrala uppgifter.",
+      "falseNegativeConsequence": "Missnöjda kunder syns inte i kvalitetsuppföljningen.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "negative_experience_log",
+      "actionLabel": "Ta med i analys av missnöje",
+      "instructions": "Uttrycker kunden missnöje, frustration, besvikelse eller ilska över tjänsten, produkten eller bemötandet, till exempel \"hemskt\", \"trött på detta\", \"fått nog\" eller \"oacceptabelt\"? Uteslut neutrala sakliga felbeskrivningar utan uttryckt känsla.",
+      "criteria": {
+        "true": "JA när negativ känsla inför tjänsten eller supporten uttrycks.",
+        "false": "NEJ när ingen negativ känsla uttrycks."
+      }
+    },
+    {
+      "gateId": "competitor_consideration",
+      "category": "context",
+      "businessGoal": "Upptäck tydliga jämförelser med konkurrenter för att förstå risken att kunder byter.",
+      "semanticTarget": "Kunden nämner eller jämför konkurrenters erbjudanden.",
+      "semanticInterior": "Namngivna konkurrenters priser eller erbjudanden; jämförelse av funktioner; att en annan leverantör verkar bättre eller billigare; begäran att matcha en konkurrent; citerad reklam.",
+      "semanticBoundaries": "Uteslut andra företag som inte konkurrerar inom telekom och vaga påståenden om bättre alternativ utan konkret konkurrentsammanhang. Våra egna produkter räknas inte.",
+      "falsePositiveConsequence": "Analysen av konkurrenssignaler förorenas.",
+      "falseNegativeConsequence": "Tecken på att kunden kan byta leverantör missas.",
+      "policyProfile": "analytics",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.4,
+      "acceptThreshold": 0.8,
+      "actionOnYes": "competitive_intelligence",
+      "actionLabel": "Ta med i analys av konkurrenter",
+      "instructions": "Nämner eller jämför kunden en konkurrerande leverantörs erbjudande, till exempel en konkurrents priser, kampanjer eller funktioner, att en annan leverantör verkar bättre eller billigare, eller en begäran att matcha ett erbjudande? Uteslut företag utanför telekom och allmänt missnöje utan koppling till en konkurrent.",
+      "criteria": {
+        "true": "JA när en konkurrents erbjudande nämns eller jämförs.",
+        "false": "NEJ när inget erbjudande från en konkurrent nämns."
+      }
+    },
+    {
+      "gateId": "churn_risk",
+      "category": "business_signal",
+      "businessGoal": "Fånga så många verkliga tecken på att kunder kan lämna som möjligt; missade signaler är kostsamma och vissa osäkra fall kan granskas manuellt.",
+      "semanticTarget": "Kundrelationen är i fara: kunden visar verkliga tecken på att kunna lämna.",
+      "semanticInterior": "Överväger att lämna eller byta; undrar om det är värt att stanna; undersöker konkurrenter med intresse; vill lämna om problemen fortsätter; funderar på att inte förnya; frågar om avtalets slut med antydan om att lämna; utvärderar alternativ; frågar om nummerflytt vid byte.",
+      "semanticBoundaries": "Uteslut allmänt missnöje utan antydan om att lämna, en faktisk begäran om uppsägning nu och gamla funderingar som kunden säger är avklarade. Villkorade och framtida tankar hör däremot hit.",
+      "falsePositiveConsequence": "Fler kunder behöver granskas för att bekräfta risken, vilket är acceptabelt här.",
+      "falseNegativeConsequence": "Kunder som kunde ha stannat går förlorade.",
+      "policyProfile": "catch_most",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.3,
+      "acceptThreshold": 0.7,
+      "actionOnYes": "retention_review",
+      "actionLabel": "Skicka till lojalitetsflöde för manuell granskning",
+      "instructions": "Tyder meddelandet på att kundrelationen är i fara, till exempel att kunden överväger att lämna eller byta leverantör, ifrågasätter om hen ska stanna kvar, undersöker konkurrenters erbjudanden med intresse, vill lämna om problemen fortsätter, funderar på att inte förnya eller frågar om nummerflytt med antydan om att lämna? Ta med indirekta och villkorade uttryck. Uteslut allmänt missnöje utan antydan om att lämna, uttryckliga önskemål om att säga upp nu och tidigare funderingar på att lämna som kunden säger är avklarade.",
+      "criteria": {
+        "true": "JA när något verkligt tecken på att kunden kan lämna företaget uttrycks, även villkorade eller tidiga tecken.",
+        "false": "NEJ när inget tecken på att kunden kan lämna uttrycks."
+      }
+    },
+    {
+      "gateId": "explicit_cancellation_intent",
+      "category": "business_signal",
+      "businessGoal": "Upptäck faktiska uppsägningsförsök och skilj dem tydligt från missnöje och framtida eller villkorade planer. Det ska vara enkelt att säga upp; manuell granskning skyddar osäkra fall.",
+      "semanticTarget": "Kunden ber faktiskt om att avsluta tjänsten eller abonnemanget.",
+      "semanticInterior": "Direkta begäranden att säga upp, avsluta eller stänga abonnemang eller konto; \"jag vill sluta\"; \"stäng tjänsten\"; en aktuell instruktion med slutdatum; begäran om uppsägningsprocessen eller bekräftelse på att uppsägning genomförts.",
+      "semanticBoundaries": "Uteslut funderingar på att byta, villkorad framtida avsikt, beröm av konkurrenter, ilska utan uppsägningsbegäran, frågor om avtalets slut utan instruktion att säga upp samt tidigare funderingar som ångrats. \"Jag säger inte upp\" är NEJ.",
+      "falsePositiveConsequence": "En kunds abonnemang avslutas utan begäran, vilket kan orsaka allvarlig skada.",
+      "falseNegativeConsequence": "En kund som vill säga upp får inte sin begäran behandlad; osäkra fall granskas därför manuellt.",
+      "policyProfile": "strong_boundary",
+      "promptVersion": "v1-sv",
+      "reviewThreshold": 0.45,
+      "acceptThreshold": 0.85,
+      "actionOnYes": "cancellation_process",
+      "actionLabel": "Behandla uppsägningsbegäran med manuell granskning vid osäkerhet",
+      "instructions": "Begär kunden faktiskt att få säga upp, avsluta eller stänga sitt abonnemang eller sin tjänst nu, även med ett angivet slutdatum, en begäran om uppsägningsprocessen eller en bekräftelse på att uppsägningen ska genomföras? Kräv inte exakta ord; känn igen omskrivningar. Uteslut att enbart överväga uppsägning, villkorad framtida avsikt (\"om det händer igen säger jag upp\"), jämförelser med konkurrenter, ilska utan uppsägningsbegäran, frågor om när avtalet löper ut utan uppdrag att säga upp, uttryckliga nekanden (\"jag säger inte upp\") och tidigare uppsägningstankar som kunden har ångrat.",
+      "criteria": {
+        "true": "JA när kunden uttrycker en faktisk och aktuell begäran eller instruktion att avsluta abonnemanget.",
+        "false": "NEJ vid överväganden, villkorad framtida avsikt eller annat som inte är en faktisk uppsägningsbegäran."
+      }
+    }
+  ]
+}

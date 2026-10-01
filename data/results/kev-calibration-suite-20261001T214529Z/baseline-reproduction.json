@@ -1,0 +1,91 @@
+{
+  "createdAtUtc": "2026-10-01T22:03:42.250Z",
+  "calculatedFromSavedArtifacts": true,
+  "providerCalls": 0,
+  "baseline": {
+    "jev": {
+      "en": {
+        "macroF1": 0.8402283042480353,
+        "macroRocAuc": 0.9848101370597608,
+        "gateAccuracy": 0.9457943925233645,
+        "runId": "20260930-215924537",
+        "ranAtUtc": "2026-09-30T21:59:24.5376047+00:00",
+        "returnedModels": [
+          "jev-1.13.0"
+        ],
+        "outboundAttempts": 100,
+        "apiFailures": 0,
+        "latencyMs": {
+          "mean": 264.707012,
+          "median": 257.76545,
+          "p95": 336.7248,
+          "max": 486.2315
+        }
+      },
+      "sv": {
+        "macroF1": 0.8263577120313375,
+        "macroRocAuc": 0.9867326064974423,
+        "gateAccuracy": 0.9429906542056075,
+        "runId": "20260930-220000690",
+        "ranAtUtc": "2026-09-30T22:00:00.6908713+00:00",
+        "returnedModels": [
+          "jev-1.13.0"
+        ],
+        "outboundAttempts": 100,
+        "apiFailures": 0,
+        "latencyMs": {
+          "mean": 260.820226,
+          "median": 252.6034,
+          "p95": 311.0506,
+          "max": 593.1525
+        }
+      },
+      "languageConsistency": {
+        "correlation": 0.9745276005926772,
+        "meanAbsoluteDelta": 0.03455140186915897
+      }
+    },
+    "kev": {
+      "en": {
+        "macroF1": 0.7663070867799392,
+        "macroRocAuc": 0.9763087300200962,
+        "gateAccuracy": 0.9261682242990654,
+        "runId": "20261001-211421499",
+        "ranAtUtc": "2026-10-01T23:14:21.4998968+02:00",
+        "returnedModels": [
+          "kev-latest"
+        ],
+        "outboundAttempts": 100,
+        "apiFailures": 0,
+        "latencyMs": {
+          "mean": 452.1477569999999,
+          "median": 416.34535,
+          "p95": 443.85,
+          "max": 3346.8295
+        }
+      },
+      "sv": {
+        "macroF1": 0.7638378270886556,
+        "macroRocAuc": 0.9713698821539029,
+        "gateAccuracy": 0.922429906542056,
+        "runId": "20261001-211513955",
+        "ranAtUtc": "2026-10-01T23:15:13.955497+02:00",
+        "returnedModels": [
+          "kev-latest"
+        ],
+        "outboundAttempts": 100,
+        "apiFailures": 0,
+        "latencyMs": {
+          "mean": 438.163166,
+          "median": 437.74265,
+          "p95": 446.6527,
+          "max": 450.5575
+        }
+      },
+      "languageConsistency": {
+        "correlation": 0.9328649695412797,
+        "meanAbsoluteDelta": 0.07878186915887848
+      }
+    }
+  }
+}
