@@ -1,5 +1,5 @@
 {
-  "generatedAtUtc": "2026-10-01T22:42:35.003Z",
+  "generatedAtUtc": "2026-10-01T23:35:20.023Z",
   "methodology": "Authenticated live raw retry: thresholds selected on 75 development IDs; the already-frozen config was evaluated without modification on the same 25 held-out IDs in EN and SV.",
   "holdoutType": "live_raw_frozen_retry",
   "prospectiveRawHoldoutStatus": "SUCCESS_50_OF_50",
@@ -486,5 +486,5 @@
     "kev": "1a18b454db183ea174b500f8463d3910fdc188bec3e75d695cd85e6f22c19258",
     "jev": "5368366190a01179943fe76926c099f549da3d3c5bb81ef5b2ff0f20b627d0ab"
   },
-  "gitCommit": "18bf41d446e01be8b742fe4ffd13f216931373c9"
+  "gitCommit": "bc6f595e2b55340e7d8fe116d5e451327a59a7cf"
 }
