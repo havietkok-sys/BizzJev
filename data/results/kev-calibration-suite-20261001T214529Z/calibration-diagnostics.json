@@ -1,5 +1,5 @@
 {
-  "createdAtUtc": "2026-10-01T21:54:03.655Z",
+  "createdAtUtc": "2026-10-01T22:03:42.250Z",
   "scope": "development split only",
   "diagnosisLegend": {
     "A": "Good separation; current threshold is the main issue",
@@ -17,10 +17,10 @@
       "meanPrAuc": 0.9563076013999139,
       "meanBrier": 0.05135352697183099,
       "currentCombinedF1": 0.8493150684931505,
-      "calibratedDevelopmentF1": 0.8837209302325582,
-      "thresholdGain": 0.03440586173940763,
+      "calibratedDevelopmentF1": 0.8809523809523809,
+      "thresholdGain": 0.031637312459230404,
       "currentThreshold": 0.75,
-      "combinedF1Threshold": 0.3111,
+      "combinedF1Threshold": 0.3818,
       "language": {
         "count": 71,
         "correlation": 0.9674088498603259,
@@ -163,10 +163,10 @@
       "meanPrAuc": 0.9502706783956784,
       "meanBrier": 0.028942976066666667,
       "currentCombinedF1": 0.5294117647058825,
-      "calibratedDevelopmentF1": 0.9411764705882353,
-      "thresholdGain": 0.4117647058823528,
+      "calibratedDevelopmentF1": 0.888888888888889,
+      "thresholdGain": 0.3594771241830065,
       "currentThreshold": 0.8,
-      "combinedF1Threshold": 0.2301,
+      "combinedF1Threshold": 0.6783,
       "language": {
         "count": 75,
         "correlation": 0.9380517416890586,

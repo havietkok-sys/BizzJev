@@ -1,8 +1,8 @@
 {
   "suiteVersion": "kev-calibration-suite-v1",
-  "phase": "0-2",
-  "createdAtUtc": "2026-10-01T21:54:03.655Z",
-  "gitCommit": "026a9023f3a44619100b22b1ec42adf6dedc4cf7",
+  "phase": "0-3",
+  "createdAtUtc": "2026-10-01T22:03:42.250Z",
+  "gitCommit": "281e1d30df7ee771818231d235b5af6255998de2",
   "seed": 20261001,
   "providerRequests": 0,
   "model": {
@@ -23,13 +23,15 @@
   },
   "calibration": {
     "scope": "development only",
-    "thresholdSweep": "unique probabilities plus adjacent midpoints and current threshold",
+    "thresholdSweep": "unique probabilities plus adjacent midpoints and current threshold, constrained to acceptThreshold >= reviewThreshold",
     "candidates": {
       "f1": "F1",
       "precision": "F0.5",
       "recall": "F2"
     },
-    "reviewThresholds": "unchanged baseline review thresholds"
+    "reviewThresholds": "unchanged baseline review thresholds",
+    "sharedLanguageMaximumF1Loss": 0.05,
+    "sparseHoldoutForcesSharedThreshold": true
   },
   "sources": {
     "datasetEn": {
@@ -67,34 +69,37 @@
   },
   "artifacts": {
     "README.md": {
-      "sha256": "d61275915cb8d9cdb620bc195bb849461cfe61bcc19a8cad792472fe985f0123"
+      "sha256": "197badf0b6717bfac7d92ebf9fc35474e607b5cd8f264052e35acf39c7459db7"
     },
     "baseline-reproduction.json": {
-      "sha256": "95c5d08bfe97a807cb098a22af6d29444d69fafb448ba41c4067814d777c0dec"
+      "sha256": "7de9b6792aaf8dfb499c4cbfdd3f5b792b300d92a0d3ed1c1d8bd056b92e8f4d"
     },
     "split-manifest.json": {
       "sha256": "bc805478fbfc661331e8fd654a71efd7872cd77554d3d10448d6d7efb74ff3fb"
     },
     "threshold-calibration.csv": {
-      "sha256": "a5d9095d83463eb88d382b1492364db791cee6baa4a0987e32aca24a41ac244c"
+      "sha256": "51eb632c2abaf34b6decc6f59f53e228d6e93bc0f4daac715bfeabe747a88a24"
     },
     "gate-metrics.csv": {
       "sha256": "8288dcb4402f0adc2026e5d3637cc04710a11e80fe8f37fb4dfd224c0573adbf"
     },
     "language-comparison.csv": {
-      "sha256": "287f7ae0fcae7d3a77e0f54f0f1bcf465f332d9efe56976ea9c9c5ae5d982eb3"
+      "sha256": "c0409158f062a1b3bef0d4f0c668366eac935f1ec9ab7db43e0c5c741140ef17"
+    },
+    "language-threshold-policy.csv": {
+      "sha256": "7b629ca69b549c61c03eb6f5ae0c968c597c1b4b965231ce4be602f25a165238"
     },
     "grouped-repeated-cv.csv": {
-      "sha256": "89ab17e1e18c75a3a3ba43c64dcc89cbfce47d6dae0a858be3819096d5d0b23d"
+      "sha256": "a992d26a58f05b52f192a8b7499fc5b8c8f7e90d5a4cfbd7f48e9ea624f06859"
     },
     "reliability-bins.csv": {
       "sha256": "0a329204cc716f2a815fcf49fc762341e84221a6af16bca0d7f3139fdb0f20f0"
     },
     "calibration-diagnostics.json": {
-      "sha256": "bd32ac134452269b89783c3e3f4054bc9f3a2b537af7a491bc588921488898b0"
+      "sha256": "643dc32fc0f1abcd56090281b583e71d02ad5171434b657445ed867648d812d0"
     },
     "calibration-diagnostics.html": {
-      "sha256": "2058c3af6ee4769986b6de30ca74d9f78a599ffd56a511ac5f3597533b3294f8"
+      "sha256": "c817d1d42ccb19d19282028534d172d98200026c3543a2c5d9ffe2063906b3c7"
     },
     "configs/gates.en.v1.json": {
       "sha256": "d827589a619a61e529c43b3915db7d63551018a62be4ac6e5030804696799888"
@@ -102,13 +107,16 @@
     "configs/gates.sv.v1.json": {
       "sha256": "4b6162292de77433efbe6d6dff3c8f7cbee829210a87d6fd506abbf61ea36254"
     },
+    "configs/kev-gates-v2.json": {
+      "sha256": "1a18b454db183ea174b500f8463d3910fdc188bec3e75d695cd85e6f22c19258"
+    },
     "raw/README.md": {
       "sha256": "3fa858619bc2ff9b67e27db22688a1129c542c6984437c250a7a1f966c9c8e86"
     }
   },
   "analysisScript": {
     "path": "scripts/run-kev-calibration-offline.mjs",
-    "sha256": "d574e45365c419f32fd04fc5680f2ad33f464941348fa5784b8430aa65427406"
+    "sha256": "eee307f1ef792427a2ceb20ea4370941cbefb951e540a8370334e64d52681654"
   },
   "secretsStored": false,
   "historicalArtifactLimitations": [
