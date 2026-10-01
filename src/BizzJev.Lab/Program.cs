@@ -20,7 +20,7 @@ var defaultGateSet = config["DefaultGateSet"] ?? "v1";
 var systemOneUrl = config["SYSTEMONE_URL"] ?? "https://api.typesafe.ai";
 // Disable Technical View in a production deployment by setting EnableTechnicalView=false.
 var enableTechnicalView = !bool.TryParse(config["EnableTechnicalView"], out var etv) || etv;
-var model = config["SYSTEMONE_MODEL"] ?? config["TypeSafe:Model"] ?? throw new InvalidOperationException("SYSTEMONE_MODEL or TypeSafe:Model required");
+var model = config["SYSTEMONE_MODEL"] ?? config["TypeSafe:Model"] ?? "jev-1.13.0";
 var timeout = int.TryParse(config["TypeSafe:TimeoutSeconds"], out var t) && t is >= 1 and <= 300 ? t : 60;
 string? ResolveSystemOneApiKey() => config["SYSTEMONE_API_KEY"] ?? config["TYPESAFE_API_KEY"];
 Directory.CreateDirectory(dataDir);
