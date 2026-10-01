@@ -29,3 +29,13 @@ No gate currently qualifies for wording experiments: every gate retains strong s
 ## Historical limitation
 
 Existing run artifacts do not include exact request payloads or raw provider responses. See `raw/README.md`. No source artifact was modified.
+
+## Retrospective final holdout
+
+The frozen thresholds are evaluated on the 25 holdout case IDs with immutable probabilities from the historical 100-case run:
+
+```powershell
+node scripts\analyze-kev-calibration-suite.mjs data\results\kev-calibration-suite-20261001T214529Z
+```
+
+This analysis makes no provider calls. A prospective raw-response attempt is recorded separately in `final-run-manifest.json`; it returned HTTP 401 for every request and produced no model judgments. The retrospective result remains useful for threshold validation but does not replace a credentialed raw run or test–retest stability.

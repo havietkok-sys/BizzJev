@@ -1,0 +1,10 @@
+{
+  "newSuccessfulProviderRequests": 0,
+  "reusedHistoricalResponses": 50,
+  "offlineThresholdSweeps": true,
+  "offlineBootstrapSamples": 2000,
+  "failedCredentiallessRequests": 50,
+  "failedCredentiallessElapsedWallMs": 52778.2208,
+  "usage": "Unavailable in historical parsed artifacts",
+  "modalComputeUsage": "Unavailable"
+}

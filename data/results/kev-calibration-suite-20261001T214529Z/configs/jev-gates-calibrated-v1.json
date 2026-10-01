@@ -1,0 +1,227 @@
+{
+  "configVersion": "jev-calibrated-v1",
+  "provider": "TypeSafe Jev",
+  "modelAlias": "jev-1.13.0",
+  "calibrationCaseIds": [
+    "ob-02",
+    "ob-04",
+    "ob-05",
+    "ob-06",
+    "ob-07",
+    "ob-08",
+    "ob-09",
+    "ob-10",
+    "ob-11",
+    "ob-12",
+    "ob-13",
+    "ob-15",
+    "ob-16",
+    "ob-18",
+    "ob-20",
+    "mu-01",
+    "mu-03",
+    "mu-06",
+    "mu-07",
+    "mu-08",
+    "mu-09",
+    "mu-10",
+    "mu-11",
+    "mu-12",
+    "mu-13",
+    "mu-14",
+    "mu-15",
+    "mu-17",
+    "mu-18",
+    "mu-19",
+    "vg-01",
+    "vg-02",
+    "vg-03",
+    "vg-05",
+    "vg-06",
+    "vg-07",
+    "vg-08",
+    "vg-10",
+    "vg-11",
+    "vg-14",
+    "vg-15",
+    "bd-01",
+    "bd-02",
+    "bd-04",
+    "bd-05",
+    "bd-06",
+    "bd-07",
+    "bd-08",
+    "bd-10",
+    "bd-11",
+    "bd-14",
+    "bd-15",
+    "cd-01",
+    "cd-02",
+    "cd-04",
+    "cd-05",
+    "cd-06",
+    "cd-07",
+    "cd-08",
+    "cd-10",
+    "lg-01",
+    "lg-03",
+    "lg-04",
+    "lg-05",
+    "lg-06",
+    "lg-08",
+    "lg-09",
+    "lg-10",
+    "ng-01",
+    "ng-02",
+    "ng-03",
+    "ng-04",
+    "ng-06",
+    "ng-07",
+    "ng-10"
+  ],
+  "gates": [
+    {
+      "gateId": "billing_problem",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.35
+      },
+      "sv": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.35
+      }
+    },
+    {
+      "gateId": "technical_problem",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.46
+      },
+      "sv": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.46
+      }
+    },
+    {
+      "gateId": "contract_problem",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.75
+      },
+      "sv": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.75
+      }
+    },
+    {
+      "gateId": "support_interaction_problem",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.85
+      },
+      "sv": {
+        "reviewThreshold": 0.35,
+        "acceptThreshold": 0.85
+      }
+    },
+    {
+      "gateId": "unresolved_issue",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.84
+      },
+      "sv": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.84
+      }
+    },
+    {
+      "gateId": "recurring_problem",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.925
+      },
+      "sv": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.925
+      }
+    },
+    {
+      "gateId": "positive_support_experience",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.57
+      },
+      "sv": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.57
+      }
+    },
+    {
+      "gateId": "negative_support_experience",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.865
+      },
+      "sv": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.865
+      }
+    },
+    {
+      "gateId": "competitor_consideration",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "f1",
+      "en": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.52
+      },
+      "sv": {
+        "reviewThreshold": 0.4,
+        "acceptThreshold": 0.52
+      }
+    },
+    {
+      "gateId": "churn_risk",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "recall",
+      "en": {
+        "reviewThreshold": 0.3,
+        "acceptThreshold": 0.49
+      },
+      "sv": {
+        "reviewThreshold": 0.3,
+        "acceptThreshold": 0.49
+      }
+    },
+    {
+      "gateId": "explicit_cancellation_intent",
+      "thresholdStrategy": "shared",
+      "selectedCandidate": "precision",
+      "en": {
+        "reviewThreshold": 0.45,
+        "acceptThreshold": 0.63
+      },
+      "sv": {
+        "reviewThreshold": 0.45,
+        "acceptThreshold": 0.63
+      }
+    }
+  ]
+}

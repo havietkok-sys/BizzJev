@@ -1,0 +1,448 @@
+{
+  "generatedAtUtc": "2026-10-01T22:14:39.423Z",
+  "methodology": "Retrospective leakage-safe holdout: split selected from labels only; thresholds selected on 75 development IDs; frozen configs evaluated on 25 held-out IDs using immutable saved probabilities.",
+  "holdoutType": "retrospective_saved_probabilities",
+  "prospectiveRawHoldoutStatus": "BLOCKED_HTTP_401",
+  "wordingExperiment": "SKIPPED_NO_SEMANTIC_JUSTIFICATION",
+  "tracks": {
+    "A-jev-drop-in": {
+      "label": "Track A · Jev drop-in",
+      "note": null,
+      "en": {
+        "cases": 25,
+        "macroF1": 0.8932506887052342,
+        "microF1": 0.9090909090909091,
+        "macroRocAuc": 0.9902821505094234,
+        "macroPrAuc": 0.9696969696969696,
+        "brier": 0.053102918313570495,
+        "gateAccuracy": 0.966542750929368,
+        "binaryExactCase": 0.72,
+        "strictPolicyCase": 0.32,
+        "reviewRate": 0.08942028985507246,
+        "apiFailureRate": 0
+      },
+      "sv": {
+        "cases": 25,
+        "macroF1": 0.895164936074027,
+        "microF1": 0.8979591836734694,
+        "macroRocAuc": 0.9948194061830425,
+        "macroPrAuc": 0.9841991341991342,
+        "brier": 0.04808355797101448,
+        "gateAccuracy": 0.9628252788104089,
+        "binaryExactCase": 0.72,
+        "strictPolicyCase": 0.4,
+        "reviewRate": 0.0930566534914361,
+        "apiFailureRate": 0
+      },
+      "language": {
+        "correlation": 0.9821246197180256,
+        "meanAbsoluteDelta": 0.03245353159851296
+      }
+    },
+    "A-kev-drop-in": {
+      "label": "Track A · Kev drop-in",
+      "note": null,
+      "en": {
+        "cases": 25,
+        "macroF1": 0.7861471861471861,
+        "microF1": 0.8679245283018867,
+        "macroRocAuc": 0.984431982159255,
+        "macroPrAuc": 0.9564967860422406,
+        "brier": 0.09168674475974967,
+        "gateAccuracy": 0.9479553903345725,
+        "binaryExactCase": 0.64,
+        "strictPolicyCase": 0.2,
+        "reviewRate": 0.13791831357048748,
+        "apiFailureRate": 0
+      },
+      "sv": {
+        "cases": 25,
+        "macroF1": 0.7166273120818575,
+        "microF1": 0.8,
+        "macroRocAuc": 0.9772812540994359,
+        "macroPrAuc": 0.9226133786848073,
+        "brier": 0.08093553513741765,
+        "gateAccuracy": 0.929368029739777,
+        "binaryExactCase": 0.52,
+        "strictPolicyCase": 0.32,
+        "reviewRate": 0.1485243741765481,
+        "apiFailureRate": 0
+      },
+      "language": {
+        "correlation": 0.9368791884661661,
+        "meanAbsoluteDelta": 0.07930817843866175
+      }
+    },
+    "B-jev-calibrated": {
+      "label": "Track B · Jev calibrated",
+      "note": null,
+      "en": {
+        "cases": 25,
+        "macroF1": 0.8642791551882462,
+        "microF1": 0.8910891089108911,
+        "macroRocAuc": 0.9902821505094234,
+        "macroPrAuc": 0.9696969696969696,
+        "brier": 0.053102918313570495,
+        "gateAccuracy": 0.9591078066914498,
+        "binaryExactCase": 0.68,
+        "strictPolicyCase": 0.36,
+        "reviewRate": 0.08121212121212121,
+        "apiFailureRate": 0
+      },
+      "sv": {
+        "cases": 25,
+        "macroF1": 0.8318181818181819,
+        "microF1": 0.8631578947368421,
+        "macroRocAuc": 0.9948194061830425,
+        "macroPrAuc": 0.9841991341991342,
+        "brier": 0.04808355797101448,
+        "gateAccuracy": 0.9516728624535316,
+        "binaryExactCase": 0.64,
+        "strictPolicyCase": 0.36,
+        "reviewRate": 0.10318181818181818,
+        "apiFailureRate": 0
+      },
+      "language": {
+        "correlation": 0.9821246197180256,
+        "meanAbsoluteDelta": 0.03245353159851296
+      }
+    },
+    "B-kev-calibrated": {
+      "label": "Track B · Kev calibrated",
+      "note": null,
+      "en": {
+        "cases": 25,
+        "macroF1": 0.8709169618260527,
+        "microF1": 0.8679245283018867,
+        "macroRocAuc": 0.984431982159255,
+        "macroPrAuc": 0.9564967860422406,
+        "brier": 0.09168674475974967,
+        "gateAccuracy": 0.9479553903345725,
+        "binaryExactCase": 0.56,
+        "strictPolicyCase": 0.2,
+        "reviewRate": 0.1379183135704875,
+        "apiFailureRate": 0
+      },
+      "sv": {
+        "cases": 25,
+        "macroF1": 0.8576807031352485,
+        "microF1": 0.8571428571428572,
+        "macroRocAuc": 0.9772812540994359,
+        "macroPrAuc": 0.9226133786848073,
+        "brier": 0.08093553513741765,
+        "gateAccuracy": 0.9479553903345725,
+        "binaryExactCase": 0.68,
+        "strictPolicyCase": 0.36,
+        "reviewRate": 0.13776679841897232,
+        "apiFailureRate": 0
+      },
+      "language": {
+        "correlation": 0.9368791884661661,
+        "meanAbsoluteDelta": 0.07930817843866175
+      }
+    },
+    "C-kev-optimized": {
+      "label": "Track C · Kev optimized",
+      "note": "No wording change justified; identical to Track B.",
+      "en": {
+        "cases": 25,
+        "macroF1": 0.8709169618260527,
+        "microF1": 0.8679245283018867,
+        "macroRocAuc": 0.984431982159255,
+        "macroPrAuc": 0.9564967860422406,
+        "brier": 0.09168674475974967,
+        "gateAccuracy": 0.9479553903345725,
+        "binaryExactCase": 0.56,
+        "strictPolicyCase": 0.2,
+        "reviewRate": 0.1379183135704875,
+        "apiFailureRate": 0
+      },
+      "sv": {
+        "cases": 25,
+        "macroF1": 0.8576807031352485,
+        "microF1": 0.8571428571428572,
+        "macroRocAuc": 0.9772812540994359,
+        "macroPrAuc": 0.9226133786848073,
+        "brier": 0.08093553513741765,
+        "gateAccuracy": 0.9479553903345725,
+        "binaryExactCase": 0.68,
+        "strictPolicyCase": 0.36,
+        "reviewRate": 0.13776679841897232,
+        "apiFailureRate": 0
+      },
+      "language": {
+        "correlation": 0.9368791884661661,
+        "meanAbsoluteDelta": 0.07930817843866175
+      }
+    }
+  },
+  "calibrationEffect": {
+    "kevMacroF1Delta": {
+      "en": 0.08476977567886657,
+      "sv": 0.141053391053391
+    },
+    "calibratedPointEstimateKevMinusJev": {
+      "en": 0.006637806637806554,
+      "sv": 0.025862521317066567
+    },
+    "interpretation": "Kev and Jev confidence intervals overlap substantially; point estimates do not establish provider superiority."
+  },
+  "bootstrap": {
+    "A-jev-drop-in": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6829988193624558,
+          "upper95": 0.9475524475524474
+        },
+        "macroRocAuc": {
+          "lower95": 0.9690476190476189,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9411764705882353,
+          "upper95": 0.9887218045112782
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.680157721066812,
+          "upper95": 0.9454545454545453
+        },
+        "macroRocAuc": {
+          "lower95": 0.9847142857142857,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9363295880149812,
+          "upper95": 0.985239852398524
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9725592216085625,
+        "upper95": 0.9896964265082989
+      }
+    },
+    "A-kev-drop-in": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6313131313131313,
+          "upper95": 0.8604312354312355
+        },
+        "macroRocAuc": {
+          "lower95": 0.9597257606826985,
+          "upper95": 0.9989711934156378
+        },
+        "gateAccuracy": {
+          "lower95": 0.9157509157509157,
+          "upper95": 0.9774436090225563
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.5577532983950095,
+          "upper95": 0.7939605848696757
+        },
+        "macroRocAuc": {
+          "lower95": 0.9490338400112835,
+          "upper95": 0.9953125
+        },
+        "gateAccuracy": {
+          "lower95": 0.8892988929889298,
+          "upper95": 0.9657794676806084
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9137158262707991,
+        "upper95": 0.9574531801739603
+      }
+    },
+    "B-jev-calibrated": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6621212121212121,
+          "upper95": 0.9423227490213137
+        },
+        "macroRocAuc": {
+          "lower95": 0.9684657499363383,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9323308270676691,
+          "upper95": 0.9814126394052045
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.6279942279942281,
+          "upper95": 0.9175914994096813
+        },
+        "macroRocAuc": {
+          "lower95": 0.9843137254901961,
+          "upper95": 1
+        },
+        "gateAccuracy": {
+          "lower95": 0.9194139194139194,
+          "upper95": 0.9776951672862454
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9724084933132752,
+        "upper95": 0.9894631755225208
+      }
+    },
+    "B-kev-calibrated": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6651833015469379,
+          "upper95": 0.9242416080651373
+        },
+        "macroRocAuc": {
+          "lower95": 0.9626190476190477,
+          "upper95": 0.9989473684210527
+        },
+        "gateAccuracy": {
+          "lower95": 0.9194139194139194,
+          "upper95": 0.9737827715355806
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.6173160173160173,
+          "upper95": 0.9383444837990292
+        },
+        "macroRocAuc": {
+          "lower95": 0.9469670537007997,
+          "upper95": 0.9951503673094582
+        },
+        "gateAccuracy": {
+          "lower95": 0.9067164179104478,
+          "upper95": 0.9813432835820896
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9139069499342615,
+        "upper95": 0.9579029526227459
+      }
+    },
+    "C-kev-optimized": {
+      "en": {
+        "macroF1": {
+          "lower95": 0.6671522921522922,
+          "upper95": 0.9230196703880914
+        },
+        "macroRocAuc": {
+          "lower95": 0.9613205609544283,
+          "upper95": 0.999
+        },
+        "gateAccuracy": {
+          "lower95": 0.9185185185185185,
+          "upper95": 0.9731800766283525
+        }
+      },
+      "sv": {
+        "macroF1": {
+          "lower95": 0.625068870523416,
+          "upper95": 0.9433066933066933
+        },
+        "macroRocAuc": {
+          "lower95": 0.9489729225023342,
+          "upper95": 0.9954626478690649
+        },
+        "gateAccuracy": {
+          "lower95": 0.9047619047619048,
+          "upper95": 0.9813432835820896
+        }
+      },
+      "languageCorrelation": {
+        "lower95": 0.9134421542562718,
+        "upper95": 0.9564281910096238
+      }
+    }
+  },
+  "latency": {
+    "jev": {
+      "en": {
+        "all": {
+          "median": 244.6168,
+          "p95": 309.9783,
+          "mean": 253.70308799999998,
+          "max": 397.9759
+        },
+        "coldStartCandidate": 397.9759,
+        "warm": {
+          "median": 243.13585,
+          "p95": 303.6475,
+          "mean": 247.69172083333333,
+          "max": 309.9783
+        }
+      },
+      "sv": {
+        "all": {
+          "median": 252.1923,
+          "p95": 311.0506,
+          "mean": 269.285956,
+          "max": 558.1292
+        },
+        "coldStartCandidate": 290.1945,
+        "warm": {
+          "median": 251.69085,
+          "p95": 311.0506,
+          "mean": 268.4147666666666,
+          "max": 558.1292
+        }
+      }
+    },
+    "kev": {
+      "en": {
+        "all": {
+          "median": 416.2428,
+          "p95": 527.426,
+          "mean": 440.99804400000016,
+          "max": 869.8156
+        },
+        "coldStartCandidate": 869.8156,
+        "warm": {
+          "median": 415.6153,
+          "p95": 450.1553,
+          "mean": 423.1306458333335,
+          "max": 527.426
+        }
+      },
+      "sv": {
+        "all": {
+          "median": 437.2259,
+          "p95": 448.6923,
+          "mean": 437.9794959999999,
+          "max": 450.5575
+        },
+        "coldStartCandidate": 431.6345,
+        "warm": {
+          "median": 437.3707,
+          "p95": 448.6923,
+          "mean": 438.24387083333323,
+          "max": 450.5575
+        }
+      }
+    }
+  },
+  "cost": {
+    "newSuccessfulProviderRequests": 0,
+    "reusedHistoricalResponses": 50,
+    "offlineThresholdSweeps": true,
+    "offlineBootstrapSamples": 2000,
+    "failedCredentiallessRequests": 50,
+    "failedCredentiallessElapsedWallMs": 52778.2208,
+    "usage": "Unavailable in historical parsed artifacts",
+    "modalComputeUsage": "Unavailable"
+  },
+  "errorCounts": {
+    "model_semantic_error": 13,
+    "language_inconsistency": 9,
+    "threshold_error": 6
+  },
+  "configHashes": {
+    "kev": "1a18b454db183ea174b500f8463d3910fdc188bec3e75d695cd85e6f22c19258",
+    "jev": "5368366190a01179943fe76926c099f549da3d3c5bb81ef5b2ff0f20b627d0ab"
+  },
+  "gitCommit": "f0dffcd31973683dcdf0c32d3165ce0c83378a8a"
+}
