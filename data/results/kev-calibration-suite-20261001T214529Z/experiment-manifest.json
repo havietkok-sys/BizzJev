@@ -168,10 +168,10 @@
       "sha256": "a7994846623773e40313d3475d365846663a19f0d43b56277d779dfd5cb75cbd"
     },
     "provider-comparison-calibrated-summary.json": {
-      "sha256": "522f0e115b8ea0ba06af600e8e78466359b64fd25719aa2d6e824c165f204d85"
+      "sha256": "9e7c5af53b7eaf93edd00e4dd305959db8263bc12aaedc6b867767ccbaf95cc5"
     },
     "provider-comparison-calibrated.html": {
-      "sha256": "d3bfabee2f093d0d157cbdc1807abc340f26fed26fbaddb7a684ee65b515f89a"
+      "sha256": "1dc23e208836ac3fd710ff8464cdfa2dc8110643589e3a766a26ee255f142cc6"
     },
     "final-run-manifest.json": {
       "sha256": "87060ee3081ad73a7f6d9a997deff530fd97d606852ef592075221497446258b"
@@ -203,6 +203,6 @@
   },
   "finalAnalysisScript": {
     "path": "scripts/analyze-kev-calibration-suite.mjs",
-    "sha256": "0058b6676e25ec0d5e2c642466a4aa53ca23de1103781839598e0f710a6e615b"
+    "sha256": "b8c442d3f0539381a6ec76758541b1c999e58b154e4d12e2356915681409d3cf"
   }
 }
