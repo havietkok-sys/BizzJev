@@ -7,12 +7,18 @@ public sealed class StubHandler : HttpMessageHandler
 {
     private readonly Func<JsonDocument, HttpResponseMessage> _respond;
     public JsonDocument? LastRequest { get; private set; }
+    public Uri? LastUri { get; private set; }
+    public string? AuthorizationScheme { get; private set; }
+    public string? AuthorizationParameter { get; private set; }
     public int Attempts { get; private set; }
     public StubHandler(Func<JsonDocument, HttpResponseMessage> respond) => _respond = respond;
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
     {
         Attempts++;
+        LastUri = request.RequestUri;
+        AuthorizationScheme = request.Headers.Authorization?.Scheme;
+        AuthorizationParameter = request.Headers.Authorization?.Parameter;
         var body = await request.Content!.ReadAsStringAsync(ct);
         LastRequest = JsonDocument.Parse(body);
         return _respond(LastRequest);
@@ -202,6 +208,39 @@ public sealed class JevClientTests
         Assert.Equal("hello", handler.LastRequest.RootElement.GetProperty("state").GetProperty("customerText").GetString());
         // criteria must be {true,false} objects per the noul schema
         Assert.Equal("y", questions.GetProperty("g1").GetProperty("criteria").GetProperty("true").GetString());
+    }
+
+    [Fact]
+    public async Task ConnectionConfigurationChangesOnlyEndpointModelAndBearerKey()
+    {
+        static HttpResponseMessage Response(string model) => new(HttpStatusCode.OK)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(new
+            {
+                model,
+                answers = new { g1 = new { type = "noul", noul = 0.7 } },
+                latency_ms = 12
+            }), Encoding.UTF8, "application/json")
+        };
+        var jevHandler = new StubHandler(_ => Response("jev-1.13.0"));
+        var kevHandler = new StubHandler(_ => Response("kev-latest"));
+        await new JevGateClient(new HttpClient(jevHandler), "jev-1.13.0", "https://api.typesafe.ai", "jev-key")
+            .AnalyzeAsync("samma state åäö", [Gate("g1")], "v1", maxAttempts: 1);
+        await new JevGateClient(new HttpClient(kevHandler), "kev-latest", "https://kev.example", "kev-key")
+            .AnalyzeAsync("samma state åäö", [Gate("g1")], "v1", maxAttempts: 1);
+
+        Assert.Equal("https://api.typesafe.ai/v1/systemone", jevHandler.LastUri!.ToString());
+        Assert.Equal("https://kev.example/v1/systemone", kevHandler.LastUri!.ToString());
+        Assert.Equal(("Bearer", "jev-key"), (jevHandler.AuthorizationScheme, jevHandler.AuthorizationParameter));
+        Assert.Equal(("Bearer", "kev-key"), (kevHandler.AuthorizationScheme, kevHandler.AuthorizationParameter));
+        Assert.Equal("jev-1.13.0", jevHandler.LastRequest!.RootElement.GetProperty("model").GetString());
+        Assert.Equal("kev-latest", kevHandler.LastRequest!.RootElement.GetProperty("model").GetString());
+        Assert.Equal(
+            jevHandler.LastRequest.RootElement.GetProperty("state").GetRawText(),
+            kevHandler.LastRequest.RootElement.GetProperty("state").GetRawText());
+        Assert.Equal(
+            jevHandler.LastRequest.RootElement.GetProperty("questions").GetRawText(),
+            kevHandler.LastRequest.RootElement.GetProperty("questions").GetRawText());
     }
 
     [Fact]

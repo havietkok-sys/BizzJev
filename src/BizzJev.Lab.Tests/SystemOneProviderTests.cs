@@ -26,85 +26,34 @@ public sealed class SystemOneProviderTests
     };
 
     [Fact]
-    public async Task JevAdapterPreservesExistingRequestAndResultBehavior()
+    public async Task CompatibleAdapterPreservesExistingRequestAndResultBehavior()
     {
-        var handler = new CapturingHandler(_ => Json("""{"model":"jev-test","answers":{"access":{"type":"noul","noul":0.91}}}"""));
-        ISystemOneProvider provider = new JevSystemOneProvider(new JevGateClient(new HttpClient(handler), "jev-test"));
+        var handler = new CapturingHandler(_ => Json("""{"model":"kev-latest","answers":{"access":{"type":"noul","noul":0.91},"billing":{"type":"noul","noul":0.08}},"latency_ms":9}"""));
+        ISystemOneProvider provider = new JevSystemOneProvider(
+            new JevGateClient(new HttpClient(handler), "kev-latest", "https://kev.example", "modal-key"));
 
-        var outcome = await provider.EvaluateAsync("hello", [Question("access", "Can the customer log in?")], "v1");
+        var outcome = await provider.EvaluateAsync(
+            "Kunden kan inte logga in. ÅÄÖ åäö",
+            [Question("access", "Kan kunden logga in?"), Question("billing", "Gäller det fakturering?")],
+            "v1-sv");
 
         using var request = JsonDocument.Parse(handler.Body!);
-        Assert.Equal("hello", request.RootElement.GetProperty("state").GetProperty("customerText").GetString());
+        Assert.Equal("https://kev.example/v1/systemone", handler.Uri!.ToString());
+        Assert.Equal("Bearer", handler.AuthorizationScheme);
+        Assert.Equal("modal-key", handler.AuthorizationParameter);
+        Assert.Equal("Kunden kan inte logga in. ÅÄÖ åäö", request.RootElement.GetProperty("state").GetProperty("customerText").GetString());
+        Assert.Equal("kev-latest", request.RootElement.GetProperty("model").GetString());
         Assert.Equal("yes", request.RootElement.GetProperty("questions").GetProperty("access").GetProperty("criteria").GetProperty("true").GetString());
-        Assert.Equal(0.91, outcome.Result.Signals.Single().Probability);
-    }
-
-    [Fact]
-    public async Task SvenSerializesKevSchemaAsUtf8WithAllQuestionsInOneRequest()
-    {
-        var handler = new CapturingHandler(_ => Json("""{"model":"kev-latest","answers":{"access":{"type":"noul","noul":0.9797},"billing":{"type":"noul","noul":0.08}}}"""));
-        var provider = new SvenSystemOneProvider(new HttpClient(handler));
-        const string state = "Kunden kan inte logga in på sin portal. ÅÄÖ åäö";
-        var questions = new[]
-        {
-            Question("access", "Är detta ett problem som handlar om åtkomst eller inloggning?"),
-            Question("billing", "Gäller frågan en felaktig faktura?")
-        };
-
-        await provider.EvaluateAsync(state, questions, "v1-sv");
-
+        Assert.Equal(2, request.RootElement.GetProperty("questions").EnumerateObject().Count());
+        Assert.Equal(0.91, outcome.Result.Signals.Single(x => x.GateId == "access").Probability);
         Assert.Equal(1, handler.Attempts);
-        Assert.Equal("http://localhost:8009/v1/systemone", handler.Uri!.ToString());
         Assert.Equal("application/json", handler.MediaType);
         Assert.Equal("utf-8", handler.CharSet);
-        Assert.Contains(state, handler.Body, StringComparison.Ordinal);
-        using var request = JsonDocument.Parse(handler.Body!);
-        Assert.Equal(state, request.RootElement.GetProperty("state").GetString());
-        Assert.Equal("kev-latest", request.RootElement.GetProperty("model").GetString());
-        var sent = request.RootElement.GetProperty("questions");
-        Assert.Equal(2, sent.EnumerateObject().Count());
-        Assert.Equal("noul", sent.GetProperty("access").GetProperty("type").GetString());
-        Assert.Equal(questions[0].Instructions, sent.GetProperty("access").GetProperty("instructions").GetString());
-        Assert.False(sent.GetProperty("access").TryGetProperty("criteria", out _));
-    }
-
-    [Fact]
-    public async Task SvenMapsMultipleNoulAnswersIntoInternalSignals()
-    {
-        var handler = new CapturingHandler(_ => Json("""{"model":"kev-latest","answers":{"access":{"type":"noul","noul":0.9797},"billing":{"type":"noul","noul":0.08}}}"""));
-        var provider = new SvenSystemOneProvider(new HttpClient(handler));
-
-        var outcome = await provider.EvaluateAsync("state", [Question("access", "a"), Question("billing", "b")], "v1");
-
         Assert.Equal(2, outcome.Result.Signals.Count);
-        Assert.Equal(0.9797, outcome.Result.Signals.Single(x => x.GateId == "access").Probability);
         Assert.Equal(0.08, outcome.Result.Signals.Single(x => x.GateId == "billing").Probability);
-        Assert.All(outcome.Result.Signals, x =>
-        {
-            Assert.True(x.Success);
-            Assert.Equal("kev-latest", x.ModelVersion);
-        });
         Assert.Equal(2, outcome.Diagnostics!.JudgmentCount);
-        Assert.Equal("v1", outcome.Result.GateSetVersion);
+        Assert.Equal("v1-sv", outcome.Result.GateSetVersion);
     }
-
-    [Theory]
-    [InlineData(null, typeof(JevSystemOneProvider))]
-    [InlineData("jev", typeof(JevSystemOneProvider))]
-    [InlineData("SVEN", typeof(SvenSystemOneProvider))]
-    public void ProviderSwitchSelectsConfiguredAdapter(string? configured, Type expected)
-    {
-        var selected = SystemOneProviderFactory.Select(
-            configured,
-            () => new JevSystemOneProvider(new JevGateClient(new HttpClient(new CapturingHandler(_ => Json("{}"))), "jev")),
-            () => new SvenSystemOneProvider(new HttpClient(new CapturingHandler(_ => Json("{}")))));
-
-        Assert.IsType(expected, selected);
-    }
-
-    [Fact]
-    public void ProviderSwitchRejectsUnknownValue()
-        => Assert.Throws<InvalidOperationException>(() => SystemOneProviderFactory.Select("other", () => throw new Exception(), () => throw new Exception()));
 
     private static HttpResponseMessage Json(string body) => new(HttpStatusCode.OK)
     {
@@ -118,6 +67,8 @@ public sealed class SystemOneProviderTests
         public Uri? Uri { get; private set; }
         public string? MediaType { get; private set; }
         public string? CharSet { get; private set; }
+        public string? AuthorizationScheme { get; private set; }
+        public string? AuthorizationParameter { get; private set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
         {
@@ -126,6 +77,8 @@ public sealed class SystemOneProviderTests
             Uri = request.RequestUri;
             MediaType = request.Content.Headers.ContentType?.MediaType;
             CharSet = request.Content.Headers.ContentType?.CharSet;
+            AuthorizationScheme = request.Headers.Authorization?.Scheme;
+            AuthorizationParameter = request.Headers.Authorization?.Parameter;
             return respond(request);
         }
     }

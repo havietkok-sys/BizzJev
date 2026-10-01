@@ -4,14 +4,12 @@ using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.FileIO;
 
 internal static class CfpbSingleGate
 {
     private const string TestHash = "97a79e10a513bd5737a350e6b33024b1087ea9657db1f85f17c1c52aef516706";
     private const string JudgmentHash = "c4f0623046210ed03dcaea787955aac5917ca59eb66bbacd997bac03b0bba724";
-    private const string Model = "jev-1.13.0";
     private const int MaxAttempts = 3;
     private static readonly JsonSerializerOptions Pretty = new() { WriteIndented = true };
     private static readonly string[] Forbidden =
@@ -84,14 +82,13 @@ internal static class CfpbSingleGate
         Console.WriteLine("Verified frozen judgment + TEST hashes, 810 unique narratives, expected per-label counts.");
         if (checkOnly)
         {
-            using var payload = JsonDocument.Parse(JsonSerializer.Serialize(new { model = Model, state = new { narrative = "offline input" }, questions = root }));
+            using var payload = JsonDocument.Parse(JsonSerializer.Serialize(new { model = SystemOneSettings.DefaultModel, state = new { narrative = "offline input" }, questions = root }));
             if (payload.RootElement.GetProperty("state").EnumerateObject().Count() != 1) throw new Exception("State isolation failed.");
             Console.WriteLine("Single-gate offline checks passed. No requests sent.");
             return 0;
         }
-        var config = new ConfigurationBuilder().AddUserSecrets<SmokeMarker>().AddEnvironmentVariables().Build();
-        var key = config["TYPESAFE_API_KEY"];
-        if (string.IsNullOrWhiteSpace(key)) { Console.Error.WriteLine("TYPESAFE_API_KEY missing. No requests sent."); return 2; }
+        var systemOne = SystemOneSettings.Load();
+        if (systemOne is null) { Console.Error.WriteLine("SYSTEMONE_API_KEY missing (TYPESAFE_API_KEY remains supported). No requests sent."); return 2; }
         var directory = "data/results/cfpb-single-gate-" + DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ");
         Directory.CreateDirectory(directory);
         File.WriteAllBytes(Path.Combine(directory, "judgment.json"), definition);
@@ -101,17 +98,17 @@ internal static class CfpbSingleGate
             resultLabel = "EXPERIMENTAL / POST-TEST ARCHITECTURE COMPARISON - TEST set previously inspected during V1 post-test analysis; NOT a held-out generalization result",
             testCsvSha256 = TestHash,
             judgmentSha256 = JudgmentHash.ToLowerInvariant(),
-            model = Model,
+            model = systemOne.Model,
             metric = "Agreement with consumer-selected CFPB Issue",
             cases = 810,
             retryPolicy = $"Up to {MaxAttempts} attempts per case for transient failures only (HttpRequestException, TaskCanceledException, HTTP 408/429/5xx); identical frozen judgment re-sent verbatim; every attempt logged per case",
-            timeoutSeconds = 60,
+            timeoutSeconds = systemOne.TimeoutSeconds,
             startedUtc = DateTime.UtcNow,
             latencyDefinition = "Final attempt's HTTP request through complete response body; milliseconds; excludes local validation, disk writes and backoff waits"
         }, Pretty));
         await using var output = new StreamWriter(new FileStream(Path.Combine(directory, "raw.jsonl"), FileMode.CreateNew), new UTF8Encoding(false)) { AutoFlush = true };
-        using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(60) };
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
+        using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(systemOne.TimeoutSeconds) };
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", systemOne.ApiKey);
         var results = new List<Result>();
         foreach (var row in rows)
         {
@@ -122,9 +119,9 @@ internal static class CfpbSingleGate
                 var timer = Stopwatch.StartNew();
                 try
                 {
-                    using var response = await client.PostAsJsonAsync("https://api.typesafe.ai/v1/systemone", new
+                    using var response = await client.PostAsJsonAsync(systemOne.Endpoint, new
                     {
-                        model = Model,
+                        model = systemOne.Model,
                         state = new { narrative = row.Narrative },
                         questions = root
                     });

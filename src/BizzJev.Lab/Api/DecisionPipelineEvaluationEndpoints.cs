@@ -28,8 +28,8 @@ public static class DecisionPipelineEvaluationEndpoints
         {
             return new DecisionPipelineEvaluationRunner(pipelineDir, definition, dataset, budget,
                 () => client ??= new DecisionPipelineClient(
-                    app.Configuration["TYPESAFE_API_KEY"] ?? throw new InvalidOperationException("TYPESAFE_API_KEY missing (user secrets or environment)."),
-                    options.Model, options.TimeoutSeconds),
+                    options.ResolveApiKey() ?? throw new InvalidOperationException("SYSTEMONE_API_KEY missing (TYPESAFE_API_KEY remains supported)."),
+                    options.Model, options.TimeoutSeconds, options.BaseUrl),
                 options.Model, options.EnableTechnicalView);
         }
 
@@ -73,7 +73,7 @@ public static class DecisionPipelineEvaluationEndpoints
                 var run = await Runner().RunSplitAsync(split, ct);
                 return Results.Json(new { run, plannedAttempts = planned, budgetRemaining = budget.Remaining }, options.Json);
             }
-            catch (InvalidOperationException e) when (e.Message.Contains("TYPESAFE_API_KEY"))
+            catch (InvalidOperationException e) when (e.Message.Contains("API_KEY"))
             {
                 return Results.Json(new ApiErrorBody(e.Message, "missing_api_key"), options.Json, statusCode: 503);
             }

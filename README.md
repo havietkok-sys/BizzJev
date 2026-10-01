@@ -22,7 +22,7 @@ The Semantic Operations Lab sends the customer text and all active gate definiti
 
 BizzJev's own code maps those probabilities to **NO / REVIEW / YES** using configurable business thresholds. A Noul near 0.5 means uncertainty about yes versus no; it does not mean that a problem has medium severity. The probabilities are model judgments, not guarantees of correctness. See TypeSafe's [probability and confidence guidance](https://docs.typesafe.ai/confidence).
 
-The backend currently selects `jev-1.13.0` in [appsettings.json](src/BizzJev.Lab/appsettings.json). The UI and backend run locally; Jev inference runs on TypeSafe's service. The API key is sent only by the backend in the authorization header. Reading the documentation and saved experiment results does not require a key.
+The backend defaults to TypeSafe at `https://api.typesafe.ai` with `jev-1.13.0`, and can target any compatible System One endpoint through `SYSTEMONE_URL`, `SYSTEMONE_API_KEY` and `SYSTEMONE_MODEL`. The API key is sent only by the backend in the Bearer authorization header. Reading the documentation and saved experiment results does not require a key.
 
 ### Milestone 2: the Decision Pipeline (mixed primitives in one request)
 
@@ -113,17 +113,18 @@ Paste your key into the masked setup prompt. The setup script stores it as `TYPE
 
 For detailed setup, troubleshooting, and a demo walkthrough, see [docs/DEMO_RUN.md](docs/DEMO_RUN.md).
 
-### Local Sven provider
+### TypeSafe-compatible Kev provider
 
-The Noul gate flow can use the local Sven provider through Kev while keeping the same gate definitions, thresholds, evaluation and UI result shape. Start Kev on port 8009, then set:
+All existing Noul and mixed Choice/Score/Noul evaluations use one TypeSafe-compatible request path. Changing the connection does not change state, questions, gates, thresholds, datasets or result interpretation. To target Kev on Modal, set:
 
 ```powershell
-$env:SYSTEM_ONE_PROVIDER = "sven"
-$env:SVEN_BASE_URL = "http://localhost:8009"
+$env:SYSTEMONE_URL = "<Modal Kev base URL>"
+$env:SYSTEMONE_API_KEY = "<Modal Bearer token>"
+$env:SYSTEMONE_MODEL = "kev-latest"
 .\START_DEMO.bat
 ```
 
-The default remains `SYSTEM_ONE_PROVIDER=jev`. Sven sends the customer text as Kev `state` and all active Noul gates together in one `POST /v1/systemone` request using model `kev-latest`. The mixed Choice/Score/Noul Decision Pipeline remains on Jev because the current Sven/Kev contract covers Noul questions only.
+`SYSTEMONE_URL` is the base URL without `/v1/systemone`. Omitting the three variables keeps the existing TypeSafe defaults; `TYPESAFE_API_KEY` in .NET User Secrets remains supported.
 
 The saved 200-request Sven evaluation, including threshold-independent AUROC, in-sample calibration analysis, latency, per-gate results and the Jev baseline comparison, is available as a [written evaluation](data/results/sven-language-evaluation-20261001/EVALUATION.md) and [standalone HTML report](data/results/sven-language-evaluation-20261001/report.html).
 

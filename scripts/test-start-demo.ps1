@@ -9,6 +9,7 @@ if (Get-NetTCPConnection -LocalPort 5099 -State Listen -ErrorAction SilentlyCont
 $TestRoot = Join-Path ([IO.Path]::GetTempPath()) ("BizzJev launcher check " + [guid]::NewGuid())
 $OriginalLocation = Get-Location
 $OriginalDataDir = $env:LAB_DATA_DIR
+$OriginalSystemOneApiKey = $env:SYSTEMONE_API_KEY
 $script:TestBackend = $null
 try {
     Set-Location -LiteralPath $Repo
@@ -22,12 +23,13 @@ try {
     if (Test-Path (Join-Path $TestRoot "data")) { throw "Test must start without runtime data." }
     if (Test-Path (Join-Path $TestRoot "src/BizzJev.Lab/bin")) { throw "Test must start without build output." }
     $env:LAB_DATA_DIR = $null
+    $env:SYSTEMONE_API_KEY = "launcher-check-placeholder"
 
     # Supply key presence without reading or writing real user secrets. No inference calls.
     function dotnet {
         if ($args[0] -eq "user-secrets") {
             $global:LASTEXITCODE = 0
-            return "TYPESAFE_API_KEY = launcher-check-placeholder"
+            return ""
         }
         & $DotnetExe @args
     }
@@ -65,6 +67,7 @@ try {
         & taskkill /PID $script:TestBackend.Id /T /F | Out-Null
     }
     $env:LAB_DATA_DIR = $OriginalDataDir
+    $env:SYSTEMONE_API_KEY = $OriginalSystemOneApiKey
     Set-Location $OriginalLocation
     Write-Host "Test files retained at: $TestRoot"
 }

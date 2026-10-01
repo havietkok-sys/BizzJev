@@ -17,12 +17,12 @@ var dataDir = Environment.GetEnvironmentVariable("LAB_DATA_DIR")
         ? Path.Combine(Directory.GetCurrentDirectory(), "data", "lab")
         : Path.Combine(FindRepoRoot(), "data", "lab"));
 var defaultGateSet = config["DefaultGateSet"] ?? "v1";
-var systemOneProviderName = (config["SYSTEM_ONE_PROVIDER"] ?? "jev").Trim().ToLowerInvariant();
-var svenBaseUrl = config["SVEN_BASE_URL"] ?? "http://localhost:8009";
+var systemOneUrl = config["SYSTEMONE_URL"] ?? "https://api.typesafe.ai";
 // Disable Technical View in a production deployment by setting EnableTechnicalView=false.
 var enableTechnicalView = !bool.TryParse(config["EnableTechnicalView"], out var etv) || etv;
-var model = config["TypeSafe:Model"] ?? throw new InvalidOperationException("TypeSafe:Model required");
+var model = config["SYSTEMONE_MODEL"] ?? config["TypeSafe:Model"] ?? throw new InvalidOperationException("SYSTEMONE_MODEL or TypeSafe:Model required");
 var timeout = int.TryParse(config["TypeSafe:TimeoutSeconds"], out var t) && t is >= 1 and <= 300 ? t : 60;
+string? ResolveSystemOneApiKey() => config["SYSTEMONE_API_KEY"] ?? config["TYPESAFE_API_KEY"];
 Directory.CreateDirectory(dataDir);
 Directory.CreateDirectory(Path.Combine(dataDir, "evaluations"));
 
@@ -121,15 +121,10 @@ List<EvaluationCase> ExpandExpected(List<EvaluationCase> cases, IEnumerable<Sema
 ISystemOneProvider? systemOneProvider = null;
 ISystemOneProvider SystemOne()
 {
-    return systemOneProvider ??= SystemOneProviderFactory.Select(
-        systemOneProviderName,
-        () =>
-        {
-            var key = config["TYPESAFE_API_KEY"];
-            if (string.IsNullOrWhiteSpace(key)) throw new InvalidOperationException("TYPESAFE_API_KEY missing (user secrets or environment).");
-            return new JevSystemOneProvider(new JevGateClient(key, model, timeout));
-        },
-        () => new SvenSystemOneProvider(svenBaseUrl, timeout));
+    var key = ResolveSystemOneApiKey();
+    if (string.IsNullOrWhiteSpace(key))
+        throw new InvalidOperationException("SYSTEMONE_API_KEY missing (TYPESAFE_API_KEY remains supported).");
+    return systemOneProvider ??= new JevSystemOneProvider(new JevGateClient(key, model, timeout, systemOneUrl));
 }
 
 // ---------- endpoints ----------
@@ -439,13 +434,14 @@ app.MapPost("/api/gates/reset-local", (ResetRequest body) =>
     return Results.Json(new { status = "reset", activeGateSet = defaultGateSet });
 });
 
-app.MapGet("/api/health", () => Results.Json(new { status = "ok", model, defaultGateSet, systemOneProvider = systemOneProviderName }));
+app.MapGet("/api/health", () => Results.Json(new { status = "ok", model, defaultGateSet, systemOneUrl }));
 
 // ---------- Decision Pipeline (Milestone 2) ----------
 
 DecisionPipelineEndpoints.MapDecisionPipelineEndpoints(app, new DecisionPipelineEndpointOptions
 {
-    ResolveApiKey = () => config["TYPESAFE_API_KEY"],
+    ResolveApiKey = ResolveSystemOneApiKey,
+    BaseUrl = systemOneUrl,
     Model = model,
     TimeoutSeconds = timeout,
     EnableTechnicalView = enableTechnicalView,
@@ -453,7 +449,8 @@ DecisionPipelineEndpoints.MapDecisionPipelineEndpoints(app, new DecisionPipeline
 });
 DecisionPipelineEvaluationEndpoints.MapDecisionPipelineEvaluationEndpoints(app, new DecisionPipelineEndpointOptions
 {
-    ResolveApiKey = () => config["TYPESAFE_API_KEY"],
+    ResolveApiKey = ResolveSystemOneApiKey,
+    BaseUrl = systemOneUrl,
     Model = model,
     TimeoutSeconds = timeout,
     EnableTechnicalView = enableTechnicalView,

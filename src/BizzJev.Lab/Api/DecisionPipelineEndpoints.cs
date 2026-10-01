@@ -7,6 +7,7 @@ public sealed record DecisionPipelineEndpointOptions
 {
     /// Resolves the server-side TypeSafe API key lazily; only analyze needs it.
     public required Func<string?> ResolveApiKey { get; init; }
+    public string BaseUrl { get; init; } = "https://api.typesafe.ai";
     public required string Model { get; init; }
     public required int TimeoutSeconds { get; init; }
     public required bool EnableTechnicalView { get; init; }
@@ -26,7 +27,7 @@ public static class DecisionPipelineEndpoints
 
         DecisionPipelineClient? client = null;
         DecisionPipelineClient ClientFor(string apiKey)
-            => client ??= new DecisionPipelineClient(apiKey, options.Model, options.TimeoutSeconds);
+            => client ??= new DecisionPipelineClient(apiKey, options.Model, options.TimeoutSeconds, options.BaseUrl);
 
         app.MapGet("/api/decision-pipeline/definition", (HttpRequest request)
             => HandleDefinition(definition, examples, options, request.Query["language"].FirstOrDefault() ?? "en", swedishDefinition));
@@ -145,7 +146,7 @@ public static class DecisionPipelineEndpoints
 
         var apiKey = resolveKey();
         if (string.IsNullOrWhiteSpace(apiKey))
-            return Error("TYPESAFE_API_KEY missing (user secrets or environment); analysis needs a Jev key, definition and replay do not",
+            return Error("SYSTEMONE_API_KEY missing (TYPESAFE_API_KEY remains supported); analysis needs a provider key, definition and replay do not",
                 "missing_api_key", json, StatusCodes.Status503ServiceUnavailable);
 
         var outcome = await clientFactory(apiKey).AnalyzeAsync(customerText, definition, ct);

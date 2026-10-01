@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 
 if (args is ["--cfpb"] or ["--check-cfpb"])
     return await CfpbBaseline.Run(args[0] == "--check-cfpb");
@@ -60,25 +59,10 @@ if (args.Length > 1 || (args is [var option] && option.StartsWith("--") && optio
     return 1;
 }
 
-var configuration = new ConfigurationBuilder()
-    .SetBasePath(AppContext.BaseDirectory)
-    .AddJsonFile("appsettings.json")
-    .AddUserSecrets<SmokeMarker>()
-    .AddEnvironmentVariables()
-    .Build();
-var apiKey = configuration["TYPESAFE_API_KEY"];
-if (string.IsNullOrWhiteSpace(apiKey))
+var systemOne = SystemOneSettings.Load();
+if (systemOne is null)
 {
-    Console.Error.WriteLine("TYPESAFE_API_KEY is missing. Configure local User Secrets or a process environment variable; see README.md. No request sent.");
-    return 2;
-}
-
-var model = configuration["TypeSafe:Model"];
-if (string.IsNullOrWhiteSpace(model)
-    || !int.TryParse(configuration["TypeSafe:TimeoutSeconds"], out var timeoutSeconds)
-    || timeoutSeconds is < 1 or > 300)
-{
-    Console.Error.WriteLine("TypeSafe requires a model and TimeoutSeconds between 1 and 300. No request sent.");
+    Console.Error.WriteLine("SYSTEMONE_API_KEY is missing (TYPESAFE_API_KEY remains supported). No request sent.");
     return 2;
 }
 
@@ -101,14 +85,14 @@ try
     using var cancellation = new CancellationTokenSource();
     Console.CancelKeyPress += (_, e) => { e.Cancel = true; cancellation.Cancel(); };
     using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
-    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", systemOne.ApiKey);
     foreach (var (message, expected) in cases)
     {
-        var payload = score ? NordboScore.Request(message, model) : noul ? NordboNoul.Request(message, model) : priority ? NordboPriority.Request(message, model) : NordboChoice.Request(message, model);
+        var payload = score ? NordboScore.Request(message, systemOne.Model) : noul ? NordboNoul.Request(message, systemOne.Model) : priority ? NordboPriority.Request(message, systemOne.Model) : NordboChoice.Request(message, systemOne.Model);
         if (score) Console.WriteLine($"\nS{completed + 1}: {message}");
         if (noul) Console.WriteLine($"N{noulResults.Count + 1}: {message}");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellation.Token);
-        deadline.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
+        deadline.CancelAfter(TimeSpan.FromSeconds(systemOne.TimeoutSeconds));
         if (evaluating || ambiguity || priority)
         {
             Console.WriteLine($"\nCase {completed + 1}: {message}");
@@ -116,7 +100,7 @@ try
         }
         // ponytail: one attempt for this boundary probe; add bounded backoff for the application flow.
         using var response = await client.PostAsJsonAsync(
-            "https://api.typesafe.ai/v1/systemone", payload, deadline.Token);
+            systemOne.Endpoint, payload, deadline.Token);
         if (!response.IsSuccessStatusCode)
         {
             var advice = (int)response.StatusCode switch

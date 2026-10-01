@@ -13,12 +13,18 @@ public sealed class CountingHandler : HttpMessageHandler
     private readonly Func<string?, HttpResponseMessage> _respond;
     public int Attempts { get; private set; }
     public string? LastBody { get; private set; }
+    public Uri? LastUri { get; private set; }
+    public string? AuthorizationScheme { get; private set; }
+    public string? AuthorizationParameter { get; private set; }
 
     public CountingHandler(Func<string?, HttpResponseMessage> respond) => _respond = respond;
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
     {
         Attempts++;
+        LastUri = request.RequestUri;
+        AuthorizationScheme = request.Headers.Authorization?.Scheme;
+        AuthorizationParameter = request.Headers.Authorization?.Parameter;
         LastBody = request.Content == null ? null : await request.Content.ReadAsStringAsync(ct);
         return _respond(LastBody);
     }
@@ -78,6 +84,34 @@ public sealed class DecisionPipelineClientTests
         Assert.Equal(["false", "true"], questions["cancellationRequested"]!["criteria"]!.AsObject().Select(c => c.Key).OrderBy(k => k));
         // no credentials in the payload
         Assert.DoesNotContain("Bearer", outcome.Diagnostics.RequestPayload);
+    }
+
+    [Fact]
+    public async Task ConnectionConfigurationPreservesMixedEvaluationPayloadSemantics()
+    {
+        var kevBody = JsonNode.Parse(ValidBody)!.AsObject();
+        kevBody["model"] = "kev-latest";
+        kevBody["latency_ms"] = 17;
+        var jevHandler = new CountingHandler(_ => Json(ValidBody));
+        var kevHandler = new CountingHandler(_ => Json(kevBody.ToJsonString()));
+        await new DecisionPipelineClient(new HttpClient(jevHandler), "jev-1.13.0", "https://api.typesafe.ai", "jev-key")
+            .AnalyzeAsync("samma state åäö", Config());
+        var kev = await new DecisionPipelineClient(new HttpClient(kevHandler), "kev-latest", "https://kev.example/", "kev-key")
+            .AnalyzeAsync("samma state åäö", Config());
+
+        Assert.Equal("https://api.typesafe.ai/v1/systemone", jevHandler.LastUri!.ToString());
+        Assert.Equal("https://kev.example/v1/systemone", kevHandler.LastUri!.ToString());
+        Assert.Equal(("Bearer", "jev-key"), (jevHandler.AuthorizationScheme, jevHandler.AuthorizationParameter));
+        Assert.Equal(("Bearer", "kev-key"), (kevHandler.AuthorizationScheme, kevHandler.AuthorizationParameter));
+        var jevRequest = JsonNode.Parse(jevHandler.LastBody!)!.AsObject();
+        var kevRequest = JsonNode.Parse(kevHandler.LastBody!)!.AsObject();
+        Assert.Equal("jev-1.13.0", (string?)jevRequest["model"]);
+        Assert.Equal("kev-latest", (string?)kevRequest["model"]);
+        Assert.True(JsonNode.DeepEquals(jevRequest["state"], kevRequest["state"]));
+        Assert.True(JsonNode.DeepEquals(jevRequest["questions"], kevRequest["questions"]));
+        Assert.True(kev.Answers.Routing.Valid);
+        Assert.True(kev.Answers.Urgency.Valid);
+        Assert.True(kev.Answers.CancellationRequested.Valid);
     }
 
     [Fact]

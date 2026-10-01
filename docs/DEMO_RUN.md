@@ -2,7 +2,7 @@
 
 This guide assumes you have never seen the project before.
 
-> **You must supply your own TypeSafe API key to run live Jev analysis.** Get one from [TypeSafe's API keys page](https://console.typesafe.ai/keys). No API key or API credits are bundled with BizzJev.
+> **You must supply a Bearer API key for the configured System One endpoint.** TypeSafe keys are available from [TypeSafe's API keys page](https://console.typesafe.ai/keys). No key or API credits are bundled with BizzJev.
 
 ## What You Need
 
@@ -56,25 +56,43 @@ Use the language control in the header to choose English or Swedish. The selecte
 
 The key authenticates requests to TypeSafe; you do not download or run the Jev model locally. Although BizzJev's web application runs on your computer, analysis sends the submitted text and gate definitions to TypeSafe. You can read the saved results and documentation without making API calls.
 
-### Use local Sven through Kev for Noul gates
+### Select Jev or Kev without changing the evaluation
 
-Start Kev so that `POST http://localhost:8009/v1/systemone` is available, then launch BizzJev with:
+The connection variables affect both the Noul gates and the mixed Choice/Score/Noul Decision Pipeline. BizzJev appends `/v1/systemone` to `SYSTEMONE_URL` and preserves the same request state and questions.
+
+TypeSafe Jev:
 
 ```powershell
-$env:SYSTEM_ONE_PROVIDER = "sven"
-$env:SVEN_BASE_URL = "http://localhost:8009"
-.\START_DEMO.bat
+$env:SYSTEMONE_URL = "https://api.typesafe.ai"
+$env:SYSTEMONE_API_KEY = "<TypeSafe API key>"
+$env:SYSTEMONE_MODEL = "jev-1.13.0"
+dotnet run --project src/BizzJev.Lab -- --urls http://localhost:5099
 ```
 
-`jev` remains the default provider. Sven receives the original customer input as `state` and all active Noul gates in one request. The existing mixed Decision Pipeline continues to use Jev because its Choice and Score primitives are outside the supplied Sven/Kev Noul contract.
+Kev on Modal:
+
+```powershell
+$env:SYSTEMONE_URL = "<Modal Kev base URL>"
+$env:SYSTEMONE_API_KEY = "<Modal Bearer token>"
+$env:SYSTEMONE_MODEL = "kev-latest"
+dotnet run --project src/BizzJev.Lab -- --urls http://localhost:5099
+```
+
+With either server running, execute the existing 100-case English gate evaluation once with:
+
+```powershell
+Invoke-RestMethod -Method Post "http://localhost:5099/api/evaluate?language=en&includeSaved=false"
+```
+
+Omit the new variables to retain the existing TypeSafe defaults. `TYPESAFE_API_KEY` in .NET User Secrets and `TypeSafe:Model` in `appsettings.json` remain supported for backward compatibility.
 
 For background on Jev, Noul/Choice/Score, and how this project uses them, see [TypeSafe and Jev in the README](../README.md#what-are-typesafe-and-jev). TypeSafe's [quick start](https://docs.typesafe.ai/introduction/quickstart), [Playground](https://console.typesafe.ai/playground), and [API reference](https://docs.typesafe.ai/api) are useful next steps.
 
 ### Where the key is stored
 
-The TypeSafe/Jev API key:
+The configured System One API key:
 
-- **Is configured locally** in .NET User Secrets (`dotnet user-secrets`), scoped to the `src/BizzJev.Lab` project
+- **Is configured locally** as `SYSTEMONE_API_KEY`, or as the legacy `TYPESAFE_API_KEY` .NET User Secret scoped to `src/BizzJev.Lab`
 - **Is stored outside Git** — User Secrets are stored under your user profile, outside the repository; the backend sends the key to TypeSafe for authentication over HTTPS
 - **Is backend-only** — the frontend never receives the key; it only calls the backend API
 - **Never appears in Technical View** — the request payload shown there is the JSON body, which contains no authorization headers (those live in server-side HTTP headers)
@@ -164,7 +182,7 @@ If the launcher reports **No compatible .NET SDK**, run `dotnet --list-sdks` and
 API key not configured.
 ```
 
-Run `SET_API_KEY.bat`, paste your key, then run `START_DEMO.bat` again. If you don't have a key, create one in the [TypeSafe Console](https://console.typesafe.ai/keys).
+Set `SYSTEMONE_API_KEY`, or run `SET_API_KEY.bat` to store a TypeSafe key, then start the demo again.
 
 ### Port already in use
 
@@ -187,10 +205,10 @@ Check `data\lab\backend.log` and `data\lab\backend.err.log` for the full error o
 - An older launcher that skipped the build or assumed the log directory already existed: update your clone with `git pull`, then run `START_DEMO.bat` again. The current launcher builds the backend and creates `data/lab` automatically.
 - Corrupted NuGet cache (try `dotnet nuget locals all --clear`)
 
-### Jev / API request fails
+### System One API request fails
 
 The Analyze screen shows per-gate failure status. Common causes:
-- API key expired or revoked — create a replacement in the [TypeSafe Console](https://console.typesafe.ai/keys), then run `SET_API_KEY.bat` again
+- API key expired or revoked — replace the configured provider key
 - Network connectivity issue
 - Rate limiting — wait a moment and retry
 

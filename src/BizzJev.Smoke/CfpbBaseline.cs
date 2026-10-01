@@ -4,13 +4,11 @@ using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.FileIO;
 
 internal static class CfpbBaseline
 {
     private const string Hash = "380911efa458a467a0a08ead125b3f06d500e1e50ef8f4c0263fd3ae144f18f6";
-    private const string Model = "jev-1.13.0";
     private static readonly JsonSerializerOptions Pretty = new() { WriteIndented = true };
 
     internal static async Task<int> Run(bool checkOnly)
@@ -42,14 +40,13 @@ internal static class CfpbBaseline
         if (checkOnly)
         {
             // Offline check: payload has narrative-only state and no source metadata.
-            using var payload = JsonDocument.Parse(JsonSerializer.Serialize(new { model = Model, state = new { narrative = "offline input" }, questions = questions.RootElement }));
+            using var payload = JsonDocument.Parse(JsonSerializer.Serialize(new { model = SystemOneSettings.DefaultModel, state = new { narrative = "offline input" }, questions = questions.RootElement }));
             if (payload.RootElement.GetProperty("state").EnumerateObject().Count() != 1) throw new Exception("State isolation failed.");
             Console.WriteLine("CFPB offline checks passed. No requests sent.");
             return 0;
         }
-        var config = new ConfigurationBuilder().AddUserSecrets<SmokeMarker>().AddEnvironmentVariables().Build();
-        var key = config["TYPESAFE_API_KEY"];
-        if (string.IsNullOrWhiteSpace(key)) { Console.Error.WriteLine("TYPESAFE_API_KEY missing. No requests sent."); return 2; }
+        var systemOne = SystemOneSettings.Load();
+        if (systemOne is null) { Console.Error.WriteLine("SYSTEMONE_API_KEY missing (TYPESAFE_API_KEY remains supported). No requests sent."); return 2; }
         var directory = "data/results/cfpb-debt-baseline-v1-" + DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ");
         Directory.CreateDirectory(directory);
         File.WriteAllBytes(Path.Combine(directory, "judgment.json"), definition);
@@ -58,17 +55,17 @@ internal static class CfpbBaseline
             name = "CFPB Debt Collection Baseline v1",
             benchmarkSha256 = Hash,
             judgmentSha256 = Convert.ToHexString(SHA256.HashData(definition)).ToLowerInvariant(),
-            model = Model,
+            model = systemOne.Model,
             metric = "Agreement with CFPB consumer-selected Issue",
             cases = 100,
             retries = 0,
-            timeoutSeconds = 60,
+            timeoutSeconds = systemOne.TimeoutSeconds,
             startedUtc = DateTime.UtcNow,
             latencyDefinition = "HTTP request through complete response body; milliseconds; excludes local validation and disk writes"
         }, Pretty));
         using var output = new StreamWriter(new FileStream(Path.Combine(directory, "raw.jsonl"), FileMode.CreateNew), new UTF8Encoding(false)) { AutoFlush = true };
-        using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(60) };
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
+        using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(systemOne.TimeoutSeconds) };
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", systemOne.ApiKey);
         var results = new List<Result>();
         foreach (var row in rows)
         {
@@ -76,9 +73,9 @@ internal static class CfpbBaseline
             var timer = Stopwatch.StartNew();
             try
             {
-                using var response = await client.PostAsJsonAsync("https://api.typesafe.ai/v1/systemone", new
+                using var response = await client.PostAsJsonAsync(systemOne.Endpoint, new
                 {
-                    model = Model,
+                    model = systemOne.Model,
                     state = new { narrative = row.Narrative },
                     questions = questions.RootElement
                 });

@@ -4,14 +4,12 @@ using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.FileIO;
 
 internal static class JevGateFormulation
 {
     private const string RunInputHash = "ddc60dacfebf8fc1e5d5f13c5b4299921558718cd2899adeb42443d3154181e9";
     private const string GatesHash = "9ff5ae7dda62958bc5786077bd78b1f835097fdc776617b5e03de948d623dc51";
-    private const string Model = "jev-1.13.0";
     private const int MaxAttempts = 3;
     private static readonly JsonSerializerOptions Pretty = new() { WriteIndented = true };
 
@@ -48,18 +46,17 @@ internal static class JevGateFormulation
         Console.WriteLine($"Verified frozen hashes: 18 noul gates, {rows.Count} narratives.");
         if (checkOnly)
         {
-            using var payload = JsonDocument.Parse(JsonSerializer.Serialize(new { model = Model, state = new { narrative = "offline input" }, questions = gates.Select(g => g.GetProperty("question")) }));
+            using var payload = JsonDocument.Parse(JsonSerializer.Serialize(new { model = SystemOneSettings.DefaultModel, state = new { narrative = "offline input" }, questions = gates.Select(g => g.GetProperty("question")) }));
             var state = payload.RootElement.GetProperty("state");
             if (state.EnumerateObject().Count() != 1 || state.EnumerateObject().First().Name != "narrative") throw new Exception("State isolation failed.");
             Console.WriteLine("Gate-formulation offline checks passed. No requests sent.");
             return 0;
         }
-        var config = new ConfigurationBuilder().AddUserSecrets<SmokeMarker>().AddEnvironmentVariables().Build();
-        var key = config["TYPESAFE_API_KEY"];
-        if (string.IsNullOrWhiteSpace(key)) { Console.Error.WriteLine("TYPESAFE_API_KEY missing. No requests sent."); return 2; }
+        var systemOne = SystemOneSettings.Load();
+        if (systemOne is null) { Console.Error.WriteLine("SYSTEMONE_API_KEY missing (TYPESAFE_API_KEY remains supported). No requests sent."); return 2; }
 
-        using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(60) };
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
+        using var client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(systemOne.TimeoutSeconds) };
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", systemOne.ApiKey);
         var outDir = "data/results/jev-semantic-gate-formulation-experiment";
         await using var output = new StreamWriter(new FileStream(Path.Combine(outDir, "raw_predictions.csv"), FileMode.CreateNew), new UTF8Encoding(false)) { AutoFlush = true };
         await output.WriteLineAsync("complaint_id,gate_id,concept,variant,noul,status,http_status,error,attempts,latency_ms,input_tokens,output_tokens,model");
@@ -76,9 +73,9 @@ internal static class JevGateFormulation
                     var questions = new Dictionary<string, object>();
                     foreach (var g in gates)
                         questions[g.GetProperty("id").GetString()!] = g.GetProperty("question").Deserialize<object>()!;
-                    using var response = await client.PostAsJsonAsync("https://api.typesafe.ai/v1/systemone", new
+                    using var response = await client.PostAsJsonAsync(systemOne.Endpoint, new
                     {
-                        model = Model,
+                        model = systemOne.Model,
                         state = new { narrative = row.Narrative },
                         questions
                     });
