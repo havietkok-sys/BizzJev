@@ -17,12 +17,18 @@ var dataDir = Environment.GetEnvironmentVariable("LAB_DATA_DIR")
         ? Path.Combine(Directory.GetCurrentDirectory(), "data", "lab")
         : Path.Combine(FindRepoRoot(), "data", "lab"));
 var defaultGateSet = config["DefaultGateSet"] ?? "v1";
-var systemOneUrl = config["SYSTEMONE_URL"] ?? "https://api.typesafe.ai";
+var systemOneProviderName = config["SYSTEMONE_PROVIDER"] ?? "jev";
+if (systemOneProviderName is not ("jev" or "kev"))
+    throw new InvalidOperationException("SYSTEMONE_PROVIDER must be 'jev' or 'kev'.");
+var useKev = systemOneProviderName == "kev";
+var systemOneUrl = useKev ? config["SYSTEMONE_URL"] ?? "http://localhost:8009" : "https://api.typesafe.ai";
 // Disable Technical View in a production deployment by setting EnableTechnicalView=false.
 var enableTechnicalView = !bool.TryParse(config["EnableTechnicalView"], out var etv) || etv;
-var model = config["SYSTEMONE_MODEL"] ?? config["TypeSafe:Model"] ?? "jev-1.13.0";
+var model = useKev ? config["SYSTEMONE_MODEL"] ?? "kev-latest" : config["TypeSafe:Model"] ?? "jev-1.13.0";
 var timeout = int.TryParse(config["TypeSafe:TimeoutSeconds"], out var t) && t is >= 1 and <= 300 ? t : 60;
-string? ResolveSystemOneApiKey() => config["SYSTEMONE_API_KEY"] ?? config["TYPESAFE_API_KEY"];
+string? ResolveSystemOneApiKey() => useKev
+    ? config["SYSTEMONE_API_KEY"]
+    : config["TYPESAFE_API_KEY"] ?? config["SYSTEMONE_API_KEY"];
 Directory.CreateDirectory(dataDir);
 Directory.CreateDirectory(Path.Combine(dataDir, "evaluations"));
 

@@ -66,6 +66,7 @@ TypeSafe Jev:
 $env:SYSTEMONE_URL = "https://api.typesafe.ai"
 $env:SYSTEMONE_API_KEY = "<TypeSafe API key>"
 $env:SYSTEMONE_MODEL = "jev-1.13.0"
+$env:SYSTEMONE_PROVIDER = "jev"
 dotnet run --project src/BizzJev.Lab -- --urls http://localhost:5099
 ```
 
@@ -75,6 +76,7 @@ Kev on Modal:
 $env:SYSTEMONE_URL = "<Modal Kev base URL>"
 $env:SYSTEMONE_API_KEY = "<Modal Bearer token>"
 $env:SYSTEMONE_MODEL = "kev-latest"
+$env:SYSTEMONE_PROVIDER = "kev"
 dotnet run --project src/BizzJev.Lab -- --urls http://localhost:5099
 ```
 

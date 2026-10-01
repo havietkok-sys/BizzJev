@@ -22,7 +22,7 @@ The Semantic Operations Lab sends the customer text and all active gate definiti
 
 BizzJev's own code maps those probabilities to **NO / REVIEW / YES** using configurable business thresholds. A Noul near 0.5 means uncertainty about yes versus no; it does not mean that a problem has medium severity. The probabilities are model judgments, not guarantees of correctness. See TypeSafe's [probability and confidence guidance](https://docs.typesafe.ai/confidence).
 
-The backend defaults to TypeSafe at `https://api.typesafe.ai` with `jev-1.13.0`, and can target any compatible System One endpoint through `SYSTEMONE_URL`, `SYSTEMONE_API_KEY` and `SYSTEMONE_MODEL`. The API key is sent only by the backend in the Bearer authorization header. Reading the documentation and saved experiment results does not require a key.
+The backend defaults to TypeSafe Jev at `https://api.typesafe.ai` with `jev-1.13.0`. Set `SYSTEMONE_PROVIDER=kev` to use the compatible endpoint configured through `SYSTEMONE_URL`, `SYSTEMONE_API_KEY` and `SYSTEMONE_MODEL`; the saved Kev credentials can remain present while Jev is selected. The API key is sent only by the backend in the Bearer authorization header. Reading the documentation and saved experiment results does not require a key.
 
 ### Milestone 2: the Decision Pipeline (mixed primitives in one request)
 
@@ -121,10 +121,11 @@ All existing Noul and mixed Choice/Score/Noul evaluations use one TypeSafe-compa
 $env:SYSTEMONE_URL = "<Modal Kev base URL>"
 $env:SYSTEMONE_API_KEY = "<Modal Bearer token>"
 $env:SYSTEMONE_MODEL = "kev-latest"
+$env:SYSTEMONE_PROVIDER = "kev"
 .\START_DEMO.bat
 ```
 
-`SYSTEMONE_URL` is the base URL without `/v1/systemone`. Omitting the three variables keeps the existing TypeSafe defaults; `TYPESAFE_API_KEY` in .NET User Secrets remains supported.
+`SYSTEMONE_URL` is the base URL without `/v1/systemone`. Omitting `SYSTEMONE_PROVIDER`, or setting it to `jev`, keeps the TypeSafe defaults and prioritizes `TYPESAFE_API_KEY`. Setting it to `kev` activates the saved `SYSTEMONE_*` connection values.
 
 The saved 200-request Sven evaluation, including threshold-independent AUROC, in-sample calibration analysis, latency, per-gate results and the Jev baseline comparison, is available as a [written evaluation](data/results/sven-language-evaluation-20261001/EVALUATION.md) and [standalone HTML report](data/results/sven-language-evaluation-20261001/report.html).
 
