@@ -212,13 +212,13 @@ function calibrationBins(rows) {
   }).filter(Boolean);
 }
 
-function candidateThresholds(rows, current) {
+function candidateThresholds(rows, current, minimum) {
   const values = [...new Set(rows.map(row => row.p))].sort((a, b) => a - b);
-  return [...new Set([0, current, 1, ...values, ...values.slice(1).map((value, index) => (value + values[index]) / 2)])].sort((a, b) => a - b);
+  return [...new Set([minimum, current, 1, ...values, ...values.slice(1).map((value, index) => (value + values[index]) / 2)])].filter(value => value >= minimum).sort((a, b) => a - b);
 }
 
-function selectThreshold(rows, current, beta) {
-  return candidateThresholds(rows, current).map(threshold => ({ threshold, metric: confusion(rows, threshold) }))
+function selectThreshold(rows, current, beta, minimum) {
+  return candidateThresholds(rows, current, minimum).map(threshold => ({ threshold, metric: confusion(rows, threshold) }))
     .sort((a, b) => fBeta(b.metric, beta) - fBeta(a.metric, beta) || Math.abs(a.threshold - current) - Math.abs(b.threshold - current) || b.threshold - a.threshold)[0];
 }
 
@@ -314,9 +314,9 @@ for (const gateId of gateIds) {
     const rows = observations('kev', language, gateId, developmentIds);
     const current = gateByLanguage[language][gateId].acceptThreshold;
     const candidates = {
-      f1: selectThreshold(rows, current, 1),
-      precision: selectThreshold(rows, current, .5),
-      recall: selectThreshold(rows, current, 2)
+      f1: selectThreshold(rows, current, 1, gateByLanguage[language][gateId].reviewThreshold),
+      precision: selectThreshold(rows, current, .5, gateByLanguage[language][gateId].reviewThreshold),
+      recall: selectThreshold(rows, current, 2, gateByLanguage[language][gateId].reviewThreshold)
     };
     const recommendation = gate.policyProfile === 'catch_most' ? 'recall' : gate.policyProfile === 'strong_boundary' ? 'precision' : 'f1';
     perLanguage[language] = { rows, current, candidates, recommendation, currentMetrics: gateMetrics('kev', language, gateId, developmentIds, current) };
@@ -329,9 +329,9 @@ for (const gateId of gateIds) {
   const combinedRows = [...perLanguage.en.rows, ...perLanguage.sv.rows];
   const current = gate.acceptThreshold;
   const combinedCandidates = {
-    f1: selectThreshold(combinedRows, current, 1),
-    precision: selectThreshold(combinedRows, current, .5),
-    recall: selectThreshold(combinedRows, current, 2)
+    f1: selectThreshold(combinedRows, current, 1, gate.reviewThreshold),
+    precision: selectThreshold(combinedRows, current, .5, gate.reviewThreshold),
+    recall: selectThreshold(combinedRows, current, 2, gate.reviewThreshold)
   };
   const recommendation = gate.policyProfile === 'catch_most' ? 'recall' : gate.policyProfile === 'strong_boundary' ? 'precision' : 'f1';
   for (const [candidate, selected] of Object.entries(combinedCandidates)) calibration.push({
@@ -366,6 +366,31 @@ for (const gateId of gateIds) {
 }
 
 const fragileHoldoutGates = gateIds.filter(gateId => distribution(holdoutCases).gates[gateId].yes < 5);
+const languageThresholdPolicy = gateIds.map(gateId => {
+  const gate = gateByLanguage.en[gateId];
+  const enOptimal = calibration.find(row => row.gateId === gateId && row.language === 'en' && row.candidate === 'f1');
+  const svOptimal = calibration.find(row => row.gateId === gateId && row.language === 'sv' && row.candidate === 'f1');
+  const commonOptimal = calibration.find(row => row.gateId === gateId && row.language === 'combined' && row.candidate === 'f1');
+  const enAtCommon = confusion(observations('kev', 'en', gateId, developmentIds), commonOptimal.threshold);
+  const svAtCommon = confusion(observations('kev', 'sv', gateId, developmentIds), commonOptimal.threshold);
+  const lossEn = enOptimal.f1 - enAtCommon.f1;
+  const lossSv = svOptimal.f1 - svAtCommon.f1;
+  const maxLoss = Math.max(lossEn, lossSv);
+  const insufficientHoldoutEvidence = distribution(holdoutCases).gates[gateId].yes < 5;
+  const useSharedThreshold = maxLoss <= .05 || insufficientHoldoutEvidence;
+  const policyCandidate = gate.policyProfile === 'catch_most' ? 'recall' : gate.policyProfile === 'strong_boundary' ? 'precision' : 'f1';
+  const combinedPolicy = calibration.find(row => row.gateId === gateId && row.language === 'combined' && row.candidate === policyCandidate);
+  const enPolicy = calibration.find(row => row.gateId === gateId && row.language === 'en' && row.candidate === policyCandidate);
+  const svPolicy = calibration.find(row => row.gateId === gateId && row.language === 'sv' && row.candidate === policyCandidate);
+  return {
+    gateId, f1ThresholdEn: enOptimal.threshold, f1ThresholdSv: svOptimal.threshold, f1ThresholdCommon: commonOptimal.threshold,
+    optimalF1En: enOptimal.f1, optimalF1Sv: svOptimal.f1, commonF1En: enAtCommon.f1, commonF1Sv: svAtCommon.f1,
+    f1LossEn: lossEn, f1LossSv: lossSv, maxF1Loss: maxLoss, insufficientHoldoutEvidence, useSharedThreshold,
+    selectedCandidate: policyCandidate,
+    selectedThresholdEn: useSharedThreshold ? combinedPolicy.threshold : enPolicy.threshold,
+    selectedThresholdSv: useSharedThreshold ? combinedPolicy.threshold : svPolicy.threshold
+  };
+});
 const crossValidation = [];
 for (const gateId of fragileHoldoutGates) {
   const thresholds = [];
@@ -383,7 +408,7 @@ for (const gateId of fragileHoldoutGates) {
       const trainingIds = labeled.filter(item => !validationIds.has(item.id)).map(item => item.id);
       const trainingRows = ['en', 'sv'].flatMap(language => observations('kev', language, gateId, trainingIds));
       const validationRows = ['en', 'sv'].flatMap(language => observations('kev', language, gateId, folds[fold]));
-      const selected = selectThreshold(trainingRows, gateByLanguage.en[gateId].acceptThreshold, 1);
+      const selected = selectThreshold(trainingRows, gateByLanguage.en[gateId].acceptThreshold, 1, gateByLanguage.en[gateId].reviewThreshold);
       thresholds.push(selected.threshold);
       foldMetrics.push(confusion(validationRows, selected.threshold));
     }
@@ -429,6 +454,7 @@ for (const provider of ['jev', 'kev']) for (const language of ['en', 'sv']) for 
 fs.writeFileSync(path.join(outputDir, 'gate-metrics.csv'), csv(gateMetricRows));
 
 fs.writeFileSync(path.join(outputDir, 'language-comparison.csv'), csv([['gate_id', 'paired_development_cases', 'probability_correlation', 'mean_absolute_probability_delta', 'mean_en', 'mean_sv', 'median_en', 'median_sv', 'current_f1_en', 'current_f1_sv', 'f1_threshold_en', 'f1_threshold_sv', 'threshold_delta'], ...languageComparison.map(row => [row.gateId, row.count, round(row.correlation), round(row.meanAbsoluteDelta), round(row.meanEn), round(row.meanSv), round(row.medianEn), round(row.medianSv), round(row.currentF1En), round(row.currentF1Sv), round(row.f1ThresholdEn), round(row.f1ThresholdSv), round(row.thresholdDelta)])]));
+fs.writeFileSync(path.join(outputDir, 'language-threshold-policy.csv'), csv([['gate_id', 'f1_threshold_en', 'f1_threshold_sv', 'f1_threshold_common', 'optimal_f1_en', 'optimal_f1_sv', 'common_f1_en', 'common_f1_sv', 'f1_loss_en', 'f1_loss_sv', 'max_f1_loss', 'insufficient_holdout_evidence', 'use_shared_threshold', 'selected_candidate', 'selected_threshold_en', 'selected_threshold_sv'], ...languageThresholdPolicy.map(row => [row.gateId, round(row.f1ThresholdEn), round(row.f1ThresholdSv), round(row.f1ThresholdCommon), round(row.optimalF1En), round(row.optimalF1Sv), round(row.commonF1En), round(row.commonF1Sv), round(row.f1LossEn), round(row.f1LossSv), round(row.maxF1Loss), row.insufficientHoldoutEvidence, row.useSharedThreshold, row.selectedCandidate, round(row.selectedThresholdEn), round(row.selectedThresholdSv)])]));
 fs.writeFileSync(path.join(outputDir, 'grouped-repeated-cv.csv'), csv([['gate_id', 'repeats', 'folds', 'grouped_by', 'language_pairs_together', 'threshold_mean', 'threshold_median', 'threshold_stddev', 'threshold_min', 'threshold_max', 'precision', 'recall', 'f1', 'balanced_accuracy', 'specificity', 'fpr', 'fnr', 'tp', 'fp', 'fn', 'tn'], ...crossValidation.map(row => [row.gateId, row.repeats, row.folds, row.groupedBy, row.languagePairsTogether, round(row.thresholdMean), round(row.thresholdMedian), round(row.thresholdStandardDeviation), round(row.thresholdMin), round(row.thresholdMax), round(row.precision), round(row.recall), round(row.f1), round(row.balancedAccuracy), round(row.specificity), round(row.falsePositiveRate), round(row.falseNegativeRate), row.tp, row.fp, row.fn, row.tn])]));
 const reliabilityRows = [['provider', 'language', 'scope', 'gate_id', 'bin_lower', 'bin_upper', 'count', 'mean_probability', 'observed_positive_rate']];
 for (const provider of ['jev', 'kev']) for (const language of ['en', 'sv']) for (const gateId of gateIds) {
@@ -436,24 +462,45 @@ for (const provider of ['jev', 'kev']) for (const language of ['en', 'sv']) for 
 }
 fs.writeFileSync(path.join(outputDir, 'reliability-bins.csv'), csv(reliabilityRows));
 
+const calibrationDatasetHash = crypto.createHash('sha256').update(JSON.stringify(developmentCases)).digest('hex');
+const frozenConfig = {
+  configVersion: 'kev-gates-v2', frozenAtUtc: createdAtUtc,
+  provider: 'Kev', model: 'jaredpalmer/kev-9b', modelAlias: 'kev-latest',
+  calibrationDatasetHash, calibrationSeed: seed, calibrationCaseIds: developmentIds,
+  languagePolicy: 'Shared threshold unless a common F1-optimal threshold loses more than 5 percentage points on either language in development data; shared is mandatory when final holdout has fewer than 5 positives.',
+  wordingPolicy: 'Baseline v1/v1-sv wording retained; Phase 2 found no semantic-separation justification for live wording experiments.',
+  gates: gateIds.map(gateId => {
+    const policy = languageThresholdPolicy.find(item => item.gateId === gateId);
+    return {
+      gateId,
+      thresholdStrategy: policy.useSharedThreshold ? 'shared' : 'language_specific',
+      selectedCandidate: policy.selectedCandidate,
+      en: { instructions: gateByLanguage.en[gateId].instructions, criteria: gateByLanguage.en[gateId].criteria, reviewThreshold: gateByLanguage.en[gateId].reviewThreshold, acceptThreshold: round(policy.selectedThresholdEn) },
+      sv: { instructions: gateByLanguage.sv[gateId].instructions, criteria: gateByLanguage.sv[gateId].criteria, reviewThreshold: gateByLanguage.sv[gateId].reviewThreshold, acceptThreshold: round(policy.selectedThresholdSv) }
+    };
+  })
+};
+fs.writeFileSync(path.join(outputDir, 'configs/kev-gates-v2.json'), JSON.stringify(frozenConfig, null, 2) + '\n');
+
 const candidateRows = diagnostics.filter(item => item.wordingExperimentCandidate).map(item => `<tr><td>${esc(item.gateId)}</td><td>${item.primaryDiagnosis}</td><td>${(item.meanRocAuc * 100).toFixed(1)}%</td><td>${(item.thresholdGain * 100).toFixed(1)} pp</td><td>${item.language.correlation == null ? '—' : item.language.correlation.toFixed(3)}</td></tr>`).join('');
 const diagnosticRows = diagnostics.map(item => `<tr><td>${esc(item.gateId)}</td><td>${item.primaryDiagnosis}</td><td>${item.flags.join(', ') || '—'}</td><td>${(item.meanRocAuc * 100).toFixed(1)}%</td><td>${(item.meanPrAuc * 100).toFixed(1)}%</td><td>${item.meanBrier.toFixed(3)}</td><td>${(item.currentCombinedF1 * 100).toFixed(1)}%</td><td>${(item.calibratedDevelopmentF1 * 100).toFixed(1)}%</td><td>${item.currentThreshold.toFixed(2)} → ${item.combinedF1Threshold.toFixed(3)}</td></tr>`).join('');
-const html = `<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kev-9B · Offline calibration diagnostic</title><style>:root{--ink:#17202b;--muted:#687587;--line:#dbe2eb;--bg:#f3f5f8;--blue:#246bfd;--green:#08a88a;--orange:#e07a3f}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:42px 22px 80px}.hero,.panel,.callout{background:#fff;border:1px solid var(--line);border-radius:18px}.hero{padding:34px;background:linear-gradient(135deg,#fff,#eaf2ff)}h1{font-size:42px;line-height:1.05;margin:6px 0 14px}h2{margin:42px 0 12px}.muted{color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:22px}.card{padding:17px;background:#fff;border:1px solid var(--line);border-radius:13px}.card b{display:block;font-size:26px}.panel{padding:18px;overflow:auto}.callout{padding:18px 20px;border-left:5px solid var(--green);margin:18px 0}.warn{border-left-color:var(--orange)}table{border-collapse:collapse;width:100%}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{font-size:11px;color:var(--muted)}code{background:#edf1f6;padding:2px 5px;border-radius:4px}</style></head><body><main><section class="hero"><div class="muted">BizzJev · Phase 0–2 · inga provider-anrop</div><h1>Kev-9B offline calibration</h1><p>Historiska råresultat har verifierats, en leakage-säker 75/25-split har låsts och thresholds har kalibrerats enbart på development-delen.</p><div class="cards"><div class="card"><span>Kev baseline F1</span><b>${(baseline.kev.en.macroF1 * 100).toFixed(1)} / ${(baseline.kev.sv.macroF1 * 100).toFixed(1)}%</b><small>EN / SV</small></div><div class="card"><span>Kev AUROC</span><b>${(baseline.kev.en.macroRocAuc * 100).toFixed(1)} / ${(baseline.kev.sv.macroRocAuc * 100).toFixed(1)}%</b><small>EN / SV</small></div><div class="card"><span>Språkkorrelation</span><b>${baseline.kev.languageConsistency.correlation.toFixed(3)}</b></div><div class="card"><span>Split</span><b>75 / 25</b><small>development / orörd holdout</small></div></div></section><h2>Diagnostik per gate</h2><div class="panel"><table><thead><tr><th>Gate</th><th>Primär</th><th>Flaggor</th><th>AUROC</th><th>PR-AUC</th><th>Brier</th><th>F1 nu</th><th>F1 kalibrerad*</th><th>Threshold</th></tr></thead><tbody>${diagnosticRows}</tbody></table></div><p class="muted">* Development-resultat, valt och mätt på samma 75 case-par. Detta visar kalibreringspotential och är inte holdout-prestanda.</p><h2>Gates att överväga för wording-experiment</h2>${candidateRows ? `<div class="panel"><table><thead><tr><th>Gate</th><th>Diagnos</th><th>AUROC</th><th>Thresholdlyft</th><th>EN↔SV</th></tr></thead><tbody>${candidateRows}</tbody></table></div>` : '<div class="callout">Ingen gate uppfyller kriterierna för wording-experiment före threshold-kalibrering.</div>'}<div class="callout warn"><b>Holdout är fortfarande orörd.</b><br>Inga metrics med kalibrerade thresholds har beräknats på de 25 finalfallen. Konfigurationen måste först frysas.</div><div class="callout warn"><b>Per-gate holdout är statistiskt tunn för sällsynta signaler.</b><br>${fragileHoldoutGates.map(esc).join(', ')} har färre än fem positiva finalfall. Deras holdoutvärden måste redovisas med råa counts och kompletteras med 20×5 case-grupperad repeated cross-validation.</div><h2>Metodbegränsning</h2><p>De historiska språk-runfilerna innehåller parsade probabilities och latency men saknar exakt request payload och rå provider-response. Kommande livefaser måste spara båda. Datasetet är litet; slutrapporten ska därför använda case-grupperad bootstrap.</p></main></body></html>`;
+const languagePolicyRows = languageThresholdPolicy.map(item => `<tr><td>${esc(item.gateId)}</td><td>${item.f1ThresholdEn.toFixed(3)}</td><td>${item.f1ThresholdSv.toFixed(3)}</td><td>${item.f1ThresholdCommon.toFixed(3)}</td><td>${(item.maxF1Loss * 100).toFixed(1)} pp</td><td>${item.useSharedThreshold ? 'Gemensam' : 'Språkspecifik'}</td><td>${item.selectedThresholdEn.toFixed(3)} / ${item.selectedThresholdSv.toFixed(3)}</td></tr>`).join('');
+const html = `<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kev-9B · Offline calibration diagnostic</title><style>:root{--ink:#17202b;--muted:#687587;--line:#dbe2eb;--bg:#f3f5f8;--blue:#246bfd;--green:#08a88a;--orange:#e07a3f}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,sans-serif}main{max-width:1180px;margin:auto;padding:42px 22px 80px}.hero,.panel,.callout{background:#fff;border:1px solid var(--line);border-radius:18px}.hero{padding:34px;background:linear-gradient(135deg,#fff,#eaf2ff)}h1{font-size:42px;line-height:1.05;margin:6px 0 14px}h2{margin:42px 0 12px}.muted{color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:22px}.card{padding:17px;background:#fff;border:1px solid var(--line);border-radius:13px}.card b{display:block;font-size:26px}.panel{padding:18px;overflow:auto}.callout{padding:18px 20px;border-left:5px solid var(--green);margin:18px 0}.warn{border-left-color:var(--orange)}table{border-collapse:collapse;width:100%}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{font-size:11px;color:var(--muted)}code{background:#edf1f6;padding:2px 5px;border-radius:4px}</style></head><body><main><section class="hero"><div class="muted">BizzJev · Phase 0–3 · inga nya provider-anrop</div><h1>Kev-9B offline calibration</h1><p>Historiska råresultat har verifierats, en leakage-säker 75/25-split har låsts och thresholds har kalibrerats enbart på development-delen.</p><div class="cards"><div class="card"><span>Kev baseline F1</span><b>${(baseline.kev.en.macroF1 * 100).toFixed(1)} / ${(baseline.kev.sv.macroF1 * 100).toFixed(1)}%</b><small>EN / SV</small></div><div class="card"><span>Kev AUROC</span><b>${(baseline.kev.en.macroRocAuc * 100).toFixed(1)} / ${(baseline.kev.sv.macroRocAuc * 100).toFixed(1)}%</b><small>EN / SV</small></div><div class="card"><span>Språkkorrelation</span><b>${baseline.kev.languageConsistency.correlation.toFixed(3)}</b></div><div class="card"><span>Split</span><b>75 / 25</b><small>development / orörd holdout</small></div></div></section><h2>Diagnostik per gate</h2><div class="panel"><table><thead><tr><th>Gate</th><th>Primär</th><th>Flaggor</th><th>AUROC</th><th>PR-AUC</th><th>Brier</th><th>F1 nu</th><th>F1 kalibrerad*</th><th>Threshold</th></tr></thead><tbody>${diagnosticRows}</tbody></table></div><p class="muted">* Development-resultat, valt och mätt på samma 75 case-par. Detta visar kalibreringspotential och är inte holdout-prestanda.</p><h2>Gemensam eller språkdelad threshold</h2><div class="panel"><table><thead><tr><th>Gate</th><th>Optimal EN</th><th>Optimal SV</th><th>Gemensam</th><th>Största F1-förlust</th><th>Policy</th><th>Vald EN / SV</th></tr></thead><tbody>${languagePolicyRows}</tbody></table></div><p class="muted">Gemensam threshold väljs när den kostar högst 5 procentenheter F1 i vardera språk på development-data, och alltid när final holdout har färre än fem positiva fall. Review-thresholds är oförändrade och alla accept-thresholds begränsas till review ≤ accept.</p><h2>Gates att överväga för wording-experiment</h2>${candidateRows ? `<div class="panel"><table><thead><tr><th>Gate</th><th>Diagnos</th><th>AUROC</th><th>Thresholdlyft</th><th>EN↔SV</th></tr></thead><tbody>${candidateRows}</tbody></table></div>` : '<div class="callout">Ingen gate uppfyller kriterierna för wording-experiment före threshold-kalibrering.</div>'}<div class="callout warn"><b>Holdout är fortfarande orörd.</b><br>Inga metrics med kalibrerade thresholds har beräknats på de 25 finalfallen. Konfigurationen måste först frysas.</div><div class="callout warn"><b>Per-gate holdout är statistiskt tunn för sällsynta signaler.</b><br>${fragileHoldoutGates.map(esc).join(', ')} har färre än fem positiva finalfall. Deras holdoutvärden måste redovisas med råa counts och kompletteras med 20×5 case-grupperad repeated cross-validation.</div><h2>Metodbegränsning</h2><p>De historiska språk-runfilerna innehåller parsade probabilities och latency men saknar exakt request payload och rå provider-response. Kommande livefaser måste spara båda. Datasetet är litet; slutrapporten ska därför använda case-grupperad bootstrap.</p></main></body></html>`;
 fs.writeFileSync(path.join(outputDir, 'calibration-diagnostics.html'), html);
 
 const rawReadme = `# Raw provider responses\n\nPhase 0–2 made zero provider requests, so this directory intentionally contains no response files.\n\nThe immutable historical inputs are referenced by path and SHA-256 in \`experiment-manifest.json\`. Those historical language-evaluation files contain parsed probabilities, returned model and per-request latency, but not the exact serialized request payload or raw provider response. Every live request in Phase 4 and later must save both without API keys.\n`;
 fs.writeFileSync(path.join(outputDir, 'raw/README.md'), rawReadme);
 
-const readme = `# Kev-9B Calibration & Evaluation Suite\n\nThis directory contains Phase 0–2 only. It reproduces historical Jev and Kev-9B baselines from saved artifacts, creates a paired 75/25 development/final split, and calibrates Kev thresholds offline on development data. It performs zero provider calls.\n\n## Reproduce\n\n\`\`\`powershell\nnode scripts\\run-kev-calibration-offline.mjs ${path.relative(root, outputDir).replaceAll('/', '\\\\')}\n\`\`\`\n\nThe script validates the 100 paired EN/SV case IDs and labels, verifies the expected baseline metrics, then regenerates all Phase 0–2 artifacts. Seed: \`${seed}\`.\n\n## Leakage boundary\n\nThreshold candidates are selected from the 75 development case IDs only. EN and SV for each ID always share the same split. The 25 final IDs are listed for auditability but no calibrated-threshold result is computed for them before configuration freeze.\n\n## Candidate policy\n\nThree thresholds are reported per gate and language: F1-optimal (F1), precision-oriented (F0.5), and recall-oriented (F2). The recommended experiment candidate follows the existing policy profile: \`strong_boundary\` uses precision-oriented, \`catch_most\` uses recall-oriented, and other profiles use F1. This recommendation is provisional until business costs are confirmed.\n\n## Small holdout gates\n\nGates with fewer than five positive final cases are explicitly marked in \`split-manifest.json\`. Their eventual holdout counts remain valid but are too unstable for strong per-gate claims. \`grouped-repeated-cv.csv\` therefore adds 20×5 repeated cross-validation over development cases while keeping EN/SV pairs grouped.\n\n## Phase 2 finding\n\nNo gate currently qualifies for wording experiments: every gate retains strong semantic ordering, with mean EN/SV AUROC above 0.93. Threshold and probability-scale calibration should be completed before spending live calls on wording variants.\n\n## Historical limitation\n\nExisting run artifacts do not include exact request payloads or raw provider responses. See \`raw/README.md\`. No source artifact was modified.\n`;
+const readme = `# Kev-9B Calibration & Evaluation Suite\n\nThis directory contains Phase 0–3. It reproduces historical Jev and Kev-9B baselines from saved artifacts, creates a paired 75/25 development/final split, calibrates Kev thresholds offline, and selects shared versus language-specific thresholds. It performs zero provider calls.\n\n## Reproduce\n\n\`\`\`powershell\nnode scripts\\run-kev-calibration-offline.mjs ${path.relative(root, outputDir).replaceAll('/', '\\\\')}\n\`\`\`\n\nThe script validates the 100 paired EN/SV case IDs and labels, verifies the expected baseline metrics, then regenerates all Phase 0–3 artifacts. Seed: \`${seed}\`.\n\n## Leakage boundary\n\nThreshold candidates are selected from the 75 development case IDs only. EN and SV for each ID always share the same split. The 25 final IDs are listed for auditability but no calibrated-threshold result is computed for them before configuration freeze.\n\n## Candidate policy\n\nThree thresholds are reported per gate and language: F1-optimal (F1), precision-oriented (F0.5), and recall-oriented (F2). Candidates may not fall below the unchanged review threshold. The selected candidate follows the existing policy profile: \`strong_boundary\` uses precision-oriented, \`catch_most\` uses recall-oriented, and other profiles use F1. A shared EN/SV threshold is used unless it loses more than 5 percentage points F1 in either language on development data; sparse holdout gates always remain shared.\n\n## Small holdout gates\n\nGates with fewer than five positive final cases are explicitly marked in \`split-manifest.json\`. Their eventual holdout counts remain valid but are too unstable for strong per-gate claims. \`grouped-repeated-cv.csv\` therefore adds 20×5 repeated cross-validation over development cases while keeping EN/SV pairs grouped.\n\n## Phase 2–3 finding\n\nNo gate currently qualifies for wording experiments: every gate retains strong semantic ordering, with mean EN/SV AUROC above 0.93. Threshold and probability-scale calibration should be completed before spending live calls on wording variants. The frozen candidate is \`configs/kev-gates-v2.json\`.\n\n## Historical limitation\n\nExisting run artifacts do not include exact request payloads or raw provider responses. See \`raw/README.md\`. No source artifact was modified.\n`;
 fs.writeFileSync(path.join(outputDir, 'README.md'), readme);
 
-const generatedFiles = ['README.md', 'baseline-reproduction.json', 'split-manifest.json', 'threshold-calibration.csv', 'gate-metrics.csv', 'language-comparison.csv', 'grouped-repeated-cv.csv', 'reliability-bins.csv', 'calibration-diagnostics.json', 'calibration-diagnostics.html', 'configs/gates.en.v1.json', 'configs/gates.sv.v1.json', 'raw/README.md'];
+const generatedFiles = ['README.md', 'baseline-reproduction.json', 'split-manifest.json', 'threshold-calibration.csv', 'gate-metrics.csv', 'language-comparison.csv', 'language-threshold-policy.csv', 'grouped-repeated-cv.csv', 'reliability-bins.csv', 'calibration-diagnostics.json', 'calibration-diagnostics.html', 'configs/gates.en.v1.json', 'configs/gates.sv.v1.json', 'configs/kev-gates-v2.json', 'raw/README.md'];
 const manifest = {
-  suiteVersion: 'kev-calibration-suite-v1', phase: '0-2', createdAtUtc, gitCommit, seed,
+  suiteVersion: 'kev-calibration-suite-v1', phase: '0-3', createdAtUtc, gitCommit, seed,
   providerRequests: 0,
   model: { provider: 'Kev', model: 'jaredpalmer/kev-9b', alias: 'kev-latest', hosting: 'Modal', apiBase: 'https://haviet-kok--kev-9b-api.modal.run' },
   split: { developmentCases: 75, finalHoldoutCases: 25, groupingKey: 'caseId', languages: ['en', 'sv'] },
-  calibration: { scope: 'development only', thresholdSweep: 'unique probabilities plus adjacent midpoints and current threshold', candidates: { f1: 'F1', precision: 'F0.5', recall: 'F2' }, reviewThresholds: 'unchanged baseline review thresholds' },
+  calibration: { scope: 'development only', thresholdSweep: 'unique probabilities plus adjacent midpoints and current threshold, constrained to acceptThreshold >= reviewThreshold', candidates: { f1: 'F1', precision: 'F0.5', recall: 'F2' }, reviewThresholds: 'unchanged baseline review thresholds', sharedLanguageMaximumF1Loss: .05, sparseHoldoutForcesSharedThreshold: true },
   sources: Object.fromEntries(Object.entries(source).map(([name, relativePath]) => [name, { path: relativePath, sha256: sha256(path.join(root, relativePath)) }])),
   artifacts: Object.fromEntries(generatedFiles.map(relativePath => [relativePath, { sha256: sha256(path.join(outputDir, relativePath)) }])),
   analysisScript: { path: 'scripts/run-kev-calibration-offline.mjs', sha256: sha256(path.join(root, 'scripts/run-kev-calibration-offline.mjs')) },
