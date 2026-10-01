@@ -1,0 +1,268 @@
+{
+  "version": "kev-calibration-split-v1",
+  "seed": 20261001,
+  "groupingKey": "caseId",
+  "algorithm": "50,000 deterministic candidate 25-case holdouts; minimize normalized imbalance across case type, per-gate positives and multi-concept cases",
+  "development": {
+    "ids": [
+      "ob-02",
+      "ob-04",
+      "ob-05",
+      "ob-06",
+      "ob-07",
+      "ob-08",
+      "ob-09",
+      "ob-10",
+      "ob-11",
+      "ob-12",
+      "ob-13",
+      "ob-15",
+      "ob-16",
+      "ob-18",
+      "ob-20",
+      "mu-01",
+      "mu-03",
+      "mu-06",
+      "mu-07",
+      "mu-08",
+      "mu-09",
+      "mu-10",
+      "mu-11",
+      "mu-12",
+      "mu-13",
+      "mu-14",
+      "mu-15",
+      "mu-17",
+      "mu-18",
+      "mu-19",
+      "vg-01",
+      "vg-02",
+      "vg-03",
+      "vg-05",
+      "vg-06",
+      "vg-07",
+      "vg-08",
+      "vg-10",
+      "vg-11",
+      "vg-14",
+      "vg-15",
+      "bd-01",
+      "bd-02",
+      "bd-04",
+      "bd-05",
+      "bd-06",
+      "bd-07",
+      "bd-08",
+      "bd-10",
+      "bd-11",
+      "bd-14",
+      "bd-15",
+      "cd-01",
+      "cd-02",
+      "cd-04",
+      "cd-05",
+      "cd-06",
+      "cd-07",
+      "cd-08",
+      "cd-10",
+      "lg-01",
+      "lg-03",
+      "lg-04",
+      "lg-05",
+      "lg-06",
+      "lg-08",
+      "lg-09",
+      "lg-10",
+      "ng-01",
+      "ng-02",
+      "ng-03",
+      "ng-04",
+      "ng-06",
+      "ng-07",
+      "ng-10"
+    ],
+    "distribution": {
+      "cases": 75,
+      "caseTypes": {
+        "obvious": 15,
+        "multi_concept": 15,
+        "indirect_vague": 11,
+        "close_boundary": 11,
+        "contradictory_current_state": 8,
+        "long_noisy": 8,
+        "negation_lexical_trap": 7
+      },
+      "gates": {
+        "billing_problem": {
+          "yes": 19,
+          "no": 52,
+          "unclear": 4
+        },
+        "technical_problem": {
+          "yes": 23,
+          "no": 49,
+          "unclear": 3
+        },
+        "contract_problem": {
+          "yes": 18,
+          "no": 55,
+          "unclear": 2
+        },
+        "support_interaction_problem": {
+          "yes": 9,
+          "no": 66,
+          "unclear": 0
+        },
+        "unresolved_issue": {
+          "yes": 17,
+          "no": 57,
+          "unclear": 1
+        },
+        "recurring_problem": {
+          "yes": 12,
+          "no": 62,
+          "unclear": 1
+        },
+        "positive_support_experience": {
+          "yes": 12,
+          "no": 63,
+          "unclear": 0
+        },
+        "negative_support_experience": {
+          "yes": 18,
+          "no": 53,
+          "unclear": 4
+        },
+        "competitor_consideration": {
+          "yes": 9,
+          "no": 65,
+          "unclear": 1
+        },
+        "churn_risk": {
+          "yes": 14,
+          "no": 54,
+          "unclear": 7
+        },
+        "explicit_cancellation_intent": {
+          "yes": 5,
+          "no": 69,
+          "unclear": 1
+        }
+      },
+      "multiConcept": 40
+    }
+  },
+  "finalHoldout": {
+    "ids": [
+      "ob-01",
+      "ob-03",
+      "ob-14",
+      "ob-17",
+      "ob-19",
+      "mu-02",
+      "mu-04",
+      "mu-05",
+      "mu-16",
+      "mu-20",
+      "vg-04",
+      "vg-09",
+      "vg-12",
+      "vg-13",
+      "bd-03",
+      "bd-09",
+      "bd-12",
+      "bd-13",
+      "cd-03",
+      "cd-09",
+      "lg-02",
+      "lg-07",
+      "ng-05",
+      "ng-08",
+      "ng-09"
+    ],
+    "distribution": {
+      "cases": 25,
+      "caseTypes": {
+        "obvious": 5,
+        "multi_concept": 5,
+        "indirect_vague": 4,
+        "close_boundary": 4,
+        "contradictory_current_state": 2,
+        "long_noisy": 2,
+        "negation_lexical_trap": 3
+      },
+      "gates": {
+        "billing_problem": {
+          "yes": 7,
+          "no": 16,
+          "unclear": 2
+        },
+        "technical_problem": {
+          "yes": 7,
+          "no": 16,
+          "unclear": 2
+        },
+        "contract_problem": {
+          "yes": 6,
+          "no": 18,
+          "unclear": 1
+        },
+        "support_interaction_problem": {
+          "yes": 3,
+          "no": 22,
+          "unclear": 0
+        },
+        "unresolved_issue": {
+          "yes": 5,
+          "no": 20,
+          "unclear": 0
+        },
+        "recurring_problem": {
+          "yes": 5,
+          "no": 20,
+          "unclear": 0
+        },
+        "positive_support_experience": {
+          "yes": 4,
+          "no": 21,
+          "unclear": 0
+        },
+        "negative_support_experience": {
+          "yes": 5,
+          "no": 20,
+          "unclear": 0
+        },
+        "competitor_consideration": {
+          "yes": 3,
+          "no": 22,
+          "unclear": 0
+        },
+        "churn_risk": {
+          "yes": 4,
+          "no": 20,
+          "unclear": 1
+        },
+        "explicit_cancellation_intent": {
+          "yes": 1,
+          "no": 24,
+          "unclear": 0
+        }
+      },
+      "multiConcept": 13
+    },
+    "status": "UNTOUCHED — no calibrated-threshold metrics computed in Phase 0–2"
+  },
+  "pairedLanguagesKeptTogether": true,
+  "holdoutAdequacy": {
+    "minimumPositiveCasesForStablePerGateClaim": 5,
+    "fragileGates": [
+      "support_interaction_problem",
+      "positive_support_experience",
+      "competitor_consideration",
+      "churn_risk",
+      "explicit_cancellation_intent"
+    ],
+    "mitigation": "Report holdout counts but supplement per-gate conclusions with 20x5 grouped repeated cross-validation over development cases."
+  },
+  "optimizationScore": 0.8905527187105828
+}

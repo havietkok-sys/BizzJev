@@ -1,0 +1,120 @@
+{
+  "suiteVersion": "kev-calibration-suite-v1",
+  "phase": "0-2",
+  "createdAtUtc": "2026-10-01T21:54:03.655Z",
+  "gitCommit": "026a9023f3a44619100b22b1ec42adf6dedc4cf7",
+  "seed": 20261001,
+  "providerRequests": 0,
+  "model": {
+    "provider": "Kev",
+    "model": "jaredpalmer/kev-9b",
+    "alias": "kev-latest",
+    "hosting": "Modal",
+    "apiBase": "https://haviet-kok--kev-9b-api.modal.run"
+  },
+  "split": {
+    "developmentCases": 75,
+    "finalHoldoutCases": 25,
+    "groupingKey": "caseId",
+    "languages": [
+      "en",
+      "sv"
+    ]
+  },
+  "calibration": {
+    "scope": "development only",
+    "thresholdSweep": "unique probabilities plus adjacent midpoints and current threshold",
+    "candidates": {
+      "f1": "F1",
+      "precision": "F0.5",
+      "recall": "F2"
+    },
+    "reviewThresholds": "unchanged baseline review thresholds"
+  },
+  "sources": {
+    "datasetEn": {
+      "path": "src/BizzJev.Lab/config/testcases.v1.json",
+      "sha256": "eab768fb5c8f123416704d3c2d13f044b36c50ff9a3fb2f9bac1ef0769102d87"
+    },
+    "datasetSv": {
+      "path": "src/BizzJev.Lab/config/testcases.v1-sv.json",
+      "sha256": "20e437089ec57e1e45244fb8185add1942846a09b22450816ecca19e02d73d94"
+    },
+    "gatesEn": {
+      "path": "src/BizzJev.Lab/config/gates.v1.json",
+      "sha256": "d827589a619a61e529c43b3915db7d63551018a62be4ac6e5030804696799888"
+    },
+    "gatesSv": {
+      "path": "src/BizzJev.Lab/config/gates.v1-sv.json",
+      "sha256": "4b6162292de77433efbe6d6dff3c8f7cbee829210a87d6fd506abbf61ea36254"
+    },
+    "jevEn": {
+      "path": "data/results/swedish-language-evaluation-20260930/english.json",
+      "sha256": "8f2547eaca5a484555ef88a5de04e9c5940d43b52c58072f20883cd1be683113"
+    },
+    "jevSv": {
+      "path": "data/results/swedish-language-evaluation-20260930/swedish.json",
+      "sha256": "2b5d1cee732b3ecb5e48e7c410ab339c52343116d28a271c354a095a0113a8a9"
+    },
+    "kevEn": {
+      "path": "data/results/kev-modal-evaluation-20261001/english.json",
+      "sha256": "faedfaf4d87d3fce2f203ed9542d9b55e4a684d42c12f49e4556da9e0bdc2280"
+    },
+    "kevSv": {
+      "path": "data/results/kev-modal-evaluation-20261001/swedish.json",
+      "sha256": "66482842f1f832dac5851a4809075a4415bd61aa1fb42e4ba50486dc4569a870"
+    }
+  },
+  "artifacts": {
+    "README.md": {
+      "sha256": "d61275915cb8d9cdb620bc195bb849461cfe61bcc19a8cad792472fe985f0123"
+    },
+    "baseline-reproduction.json": {
+      "sha256": "95c5d08bfe97a807cb098a22af6d29444d69fafb448ba41c4067814d777c0dec"
+    },
+    "split-manifest.json": {
+      "sha256": "bc805478fbfc661331e8fd654a71efd7872cd77554d3d10448d6d7efb74ff3fb"
+    },
+    "threshold-calibration.csv": {
+      "sha256": "a5d9095d83463eb88d382b1492364db791cee6baa4a0987e32aca24a41ac244c"
+    },
+    "gate-metrics.csv": {
+      "sha256": "8288dcb4402f0adc2026e5d3637cc04710a11e80fe8f37fb4dfd224c0573adbf"
+    },
+    "language-comparison.csv": {
+      "sha256": "287f7ae0fcae7d3a77e0f54f0f1bcf465f332d9efe56976ea9c9c5ae5d982eb3"
+    },
+    "grouped-repeated-cv.csv": {
+      "sha256": "89ab17e1e18c75a3a3ba43c64dcc89cbfce47d6dae0a858be3819096d5d0b23d"
+    },
+    "reliability-bins.csv": {
+      "sha256": "0a329204cc716f2a815fcf49fc762341e84221a6af16bca0d7f3139fdb0f20f0"
+    },
+    "calibration-diagnostics.json": {
+      "sha256": "bd32ac134452269b89783c3e3f4054bc9f3a2b537af7a491bc588921488898b0"
+    },
+    "calibration-diagnostics.html": {
+      "sha256": "2058c3af6ee4769986b6de30ca74d9f78a599ffd56a511ac5f3597533b3294f8"
+    },
+    "configs/gates.en.v1.json": {
+      "sha256": "d827589a619a61e529c43b3915db7d63551018a62be4ac6e5030804696799888"
+    },
+    "configs/gates.sv.v1.json": {
+      "sha256": "4b6162292de77433efbe6d6dff3c8f7cbee829210a87d6fd506abbf61ea36254"
+    },
+    "raw/README.md": {
+      "sha256": "3fa858619bc2ff9b67e27db22688a1129c542c6984437c250a7a1f966c9c8e86"
+    }
+  },
+  "analysisScript": {
+    "path": "scripts/run-kev-calibration-offline.mjs",
+    "sha256": "d574e45365c419f32fd04fc5680f2ad33f464941348fa5784b8430aa65427406"
+  },
+  "secretsStored": false,
+  "historicalArtifactLimitations": [
+    "Exact request payload is unavailable",
+    "Raw provider response is unavailable",
+    "Only parsed probabilities, model and per-request latency are retained"
+  ],
+  "finalHoldoutStatus": "UNTOUCHED"
+}

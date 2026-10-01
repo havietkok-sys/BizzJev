@@ -1,0 +1,6 @@
+gate_id,repeats,folds,grouped_by,language_pairs_together,threshold_mean,threshold_median,threshold_stddev,threshold_min,threshold_max,precision,recall,f1,balanced_accuracy,specificity,fpr,fnr,tp,fp,fn,tn
+support_interaction_problem,20,5,caseId,true,0.753705,0.7602,0.034572,0.7042,0.80615,0.867209,0.888889,0.877915,0.935164,0.981439,0.018561,0.111111,320,49,40,2591
+positive_support_experience,20,5,caseId,true,0.266387,0.2301,0.095635,0.2301,0.711,0.888446,0.929167,0.90835,0.953472,0.977778,0.022222,0.070833,446,56,34,2464
+competitor_consideration,20,5,caseId,true,0.63024,0.604,0.05536,0.604,0.8,0.943662,0.930556,0.937063,0.961432,0.992308,0.007692,0.069444,335,20,25,2580
+churn_risk,20,5,caseId,true,0.778142,0.77245,0.012906,0.7695,0.808,0.820189,0.928571,0.871022,0.937897,0.947222,0.052778,0.071429,520,114,40,2046
+explicit_cancellation_intent,20,5,caseId,true,0.54444,0.4882,0.113047,0.4882,0.7694,0.680851,0.8,0.735632,0.886413,0.972826,0.027174,0.2,160,75,40,2685
