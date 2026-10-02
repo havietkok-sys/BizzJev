@@ -6,6 +6,33 @@ using Xunit;
 public sealed class GateLanguageTests
 {
     [Fact]
+    public void DefaultThresholdsFollowSelectedProviderWithoutChangingQuestions()
+    {
+        static List<SemanticGateDefinition> Load(string file)
+        {
+            using var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "config", file)));
+            return doc.RootElement.GetProperty("gates").Deserialize<List<SemanticGateDefinition>>(new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+        }
+
+        var english = Load("gates.v1.json");
+        var swedish = Load("gates.v1-sv.json");
+        var jev = ProviderThresholdDefaults.Apply(english, "jev", "en", AppContext.BaseDirectory);
+        var kevEnglish = ProviderThresholdDefaults.Apply(english, "kev", "en", AppContext.BaseDirectory);
+        var kevSwedish = ProviderThresholdDefaults.Apply(swedish, "kev", "sv", AppContext.BaseDirectory);
+
+        Assert.Equal(0.75, jev.Single(g => g.GateId == "billing_problem").AcceptThreshold);
+        Assert.Equal(0.3818, kevEnglish.Single(g => g.GateId == "billing_problem").AcceptThreshold);
+        Assert.Equal(0.88245, kevEnglish.Single(g => g.GateId == "recurring_problem").AcceptThreshold);
+        Assert.Equal(0.7099, kevSwedish.Single(g => g.GateId == "recurring_problem").AcceptThreshold);
+        Assert.All(english.Zip(kevEnglish), pair =>
+        {
+            Assert.Equal(pair.First.GateId, pair.Second.GateId);
+            Assert.Equal(pair.First.Instructions, pair.Second.Instructions);
+            Assert.Equal(pair.First.Criteria, pair.Second.Criteria);
+        });
+    }
+
+    [Fact]
     public void SavedCasesWithoutLanguageRemainEnglish()
     {
         var oldCase = JsonSerializer.Deserialize<EvaluationCase>("""{"id":"old","caseType":"demo","customerText":"hello"}""", new JsonSerializerOptions(JsonSerializerDefaults.Web));

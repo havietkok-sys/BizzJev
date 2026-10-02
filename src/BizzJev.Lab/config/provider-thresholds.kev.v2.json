@@ -1,0 +1,34 @@
+{
+  "configVersion": "kev-thresholds-v2",
+  "provider": "kev",
+  "model": "kev-latest",
+  "sourceConfig": "kev-gates-v2",
+  "languages": {
+    "en": {
+      "billing_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.3818 },
+      "technical_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.5715 },
+      "contract_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.7287 },
+      "support_interaction_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.7602 },
+      "unresolved_issue": { "reviewThreshold": 0.4, "acceptThreshold": 0.6646 },
+      "recurring_problem": { "reviewThreshold": 0.4, "acceptThreshold": 0.88245 },
+      "positive_support_experience": { "reviewThreshold": 0.4, "acceptThreshold": 0.6783 },
+      "negative_support_experience": { "reviewThreshold": 0.4, "acceptThreshold": 0.8195 },
+      "competitor_consideration": { "reviewThreshold": 0.4, "acceptThreshold": 0.604 },
+      "churn_risk": { "reviewThreshold": 0.3, "acceptThreshold": 0.77245 },
+      "explicit_cancellation_intent": { "reviewThreshold": 0.45, "acceptThreshold": 0.7694 }
+    },
+    "sv": {
+      "billing_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.3818 },
+      "technical_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.5715 },
+      "contract_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.7287 },
+      "support_interaction_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.7602 },
+      "unresolved_issue": { "reviewThreshold": 0.4, "acceptThreshold": 0.6646 },
+      "recurring_problem": { "reviewThreshold": 0.4, "acceptThreshold": 0.7099 },
+      "positive_support_experience": { "reviewThreshold": 0.4, "acceptThreshold": 0.6783 },
+      "negative_support_experience": { "reviewThreshold": 0.4, "acceptThreshold": 0.8195 },
+      "competitor_consideration": { "reviewThreshold": 0.4, "acceptThreshold": 0.604 },
+      "churn_risk": { "reviewThreshold": 0.3, "acceptThreshold": 0.77245 },
+      "explicit_cancellation_intent": { "reviewThreshold": 0.45, "acceptThreshold": 0.7694 }
+    }
+  }
+}

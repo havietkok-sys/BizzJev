@@ -59,6 +59,7 @@ The key authenticates requests to TypeSafe; you do not download or run the Jev m
 ### Select Jev or Kev without changing the evaluation
 
 The connection variables affect both the Noul gates and the mixed Choice/Score/Noul Decision Pipeline. BizzJev appends `/v1/systemone` to `SYSTEMONE_URL` and preserves the same request state and questions.
+The selected provider also chooses the default Noul gate thresholds: Jev uses the original gate thresholds and Kev uses the frozen `kev-thresholds-v2` profile. Saved manual policy overrides remain highest priority.
 
 TypeSafe Jev:
 

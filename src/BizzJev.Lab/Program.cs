@@ -52,7 +52,7 @@ List<SemanticGateDefinition> LoadGates(string version)
     var doc = JsonDocument.Parse(File.ReadAllText(path));
     var gates = doc.RootElement.GetProperty("gates").Deserialize<List<SemanticGateDefinition>>(json)
         ?? throw new InvalidOperationException("gate parse failed");
-    return gates;
+    return ProviderThresholdDefaults.Apply(gates, systemOneProviderName, version == "v1-sv" ? "sv" : "en", AppContext.BaseDirectory);
 }
 
 /// Config baseline with per-gate local active overrides applied (Gate Studio).
@@ -69,7 +69,8 @@ List<SemanticGateDefinition> LoadActiveGates(string language, out string gateSet
         gates[i] = local.Gate;
         overridden = true;
     }
-    gateSetVersion = overridden ? "mixed-local" : BaselineSet(language);
+    var providerSuffix = useKev ? "+kev-v2" : "";
+    gateSetVersion = overridden ? $"mixed-local{providerSuffix}" : $"{BaselineSet(language)}{providerSuffix}";
     return gates;
 }
 
@@ -77,11 +78,12 @@ Dictionary<string, PolicyDefinition> LoadPolicies(List<SemanticGateDefinition> g
 {
     var overrides = ReadJson<Dictionary<string, ThresholdOverride>>(Path.Combine(dataDir, "policy-overrides.json")) ?? [];
     var custom = overrides.Count > 0;
+    var policyVersion = useKev ? "kev-v2" : "v1";
     return gates.ToDictionary(
         g => g.GateId,
         g => overrides.TryGetValue(g.GateId, out var o)
-            ? new PolicyDefinition { GateId = g.GateId, PolicyVersion = "v1-custom", ReviewThreshold = o.ReviewThreshold, AcceptThreshold = o.AcceptThreshold, Profile = g.PolicyProfile }
-            : new PolicyDefinition { GateId = g.GateId, PolicyVersion = custom ? "v1-custom" : "v1", ReviewThreshold = g.ReviewThreshold, AcceptThreshold = g.AcceptThreshold, Profile = g.PolicyProfile });
+            ? new PolicyDefinition { GateId = g.GateId, PolicyVersion = $"{policyVersion}-custom", ReviewThreshold = o.ReviewThreshold, AcceptThreshold = o.AcceptThreshold, Profile = g.PolicyProfile }
+            : new PolicyDefinition { GateId = g.GateId, PolicyVersion = custom ? $"{policyVersion}-custom" : policyVersion, ReviewThreshold = g.ReviewThreshold, AcceptThreshold = g.AcceptThreshold, Profile = g.PolicyProfile });
 }
 
 List<EvaluationCase> LoadSyntheticCases(string language)
@@ -148,7 +150,7 @@ app.MapGet("/api/gates", (string? version, string? language) =>
     var gates = LoadGates(v);
     return Results.Json(new
     {
-        gateSetVersion = v, language = lang,
+        gateSetVersion = useKev ? $"{v}+kev-v2" : v, language = lang,
         gates = gates.Select(g => new
         {
             g.GateId, g.Category, g.BusinessGoal, g.SemanticTarget, g.SemanticInterior, g.SemanticBoundaries,
@@ -479,6 +481,35 @@ public sealed record SetActiveRequest(string Version, string? Language = null);
 public sealed record DraftTestRequest(SemanticGateDefinition Draft, string CustomerText, string? Language = null);
 public sealed record DraftEvaluateRequest(SemanticGateDefinition Draft, string? Language = null);
 public sealed record ResetRequest(bool Confirm);
+
+internal static class ProviderThresholdDefaults
+{
+    public static List<SemanticGateDefinition> Apply(IEnumerable<SemanticGateDefinition> gates, string provider, string language, string baseDirectory)
+    {
+        var result = gates.ToList();
+        if (provider == "jev") return result;
+        if (provider != "kev") throw new InvalidOperationException("Unsupported System One provider.");
+
+        var path = Path.Combine(baseDirectory, "config", "provider-thresholds.kev.v2.json");
+        using var doc = JsonDocument.Parse(File.ReadAllText(path));
+        var thresholds = doc.RootElement.GetProperty("languages").GetProperty(language);
+        var configuredIds = thresholds.EnumerateObject().Select(item => item.Name).ToHashSet();
+        if (!configuredIds.SetEquals(result.Select(gate => gate.GateId)))
+            throw new InvalidOperationException("Kev threshold config must cover exactly the active gates.");
+
+        return result.Select(gate =>
+        {
+            var values = thresholds.GetProperty(gate.GateId);
+            var configured = gate with
+            {
+                ReviewThreshold = values.GetProperty("reviewThreshold").GetDouble(),
+                AcceptThreshold = values.GetProperty("acceptThreshold").GetDouble()
+            };
+            GateStore.ValidateGate(configured);
+            return configured;
+        }).ToList();
+    }
+}
 
 public sealed class DraftCaseResult
 {

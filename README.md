@@ -125,7 +125,7 @@ $env:SYSTEMONE_PROVIDER = "kev"
 .\START_DEMO.bat
 ```
 
-`SYSTEMONE_URL` is the base URL without `/v1/systemone`. Omitting `SYSTEMONE_PROVIDER`, or setting it to `jev`, keeps the TypeSafe defaults and prioritizes `TYPESAFE_API_KEY`. Setting it to `kev` activates the saved `SYSTEMONE_*` connection values.
+`SYSTEMONE_URL` is the base URL without `/v1/systemone`. Omitting `SYSTEMONE_PROVIDER`, or setting it to `jev`, keeps the TypeSafe connection and original Jev thresholds while prioritizing `TYPESAFE_API_KEY`. Setting it to `kev` activates the saved `SYSTEMONE_*` connection values and the frozen `kev-thresholds-v2` profile. Explicit policy overrides still take precedence.
 
 The saved 200-request Sven evaluation, including threshold-independent AUROC, in-sample calibration analysis, latency, per-gate results and the Jev baseline comparison, is available as a [written evaluation](data/results/sven-language-evaluation-20261001/EVALUATION.md) and [standalone HTML report](data/results/sven-language-evaluation-20261001/report.html).
 

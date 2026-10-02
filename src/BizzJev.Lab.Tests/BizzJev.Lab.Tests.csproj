@@ -18,5 +18,6 @@
     <None Include="..\BizzJev.Lab\config\decision-pipeline.v1.json" Link="config\decision-pipeline.v1.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\BizzJev.Lab\config\decision-pipeline.sv.v1.json" Link="config\decision-pipeline.sv.v1.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\BizzJev.Lab\config\decision-pipeline-cases.v1.json" Link="config\decision-pipeline-cases.v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\BizzJev.Lab\config\provider-thresholds.kev.v2.json" Link="config\provider-thresholds.kev.v2.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
