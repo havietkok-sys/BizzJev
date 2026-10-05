@@ -1,0 +1,2652 @@
+{
+  "datasetVersion": "emoji-v1",
+  "language": "sv",
+  "sourceDataset": "v1",
+  "note": "Same 100 cases and labels as v1; deterministic matching/opposing emoji cues appended for stress testing.",
+  "cases": [
+    {
+      "id": "ob-01",
+      "caseType": "obvious",
+      "customerText": "På min senaste faktura har ni debiterat mig två gånger för samma månad. Rätta det och betala tillbaka den extra debiteringen.\n\nEmoji-stresstest: 💳💸 1️⃣✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tydligt fakturaproblem med dubbel debitering.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "💳💸",
+          "1️⃣✅"
+        ]
+      }
+    },
+    {
+      "id": "ob-02",
+      "caseType": "obvious",
+      "customerText": "Bredbandet har varit helt dött sedan i morse. Routern lyser rött och inget jag gör hjälper.\n\nEmoji-stresstest: 🛠️✨ 💚🌟. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tydligt avbrott.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛠️✨",
+          "💚🌟"
+        ]
+      }
+    },
+    {
+      "id": "ob-03",
+      "caseType": "obvious",
+      "customerText": "Jag vill uppgradera mitt mobilabonnemang till 20 GB. Hur gör jag det?\n\nEmoji-stresstest: 📝📄 😊👍. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Begäran om ändring av abonnemang.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📝📄",
+          "😊👍"
+        ]
+      }
+    },
+    {
+      "id": "ob-04",
+      "caseType": "obvious",
+      "customerText": "Er medarbetare var otrevlig mot mig i telefon igår och lade på medan jag fortfarande förklarade problemet.\n\nEmoji-stresstest: 📞✅ 🔭🏢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tydligt klagomål på bemötande med negativ känsla.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "📞✅",
+          "🔭🏢"
+        ]
+      }
+    },
+    {
+      "id": "ob-05",
+      "caseType": "obvious",
+      "customerText": "Säg upp mitt abonnemang med omedelbar verkan.\n\nEmoji-stresstest: ⏳🔁 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "explicit_cancellation_intent",
+          "label": "YES"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Direkt uppsägningsbegäran; även avtalets livscykel och per definition risk att lämna.",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⏳🔁",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "ob-06",
+      "caseType": "obvious",
+      "customerText": "Jag blev lovad återbetalning av startavgiften för tre veckor sedan och pengarna har fortfarande inte kommit.\n\nEmoji-stresstest: 🆕✨ 🚫📴. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Utebliven återbetalning; tidigare löfte innebär olöst ärende.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🆕✨",
+          "🚫📴"
+        ]
+      }
+    },
+    {
+      "id": "ob-07",
+      "caseType": "obvious",
+      "customerText": "Wifi-anslutningen bryts hela tiden varje kväll runt nio. Det har hänt varje dag den här veckan.\n\nEmoji-stresstest: 😊👍 🎁💚. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Återkommande avbrott på kvällarna.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😊👍",
+          "🎁💚"
+        ]
+      }
+    },
+    {
+      "id": "ob-08",
+      "caseType": "obvious",
+      "customerText": "Tack så mycket! Teknikern kom idag och nu fungerar allt perfekt. Utmärkt service.\n\nEmoji-stresstest: 💚✨ 🔌⚠️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tydligt beröm; problemet är löst.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💚✨",
+          "🔌⚠️"
+        ]
+      }
+    },
+    {
+      "id": "ob-09",
+      "caseType": "obvious",
+      "customerText": "Varför har mitt månadspris höjts med 40 kronor utan förvarning? Jag har aldrig godkänt någon prishöjning.\n\nEmoji-stresstest: ⚔️🏁 🔓🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Ifrågasatt prishöjning.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⚔️🏁",
+          "🔓🎉"
+        ]
+      }
+    },
+    {
+      "id": "ob-10",
+      "caseType": "obvious",
+      "customerText": "Jag vill avsluta mitt bredbandsabonnemang och mitt tv-paket i slutet av nästa månad.\n\nEmoji-stresstest: 🔒😊 🙋‍♂️💬. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "explicit_cancellation_intent",
+          "label": "YES"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Uppsägning med slutdatum.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🔒😊",
+          "🙋‍♂️💬"
+        ]
+      }
+    },
+    {
+      "id": "ob-11",
+      "caseType": "obvious",
+      "customerText": "Jag fick vänta 47 minuter i er supportkö och sedan bröts samtalet. Det är andra gången den här veckan.\n\nEmoji-stresstest: 🛑❌ ✅🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Klagomål på väntetid och brutet samtal, upprepat.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🛑❌",
+          "✅🎉"
+        ]
+      }
+    },
+    {
+      "id": "ob-12",
+      "caseType": "obvious",
+      "customerText": "Appen för tv-streaming kraschar varje gång jag försöker se livesport. Ominstallation hjälpte inte.\n\nEmoji-stresstest: 🛒😊 ♻️😣. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fel i appen.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛒😊",
+          "♻️😣"
+        ]
+      }
+    },
+    {
+      "id": "ob-13",
+      "caseType": "obvious",
+      "customerText": "Kan ni skicka en kopia av mitt nuvarande avtal? Jag vill kontrollera uppsägningstiden.\n\nEmoji-stresstest: 📶🛠️ 😡💢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Begäran om avtalsdokumentation.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📶🛠️",
+          "😡💢"
+        ]
+      }
+    },
+    {
+      "id": "ob-14",
+      "caseType": "obvious",
+      "customerText": "Jag har debiterats för en premiumkanal som jag aldrig beställt. Ta bort den och betala tillbaka för de senaste två månaderna.\n\nEmoji-stresstest: 🪪✅ 💢👎. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Obehörig debitering.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🪪✅",
+          "💢👎"
+        ]
+      }
+    },
+    {
+      "id": "ob-15",
+      "caseType": "obvious",
+      "customerText": "Det här är fullständigt oacceptabelt. Internet har varit instabilt i två veckor och inget händer hur många gånger jag än felanmäler det.\n\nEmoji-stresstest: 📞⏳ 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fel, negativ känsla och upprepat olöst ärende.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📞⏳",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "ob-16",
+      "caseType": "obvious",
+      "customerText": "Jag flyttar till en ny lägenhet den första i månaden och behöver ta med mig bredbandet dit.\n\nEmoji-stresstest: 🏁✨ 🧳👋. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Flytt av tjänst (avtalets livscykel).",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🏁✨",
+          "🧳👋"
+        ]
+      }
+    },
+    {
+      "id": "ob-17",
+      "caseType": "obvious",
+      "customerText": "Er medarbetare Maria var fantastisk och tålmodig och löste mitt e-postproblem på tio minuter. Ge henne löneförhöjning!\n\nEmoji-stresstest: 🔁⚠️ 🔄✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Beröm.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🔁⚠️",
+          "🔄✅"
+        ]
+      }
+    },
+    {
+      "id": "ob-18",
+      "caseType": "obvious",
+      "customerText": "Min betalning misslyckades två gånger den här månaden trots att mitt kort fungerar. Nu har jag dessutom fått en förseningsavgift.\n\nEmoji-stresstest: 💔😤 🧾✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Misslyckad betalning och avgift.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💔😤",
+          "🧾✅"
+        ]
+      }
+    },
+    {
+      "id": "ob-19",
+      "caseType": "obvious",
+      "customerText": "Jag vill inte fortsätta efter den här månaden. Avsluta mitt mobilabonnemang då, tack.\n\nEmoji-stresstest: 😡😤 📶✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "explicit_cancellation_intent",
+          "label": "YES"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Uppsägning med datum (designexempel).",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😡😤",
+          "📶✅"
+        ]
+      }
+    },
+    {
+      "id": "ob-20",
+      "caseType": "obvious",
+      "customerText": "Den nya routern ni skickade är trasig — den startar om av sig själv vid slumpmässiga tillfällen flera gånger om dagen.\n\nEmoji-stresstest: 🤝🔒 🔏📑. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Återkommande utrustningsfel.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🤝🔒",
+          "🔏📑"
+        ]
+      }
+    },
+    {
+      "id": "mu-01",
+      "caseType": "multi_concept",
+      "customerText": "Supporten var väldigt trevlig, men anslutningen fungerar fortfarande inte och jag har redan börjat titta på Telias erbjudanden.\n\nEmoji-stresstest: 🚪🏃 🤝😊. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Designexempel med flera samtidiga signaler.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🚪🏃",
+          "🤝😊"
+        ]
+      }
+    },
+    {
+      "id": "mu-02",
+      "caseType": "multi_concept",
+      "customerText": "Jag blev överdebiterad igen den här månaden, tredje felaktiga fakturan i rad, och er chattsupport avslutade bara samtalet utan att hjälpa mig.\n\nEmoji-stresstest: ▶️😊 🧩❓. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fakturering, upprepning och bemötande.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "▶️😊",
+          "🧩❓"
+        ]
+      }
+    },
+    {
+      "id": "mu-03",
+      "caseType": "multi_concept",
+      "customerText": "Bredbandet bryts hela tiden. Jag har ringt tre gånger om det och ärligt talat börjar jag undra varför jag alls stannar hos Nordbo.\n\nEmoji-stresstest: 💳💸 1️⃣✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fel, upprepade kontakter och ifrågasättande av att stanna kvar.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "💳💸",
+          "1️⃣✅"
+        ]
+      }
+    },
+    {
+      "id": "mu-04",
+      "caseType": "multi_concept",
+      "customerText": "Jag vill byta till ett mindre tv-paket och även klaga på att streamingkvaliteten har varit usel på sistone.\n\nEmoji-stresstest: 🛠️✨ 💚🌟. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Avtalsändring och tjänstekvalitet.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛠️✨",
+          "💚🌟"
+        ]
+      }
+    },
+    {
+      "id": "mu-05",
+      "caseType": "multi_concept",
+      "customerText": "Återbetalningen har fortfarande inte kommit efter en månad, mina mejl ignoreras och Tele2 har ett bättre erbjudande för halva ert pris.\n\nEmoji-stresstest: 📝📄 😊👍. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Återbetalning, uteblivna svar och konkurrent med avsikt att byta.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📝📄",
+          "😊👍"
+        ]
+      }
+    },
+    {
+      "id": "mu-06",
+      "caseType": "multi_concept",
+      "customerText": "Jag flyttar på fredag och behöver flytta tjänsten. Och när vi ändå håller på: på senaste fakturan finns en avgift för en film jag aldrig beställt.\n\nEmoji-stresstest: 📞✅ 🔭🏢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Flytt och ifrågasatt debitering.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "📞✅",
+          "🔭🏢"
+        ]
+      }
+    },
+    {
+      "id": "mu-07",
+      "caseType": "multi_concept",
+      "customerText": "Varje vinter kommer samma anslutningsproblem tillbaka. Er tekniker löste det i höstas men i december var det tillbaka. Jag är trött på att anmäla det.\n\nEmoji-stresstest: ⏳🔁 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Säsongsbunden upprepning.",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⏳🔁",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "mu-08",
+      "caseType": "multi_concept",
+      "customerText": "Tack för att ni rättade fakturafelet så snabbt! Routern ni skickade som ersättning fungerar dock inte alls från början.\n\nEmoji-stresstest: 🆕✨ 🚫📴. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Både beröm, nytt fel och fakturakoppling.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🆕✨",
+          "🚫📴"
+        ]
+      }
+    },
+    {
+      "id": "mu-09",
+      "caseType": "multi_concept",
+      "customerText": "Jag vill lägga till min dotter på mitt abonnemang och klaga på den otrevlige mannen i er butik som vägrade hjälpa mig igår.\n\nEmoji-stresstest: 😊👍 🎁💚. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Avtal och bemötande.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😊👍",
+          "🎁💚"
+        ]
+      }
+    },
+    {
+      "id": "mu-10",
+      "caseType": "multi_concept",
+      "customerText": "Beskedet om prishöjningen kom samma vecka som internet låg nere i två dagar. I helgen har jag börjat jämföra andra leverantörers priser.\n\nEmoji-stresstest: 💚✨ 🔌⚠️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Pris, avbrott och jämförelse med avsikt att byta.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💚✨",
+          "🔌⚠️"
+        ]
+      }
+    },
+    {
+      "id": "mu-11",
+      "caseType": "multi_concept",
+      "customerText": "Det är andra månaden i rad med fel faktura, och varje gång jag ringer får jag en annan förklaring. Ingen ringer tillbaka som utlovat.\n\nEmoji-stresstest: ⚔️🏁 🔓🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Återkommande fakturafel och uteblivna återuppringningar.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⚔️🏁",
+          "🔓🎉"
+        ]
+      }
+    },
+    {
+      "id": "mu-12",
+      "caseType": "multi_concept",
+      "customerText": "Säg upp sportpaketet som jag lade till förra månaden. Det kostar för mycket och jag tittar knappt på det ändå.\n\nEmoji-stresstest: 🔒😊 🙋‍♂️💬. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Borttagning av paket är en avtalsändring med kostnadsmotiv; inte uppsägning av hela abonnemanget.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🔒😊",
+          "🙋‍♂️💬"
+        ]
+      }
+    },
+    {
+      "id": "mu-13",
+      "caseType": "multi_concept",
+      "customerText": "Er app är buggig och supportchatten går bara runt i en robotloop utan att jag når en människa. Jag ångrar att jag valde Nordbo.\n\nEmoji-stresstest: 🛑❌ ✅🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Appfel och frustration över supporten; ånger är känsla, inte avsikt att lämna.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🛑❌",
+          "✅🎉"
+        ]
+      }
+    },
+    {
+      "id": "mu-14",
+      "caseType": "multi_concept",
+      "customerText": "Bredbandet installerades igår och teknikern var fantastisk, men jag har debiterats installationsavgiften som jag fick veta skulle strykas.\n\nEmoji-stresstest: 🛒😊 ♻️😣. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Ny installation och tvist om slopad avgift.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛒😊",
+          "♻️😣"
+        ]
+      }
+    },
+    {
+      "id": "mu-15",
+      "caseType": "multi_concept",
+      "customerText": "Anslutningen bröts under mina jobbvideosamtal två gånger idag. Om jag förlorar en kund till på grund av det här måste jag se mig om efter en annan leverantör.\n\nEmoji-stresstest: 📶🛠️ 😡💢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fel och villkorlig avsikt att lämna.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📶🛠️",
+          "😡💢"
+        ]
+      }
+    },
+    {
+      "id": "mu-16",
+      "caseType": "multi_concept",
+      "customerText": "Jag beställde ett nytt SIM-kort för tre veckor sedan. Inget har kommit och ärendet stängdes utan att någon berättade det för mig.\n\nEmoji-stresstest: 🪪✅ 💢👎. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Beställning ej levererad och ärende stängt utan besked.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🪪✅",
+          "💢👎"
+        ]
+      }
+    },
+    {
+      "id": "mu-17",
+      "caseType": "multi_concept",
+      "customerText": "Mobildatan har varit långsam i mitt område i flera månader, mina klagomål leder ingenstans och Telenor annonserar dubbla hastigheten till ett lägre pris.\n\nEmoji-stresstest: 📞⏳ 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Långsam data och jämförelse med konkurrent med avsikt att byta.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📞⏳",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "mu-18",
+      "caseType": "multi_concept",
+      "customerText": "Vad bra att ersättningen för avbrottet godkändes. Ansökningsformuläret gick däremot inte att använda i mobilen.\n\nEmoji-stresstest: 🏁✨ 🧳👋. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Ersättning (fakturering), beröm och problem med formulärets användbarhet (tekniskt oklart).",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🏁✨",
+          "🧳👋"
+        ]
+      }
+    },
+    {
+      "id": "mu-19",
+      "caseType": "multi_concept",
+      "customerText": "Jag behöver avsluta abonnemanget för min avlidne fars nummer och flytta över hans nummer till mitt eget abonnemang. Sluta också skicka fakturor för hans konto.\n\nEmoji-stresstest: 🔁⚠️ 🔄✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "explicit_cancellation_intent",
+          "label": "YES"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Uppsägning av ett nummer, flytt och stopp för fakturering.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🔁⚠️",
+          "🔄✅"
+        ]
+      }
+    },
+    {
+      "id": "mu-20",
+      "caseType": "multi_concept",
+      "customerText": "Supporten löste mitt e-postproblem snabbt, men samma problem kom tillbaka i morse trots att medarbetaren lovade att det inte skulle göra det.\n\nEmoji-stresstest: 💔😤 🧾✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Beröm och återkommande problem efter utlovad lösning.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💔😤",
+          "🧾✅"
+        ]
+      }
+    },
+    {
+      "id": "vg-01",
+      "caseType": "indirect_vague",
+      "customerText": "Något stämmer inte med mitt konto på sistone.\n\nEmoji-stresstest: 😡😤 📶✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "För vagt för att avgöra ämnet.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😡😤",
+          "📶✅"
+        ]
+      }
+    },
+    {
+      "id": "vg-02",
+      "caseType": "indirect_vague",
+      "customerText": "Det hände igen.\n\nEmoji-stresstest: 🤝🔒 🔏📑. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "recurring_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Upprepning antyds men ämnet är okänt.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🤝🔒",
+          "🔏📑"
+        ]
+      }
+    },
+    {
+      "id": "vg-03",
+      "caseType": "indirect_vague",
+      "customerText": "Jag är inte säker på att det var rätt val att byta till er.\n\nEmoji-stresstest: 🚪🏃 🤝😊. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Ånger anas; gränsfall för risk att lämna.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🚪🏃",
+          "🤝😊"
+        ]
+      }
+    },
+    {
+      "id": "vg-04",
+      "caseType": "indirect_vague",
+      "customerText": "Saken ni skickade verkar inte göra det den ska.\n\nEmoji-stresstest: ▶️😊 🧩❓. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Utrustning antyds, men det är oklart.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "▶️😊",
+          "🧩❓"
+        ]
+      }
+    },
+    {
+      "id": "vg-05",
+      "caseType": "indirect_vague",
+      "customerText": "Är det verkligen så här det ska fungera?\n\nEmoji-stresstest: 💳💸 1️⃣✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Frustration? Fel? Går inte att avgöra.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "💳💸",
+          "1️⃣✅"
+        ]
+      }
+    },
+    {
+      "id": "vg-06",
+      "caseType": "indirect_vague",
+      "customerText": "Det verkar ha blivit något fel någonstans hos er.\n\nEmoji-stresstest: 🛠️✨ 💚🌟. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Ett misstag antyds men typen är okänd.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛠️✨",
+          "💚🌟"
+        ]
+      }
+    },
+    {
+      "id": "vg-07",
+      "caseType": "indirect_vague",
+      "customerText": "Jag har funderat på vårt upplägg.\n\nEmoji-stresstest: 📝📄 😊👍. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Oroande ton men semantiskt tunt.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📝📄",
+          "😊👍"
+        ]
+      }
+    },
+    {
+      "id": "vg-08",
+      "caseType": "indirect_vague",
+      "customerText": "Jag är inte helt nöjd med hur det har gått, om jag ska vara ärlig.\n\nEmoji-stresstest: 📞✅ 🔭🏢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "negative_support_experience",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Milt missnöje, vagt uttryckt.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "📞✅",
+          "🔭🏢"
+        ]
+      }
+    },
+    {
+      "id": "vg-09",
+      "caseType": "indirect_vague",
+      "customerText": "Siffran på pappret och siffran i appen stämmer inte överens.\n\nEmoji-stresstest: ⏳🔁 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Troligen avvikelse på en faktura men det sägs inte uttryckligen.",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⏳🔁",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "vg-10",
+      "caseType": "indirect_vague",
+      "customerText": "Någon borde titta på det som hände i mars.\n\nEmoji-stresstest: 🆕✨ 🚫📴. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "unresolved_issue",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Hänvisning till något i det förflutna.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🆕✨",
+          "🚫📴"
+        ]
+      }
+    },
+    {
+      "id": "vg-11",
+      "caseType": "indirect_vague",
+      "customerText": "En vän föreslog att jag skulle se vilka andra alternativ som finns.\n\nEmoji-stresstest: 😊👍 🎁💚. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Andrahandsförslag om att se sig om; avsikten är oklar.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😊👍",
+          "🎁💚"
+        ]
+      }
+    },
+    {
+      "id": "vg-12",
+      "caseType": "indirect_vague",
+      "customerText": "Er tjänst och mitt tålamod blir båda allt sämre.\n\nEmoji-stresstest: 💚✨ 🔌⚠️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Missnöje uttrycks; försämringen antyder återkommande problem.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💚✨",
+          "🔌⚠️"
+        ]
+      }
+    },
+    {
+      "id": "vg-13",
+      "caseType": "indirect_vague",
+      "customerText": "Det var bättre före ändringen.\n\nEmoji-stresstest: ⚔️🏁 🔓🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Försämring efter en ändring, men området är oklart.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⚔️🏁",
+          "🔓🎉"
+        ]
+      }
+    },
+    {
+      "id": "vg-14",
+      "caseType": "indirect_vague",
+      "customerText": "Måste jag verkligen förklara det här igen?\n\nEmoji-stresstest: 🔒😊 🙋‍♂️💬. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "”Igen” och frustrationen antyder upprepad kontakt om ett olöst ärende.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🔒😊",
+          "🙋‍♂️💬"
+        ]
+      }
+    },
+    {
+      "id": "vg-15",
+      "caseType": "indirect_vague",
+      "customerText": "Boxen låter konstigt ibland.\n\nEmoji-stresstest: 🛑❌ ✅🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fel på utrustning som uppträder ibland.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🛑❌",
+          "✅🎉"
+        ]
+      }
+    },
+    {
+      "id": "bd-01",
+      "caseType": "close_boundary",
+      "customerText": "Om bredbandet slutar fungera en gång till byter jag operatör.\n\nEmoji-stresstest: 🛒😊 ♻️😣. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Exempel: villkorad risk att lämna, ingen uppsägning.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛒😊",
+          "♻️😣"
+        ]
+      }
+    },
+    {
+      "id": "bd-02",
+      "caseType": "close_boundary",
+      "customerText": "Telia verkar bättre än det här.\n\nEmoji-stresstest: 📶🛠️ 😡💢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "En konkurrent får beröm, men ingen avsikt att byta uttrycks.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📶🛠️",
+          "😡💢"
+        ]
+      }
+    },
+    {
+      "id": "bd-03",
+      "caseType": "close_boundary",
+      "customerText": "När löper mitt avtal ut? Jag vill veta vilka alternativ jag har.\n\nEmoji-stresstest: 🪪✅ 💢👎. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Fråga om avtalets slut; antydan om att lämna men ingen instruktion.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🪪✅",
+          "💢👎"
+        ]
+      }
+    },
+    {
+      "id": "bd-04",
+      "caseType": "close_boundary",
+      "customerText": "Den här tjänsten är usel.\n\nEmoji-stresstest: 📞⏳ 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Exempel: missnöje i sig innebär inte risk att lämna.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📞⏳",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "bd-05",
+      "caseType": "close_boundary",
+      "customerText": "Hur lång uppsägningstid har jag om jag någon gång bestämmer mig för att avsluta avtalet?\n\nEmoji-stresstest: 🏁✨ 🧳👋. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Hypotetisk fråga om att avsluta, ingen instruktion.",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🏁✨",
+          "🧳👋"
+        ]
+      }
+    },
+    {
+      "id": "bd-06",
+      "caseType": "close_boundary",
+      "customerText": "Jag funderar på att byta operatör.\n\nEmoji-stresstest: 🔁⚠️ 🔄✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Exempel: övervägandet innebär risk att lämna, inte en uppsägning.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🔁⚠️",
+          "🔄✅"
+        ]
+      }
+    },
+    {
+      "id": "bd-07",
+      "caseType": "close_boundary",
+      "customerText": "Om det här händer igen kommer jag att säga upp tjänsten.\n\nEmoji-stresstest: 💔😤 🧾✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Exempel: villkorad framtida avsikt innebär risk att lämna, inte en uppsägning.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💔😤",
+          "🧾✅"
+        ]
+      }
+    },
+    {
+      "id": "bd-08",
+      "caseType": "close_boundary",
+      "customerText": "Hur går en uppsägning till, bara så att jag vet?\n\nEmoji-stresstest: 😡😤 📶✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "explicit_cancellation_intent",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Fråga om förfarandet; ingen tydlig faktisk instruktion.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😡😤",
+          "📶✅"
+        ]
+      }
+    },
+    {
+      "id": "bd-09",
+      "caseType": "close_boundary",
+      "customerText": "Internet är långsamt, men bara när det regnar. Ska ett modernt nät fungera så?\n\nEmoji-stresstest: 🤝🔒 🔏📑. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Väderkopplad försämring antyder ett mönster.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🤝🔒",
+          "🔏📑"
+        ]
+      }
+    },
+    {
+      "id": "bd-10",
+      "caseType": "close_boundary",
+      "customerText": "Er konkurrent skickade ett brev med ett erbjudande på 199 kronor. Intressant.\n\nEmoji-stresstest: 🚪🏃 🤝😊. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Ett konkurrenterbjudande uppmärksammas; graden av intresse är oklar.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🚪🏃",
+          "🤝😊"
+        ]
+      }
+    },
+    {
+      "id": "bd-11",
+      "caseType": "close_boundary",
+      "customerText": "Jag frågade hur jag behåller mitt nummer om jag någon gång byter till en annan operatör. Jag är bara nyfiken.\n\nEmoji-stresstest: ▶️😊 🧩❓. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "churn_risk",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fråga om nummerflytt med ”bara nyfiken” – gränsfall för risk att lämna.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "▶️😊",
+          "🧩❓"
+        ]
+      }
+    },
+    {
+      "id": "bd-12",
+      "caseType": "close_boundary",
+      "customerText": "Laga uppkopplingen, annars får vi se hur det blir med det här abonnemanget framöver.\n\nEmoji-stresstest: 💳💸 1️⃣✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Förtäckt villkorat hot om kundrelationen.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "💳💸",
+          "1️⃣✅"
+        ]
+      }
+    },
+    {
+      "id": "bd-13",
+      "caseType": "close_boundary",
+      "customerText": "Fakturan stämmer den här månaden. Jag tycker bara att utformningen är förvirrande.\n\nEmoji-stresstest: 🛠️✨ 💚🌟. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Fakturan nämns utan ett faktureringsfel.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛠️✨",
+          "💚🌟"
+        ]
+      }
+    },
+    {
+      "id": "bd-14",
+      "caseType": "close_boundary",
+      "customerText": "Era priser är inte direkt låga, eller hur?\n\nEmoji-stresstest: 📝📄 😊👍. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "UNCLEAR"
+        }
+      ],
+      "rationale": "Klagomål på prisnivån; oklar tvist.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📝📄",
+          "😊👍"
+        ]
+      }
+    },
+    {
+      "id": "bd-15",
+      "caseType": "close_boundary",
+      "customerText": "Jag skulle vilja pausa mitt abonnemang under sommarmånaderna.\n\nEmoji-stresstest: 📞✅ 🔭🏢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Paus är en avtalsändring, inte en uppsägning.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "📞✅",
+          "🔭🏢"
+        ]
+      }
+    },
+    {
+      "id": "cd-01",
+      "caseType": "contradictory_current_state",
+      "customerText": "I går var jag redo att säga upp allt, men supporten löste problemet och jag har bestämt mig för att stanna.\n\nEmoji-stresstest: ⏳🔁 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Exempel: nuläget avgör; tidigare risk att lämna är undanröjd.",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⏳🔁",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "cd-02",
+      "caseType": "contradictory_current_state",
+      "customerText": "Jag klagade på låg hastighet i flera månader. Efter routerbytet förra veckan är det äntligen snabbt igen. Nu är jag nöjd.\n\nEmoji-stresstest: 🆕✨ 🚫📴. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tidigare återkommande problem, nuvarande nöjdhet.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🆕✨",
+          "🚫📴"
+        ]
+      }
+    },
+    {
+      "id": "cd-03",
+      "caseType": "contradictory_current_state",
+      "customerText": "Jag tänkte lämna er för Telia, men deras installationsavgift fick mig att ändra mig. Tills vidare stannar jag.\n\nEmoji-stresstest: 😊👍 🎁💚. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Konkurrent övervägdes och valdes bort; ingen aktuell risk att lämna.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😊👍",
+          "🎁💚"
+        ]
+      }
+    },
+    {
+      "id": "cd-04",
+      "caseType": "contradictory_current_state",
+      "customerText": "Avbrottet i tisdags var hemskt, men ersättningen ni gav är rimlig. Det är utagerat.\n\nEmoji-stresstest: 💚✨ 🔌⚠️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tidigare fel och accepterad ersättning.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💚✨",
+          "🔌⚠️"
+        ]
+      }
+    },
+    {
+      "id": "cd-05",
+      "caseType": "contradictory_current_state",
+      "customerText": "Jag skickade redan en begäran om uppsägning förra månaden, men ingen har behandlat den. Jag är fortfarande kund och faktureras fortfarande. Bekräfta vad som händer!\n\nEmoji-stresstest: ⚔️🏁 🔓🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "explicit_cancellation_intent",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "En kvarstående uppsägningsbegäran har inte behandlats; personen är ännu kund.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⚔️🏁",
+          "🔓🎉"
+        ]
+      }
+    },
+    {
+      "id": "cd-06",
+      "caseType": "contradictory_current_state",
+      "customerText": "Först var er support otrevlig, sedan ringde en annan medarbetare tillbaka och var hur trevlig som helst. Jag har blandade känslor.\n\nEmoji-stresstest: 🔒😊 🙋‍♂️💬. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Båda kontakterna finns faktiskt med.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🔒😊",
+          "🙋‍♂️💬"
+        ]
+      }
+    },
+    {
+      "id": "cd-07",
+      "caseType": "contradictory_current_state",
+      "customerText": "Vi var nära att flytta hela familjen till en annan operatör, men ert kundbevarande team erbjöd ett avtal som vi tackade ja till. Nu är allt bra.\n\nEmoji-stresstest: 🛑❌ ✅🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tidigare risk att lämna avvärjdes.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🛑❌",
+          "✅🎉"
+        ]
+      }
+    },
+    {
+      "id": "cd-08",
+      "caseType": "contradictory_current_state",
+      "customerText": "Linjen var död hela förmiddagen men kom tillbaka av sig själv vid lunchtid. Vet inte vad ni gjorde, men tack antar jag.\n\nEmoji-stresstest: 🛒😊 ♻️😣. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Felet inträffade men är nu löst; det ljumma tacket är inte verkligt beröm.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛒😊",
+          "♻️😣"
+        ]
+      }
+    },
+    {
+      "id": "cd-09",
+      "caseType": "contradictory_current_state",
+      "customerText": "Jag sa att jag skulle lämna om priset höjdes. Det höjdes. Jag har inte bestämt mig än.\n\nEmoji-stresstest: 📶🛠️ 😡💢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Villkoret uppfyllt men beslutet väntar: aktuell risk att lämna, ingen uppsägning.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📶🛠️",
+          "😡💢"
+        ]
+      }
+    },
+    {
+      "id": "cd-10",
+      "caseType": "contradictory_current_state",
+      "customerText": "Efter mitt klagomål kom er tekniker två gånger: första besöket löste inget, det andra verkar ha löst problemet. Håller tummarna.\n\nEmoji-stresstest: 🪪✅ 💢👎. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Tidigare fel och försiktig bedömning att det nu är löst.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🪪✅",
+          "💢👎"
+        ]
+      }
+    },
+    {
+      "id": "lg-01",
+      "caseType": "long_noisy",
+      "customerText": "Hej, jag har varit kund i elva år, först med mobil, sedan bredband och därefter TV. Under hela den tiden har jag kanske klagat två gånger. Men nu: den 3:e såg jag att fakturan var på 549 i stället för 399. Jag laddade ner pdf:en, granskade varje rad och hittade en ”aktiveringsavgift” som ingen nämnt. Jag ringde den 5:e, väntade i 30 minuter och fick veta att det var ett misstag och att jag skulle få pengarna tillbaka inom fem arbetsdagar. Den 12:e hade ingen återbetalning kommit. Jag mejlade, fick ett automatiskt svar och sedan ingenting. Samtidigt säger min granne att hennes operatör har sportkanalerna till ett lägre pris. Jag brukar inte hota med något, men mitt tålamod har en gräns. Rätta fakturan och bekräfta återbetalningen, tack.\n\nEmoji-stresstest: 📞⏳ 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Långt brev med många detaljer: återbetalning, uteblivet svar, jämförelse med grannens operatör och begränsat tålamod.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📞⏳",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "lg-02",
+      "caseType": "long_noisy",
+      "customerText": "Hej Nordbo. Jag skriver om ärende 88123 som öppnades den 14:e och ärende 90455 som öppnades den 22:a, båda om paketförluster i kvällstrafiken i mitt område. Jag har bifogat pingloggar, traceroute-resultat och skärmbilder. Jag startade om routern enligt era råd, provade reservroutern enligt era råd och flyttade routern från mikrovågsugnen enligt era råd. Problemet kvarstår dagligen mellan 20.00 och 23.00. Jag arbetar på kvällarna och det påverkar min försörjning. Era tekniker är artiga och försöker uppenbart hjälpa, men samma råd återkommer. Jag begär att ärendet lyfts till någon som kan undersöka områdets infrastruktur i stället för mina köksapparater.\n\nEmoji-stresstest: 🏁✨ 🧳👋. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Djupa tekniska detaljer, upprepade kontakter, artig personal utan klagomål på bemötandet och ingen signal om att lämna.",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🏁✨",
+          "🧳👋"
+        ]
+      }
+    },
+    {
+      "id": "lg-03",
+      "caseType": "long_noisy",
+      "customerText": "Kort sagt: bredbandet installerades i våras men har aldrig varit riktigt stabilt. Fyra teknikerbesök, tre routrar, två ersättningar (som jag uppskattade) och en arg tweet (som jag tog bort). Min partner tycker att vi borde byta till kabel. Jag säger att rabatten i vårt mobilpaket gör det komplicerat. Hur som helst, det viktiga här är att uppkopplingen bröts under min dotters videoprov i skolan i morse och skolan ställer frågor. Behandla det här skyndsamt, tack.\n\nEmoji-stresstest: 🔁⚠️ 🔄✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Brokkig familjeberättelse; partnern överväger kabel och kunden begär skyndsam hantering.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🔁⚠️",
+          "🔄✅"
+        ]
+      }
+    },
+    {
+      "id": "lg-04",
+      "caseType": "long_noisy",
+      "customerText": "Jag skriver för min mamma, som är 81 år och har varit kund hos er sedan nittiotalet. Hon har nyligen flyttat till ett äldreboende. Vi behöver 1) säga upp hennes bredband på den gamla adressen, 2) behålla hennes mobilnummer, 3) förstå slutfakturan där det finns något som kallas ”avslutsavgift” och 4) klaga på att medarbetaren, när hon själv ringde, tydligen sa ”sådant här är komplicerat för äldre”. Hon var upprörd i flera dagar. Jag hoppas att vi kan reda ut det ordentligt.\n\nEmoji-stresstest: 💔😤 🧾✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "explicit_cancellation_intent",
+          "label": "YES"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "support_interaction_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Uppsägning på en annan persons vägnar, avgifter och kommentar om ålder i bemötandet.",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💔😤",
+          "🧾✅"
+        ]
+      }
+    },
+    {
+      "id": "lg-05",
+      "caseType": "long_noisy",
+      "customerText": "Hej! Det här är inget klagomål, snarare en fråga och lite återkoppling. Jag såg er kampanj om den nya TV-boxen och undrar om befintliga kunder kan få den och om den löser HDR-felet som min nuvarande box haft sedan vårens uppdatering (jag nämnde det en gång, men inget hände; det är dock ett litet problem). Den som gjorde om fakturans utformning förtjänar också beröm, nu förstår jag den äntligen. Det var allt. Trevlig helg!\n\nEmoji-stresstest: 😡😤 📶✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fråga om uppgradering, ett äldre mindre fel och beröm i vänlig ton.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😡😤",
+          "📶✅"
+        ]
+      }
+    },
+    {
+      "id": "lg-06",
+      "caseType": "long_noisy",
+      "customerText": "Till ansvarig. Referens: konto 4471. Angående upprepade överdebiteringar. Tidslinje: januarifakturan +60 (roaming, bestridd, krediterad i februari efter två samtal). Marsfakturan +60 igen (samma roamingmarkering). April: krediterad efter ett samtal, medarbetaren medgav ett systemfel. Maj: +60 igen. Jag har nu krediterats tre gånger för samma roaming som aldrig ägt rum och debiterats för den fyra gånger. Jag vill inte längre ägna mina lunchraster åt detta. Om majfakturan inte rättas permanent kommer jag att överväga mina alternativ, däribland att vända mig till en ombudsman och andra operatörer.\n\nEmoji-stresstest: 🤝🔒 🔏📑. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Detaljerad tidslinje; villkorat övervägande att lämna och att vända sig till en myndighet.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🤝🔒",
+          "🔏📑"
+        ]
+      }
+    },
+    {
+      "id": "lg-07",
+      "caseType": "long_noisy",
+      "customerText": "God eftermiddag. Först beröm: Anna på avdelningen för att behålla kunder var fantastisk när mitt avtal skulle förnyas, tydlig om priserna och utan påtryckningar. Tack vare henne förnyade jag i två år trots att jag hade en offert från Telenor på skrivbordet. Sedan ett bekymmer: efter förnyelsen visar appen mitt gamla abonnemang, den nya rabatten saknas och nästa beräknade faktura är ungefär 90 kronor för hög. Till sist en liten sak: bekräftelsemejlet tilltalade mig som ”Herr Null”.\n\nEmoji-stresstest: 🚪🏃 🤝😊. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Förnyelse, avböjd offert från konkurrent och fel i visade priser.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🚪🏃",
+          "🤝😊"
+        ]
+      }
+    },
+    {
+      "id": "lg-08",
+      "caseType": "long_noisy",
+      "customerText": "Jag driver ett litet kafé och använder ert företagsbredband. Sedan vägarbetena i juni försämras uppkopplingen varje gång det regnar. Under sex veckor har jag sett att det sammanfaller med fel i min kortterminal (kortbetalningar misslyckas, kunder går därifrån och jag förlorar riktiga pengar). Jag har anmält det två gånger. Båda gångerna ”visade linjetesterna inget fel” eftersom det var torrt de dagarna. Jag bifogar väderdata. Jag vill inte ha ersättning, jag vill att felet rättas. Om det hjälper har kaféet två dörrar bort, som använder ett annat nät, inga problem när det regnar.\n\nEmoji-stresstest: ▶️😊 🧩❓. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "competitor_consideration",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Samband mellan regn och fel; omnämnandet av annat nät är mer belägg än avsikt att byta. Markeras endast som konkurrentomnämnande, ingen tydlig risk att lämna.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "▶️😊",
+          "🧩❓"
+        ]
+      }
+    },
+    {
+      "id": "lg-09",
+      "caseType": "long_noisy",
+      "customerText": "Så här ligger det till: jag beställde familjepaketet i november. Installationstillfälle ett: teknikern kom aldrig (jag tog ledigt en dag). Tillfälle två: fel router. Tillfälle tre: det fungerar, men TV-delen aktiverades aldrig. Fyra telefonsamtal, en chatt och ett mejl. Samtidigt började fakturorna komma för hela paketet, inklusive TV:n jag inte kan titta på. Alla jag pratade med var trevliga var för sig och jag klandrar dem inte, men ert system sviker mig. Min fru frågar varje dag varför vi bytte till er. Snälla: aktivera TV:n, rätta fakturorna och låt någon ta ansvar för ärendet från början till slut.\n\nEmoji-stresstest: 💳💸 1️⃣✅. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        },
+        {
+          "gateId": "churn_risk",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Lång beställningshistoria; personalen var trevlig var för sig, så klagomål på bemötande är tveksamt, men systemfel uttrycks och makans ånger antyder risk att lämna.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "💳💸",
+          "1️⃣✅"
+        ]
+      }
+    },
+    {
+      "id": "lg-10",
+      "caseType": "long_noisy",
+      "customerText": "Hej kundtjänst, jag ska försöka fatta mig kort eftersom jag vet att ni har mycket att göra. Sedan i våras avvisar e-postadressen som ingår i mitt abonnemang mitt lösenord då och då. Jag har återställt det kanske tjugo gånger. Era hjälpartiklar är till ingen nytta. Chattbotten insisterar på att mitt problem gäller fakturor, vilket det inte gör. I går fick jag äntligen prata med en människa som rättade något på serversidan, och det fungerade i fyra timmar. I morse var jag utelåst igen. Jag skriver romaner och min korrespondens med förlagen finns där; det här är inget oviktigt hobbykonto. Jag vill att ni behandlar det som det allvarliga pågående fel det är.\n\nEmoji-stresstest: 🛠️✨ 💚🌟. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "unresolved_issue",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Lång historia om e-postfel; frustration över chattbottens felaktiga sortering.",
+      "emojiTest": {
+        "targetGate": "technical_problem",
+        "secondaryGate": "positive_support_experience",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛠️✨",
+          "💚🌟"
+        ]
+      }
+    },
+    {
+      "id": "ng-01",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Jag säger inte upp något. Jag vill bara att ni lagar uppkopplingen.\n\nEmoji-stresstest: 📝📄 😊👍. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Exempel: uppsägning förnekas.",
+      "emojiTest": {
+        "targetGate": "contract_problem",
+        "secondaryGate": "negative_support_experience",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "📝📄",
+          "😊👍"
+        ]
+      }
+    },
+    {
+      "id": "ng-02",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Jag har inga planer på att lämna er, men fakturan måste verkligen rättas.\n\nEmoji-stresstest: 📞✅ 🔭🏢. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Förnekad avsikt att lämna och ett verkligt faktureringsproblem.",
+      "emojiTest": {
+        "targetGate": "support_interaction_problem",
+        "secondaryGate": "competitor_consideration",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "📞✅",
+          "🔭🏢"
+        ]
+      }
+    },
+    {
+      "id": "ng-03",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Stäng INTE mitt konto. Jag uppdaterar bara mina betalkortsuppgifter.\n\nEmoji-stresstest: ⏳🔁 🏠❤️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Uppsägningsord förekommer, men förnekas uttryckligen.",
+      "emojiTest": {
+        "targetGate": "unresolved_issue",
+        "secondaryGate": "churn_risk",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⏳🔁",
+          "🏠❤️"
+        ]
+      }
+    },
+    {
+      "id": "ng-04",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Alla sa att jag skulle ångra att jag bytte till er, men ärligt talat har jag aldrig varit nöjdare med en operatör.\n\nEmoji-stresstest: 🆕✨ 🚫📴. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "”Bytte” gäller ett tidigare positivt sammanhang; ingen risk att lämna nu.",
+      "emojiTest": {
+        "targetGate": "recurring_problem",
+        "secondaryGate": "explicit_cancellation_intent",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🆕✨",
+          "🚫📴"
+        ]
+      }
+    },
+    {
+      "id": "ng-05",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Problemet är inte internet, utan er app som inte kan visa min dataförbrukning korrekt.\n\nEmoji-stresstest: 😊👍 🎁💚. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Ett fel förnekas, ett annat hävdas (fortfarande tekniskt).",
+      "emojiTest": {
+        "targetGate": "positive_support_experience",
+        "secondaryGate": "billing_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "😊👍",
+          "🎁💚"
+        ]
+      }
+    },
+    {
+      "id": "ng-06",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Jag skulle ändå aldrig säga upp något via mejl. Apropå det, när skickas pappersfakturan?\n\nEmoji-stresstest: 💚✨ 🔌⚠️. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "UNCLEAR"
+        },
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Uppsägningsord används bara i ett resonemang om förfarande; frågan gäller fakturans utskick.",
+      "emojiTest": {
+        "targetGate": "negative_support_experience",
+        "secondaryGate": "technical_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "💚✨",
+          "🔌⚠️"
+        ]
+      }
+    },
+    {
+      "id": "ng-07",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Nej, routern är inte trasig. Felet ligger definitivt på er sida av ledningen.\n\nEmoji-stresstest: ⚔️🏁 🔓🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Fel på utrustning förnekas, fel på ledningen hävdas.",
+      "emojiTest": {
+        "targetGate": "competitor_consideration",
+        "secondaryGate": "contract_problem",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "⚔️🏁",
+          "🔓🎉"
+        ]
+      }
+    },
+    {
+      "id": "ng-08",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Jag är inte arg, jag är besviken. Det är skillnad. Avbrotten fortsätter.\n\nEmoji-stresstest: 🔒😊 🙋‍♂️💬. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "technical_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "recurring_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Ilska förnekas men besvikelse uttrycks; fortfarande negativ känsla.",
+      "emojiTest": {
+        "targetGate": "churn_risk",
+        "secondaryGate": "support_interaction_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🔒😊",
+          "🙋‍♂️💬"
+        ]
+      }
+    },
+    {
+      "id": "ng-09",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Tack på förhand för att ni rättar fakturafelet. Till skillnad från er konkurrent brukar ni lösa sådant.\n\nEmoji-stresstest: 🛑❌ ✅🎉. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "billing_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "positive_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Artighetsfras och verkligt beröm; konkurrenten nämns som kontrast.",
+      "emojiTest": {
+        "targetGate": "explicit_cancellation_intent",
+        "secondaryGate": "unresolved_issue",
+        "mode": "matching-target-opposing-secondary",
+        "emojis": [
+          "🛑❌",
+          "✅🎉"
+        ]
+      }
+    },
+    {
+      "id": "ng-10",
+      "caseType": "negation_lexical_trap",
+      "customerText": "Jag vill inte säga upp någonting. Jag vill LÄGGA TILL filmpaketet. Dessutom är priset på paketet orimligt högt, men okej.\n\nEmoji-stresstest: 🛒😊 ♻️😣. Emojis kan stödja eller motsäga texten; bedöm hela kundmeddelandet.",
+      "expected": [
+        {
+          "gateId": "contract_problem",
+          "label": "YES"
+        },
+        {
+          "gateId": "negative_support_experience",
+          "label": "YES"
+        }
+      ],
+      "rationale": "Uppsägning förnekas, en tilläggstjänst begärs och priset kritiseras utan tvist.",
+      "emojiTest": {
+        "targetGate": "billing_problem",
+        "secondaryGate": "recurring_problem",
+        "mode": "opposing-target-matching-secondary",
+        "emojis": [
+          "🛒😊",
+          "♻️😣"
+        ]
+      }
+    }
+  ]
+}

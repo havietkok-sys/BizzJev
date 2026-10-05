@@ -1,0 +1,1144 @@
+{
+  "generated": "2026-10-05T19:28:36.921Z",
+  "model": "tev1-4b-4096:latest",
+  "endpoint": "http://localhost:11434/v1/systemone",
+  "note": "Tev1 is a local Ollama model with context/token limit set above the original standard limit; thresholds are the Tev1-v1 profile selected from the paired EN+SV run.",
+  "providers": [
+    {
+      "provider": "jev",
+      "label": "Jev 1.13",
+      "en": {
+        "model": "jev-1.13.0",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 20,
+            "fp": 1,
+            "fn": 6,
+            "tn": 67,
+            "f1": 0.851063829787234,
+            "auc": 0.9892533936651584,
+            "brier": 0.05259787234042554,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 25,
+            "fp": 0,
+            "fn": 5,
+            "tn": 65,
+            "f1": 0.9090909090909091,
+            "auc": 0.9982051282051282,
+            "brier": 0.026322105263157886,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 18,
+            "fp": 1,
+            "fn": 6,
+            "tn": 72,
+            "f1": 0.8372093023255814,
+            "auc": 0.9477739726027398,
+            "brier": 0.07625360824742267,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 10,
+            "fp": 2,
+            "fn": 2,
+            "tn": 86,
+            "f1": 0.8333333333333334,
+            "auc": 0.9919507575757576,
+            "brier": 0.051764000000000004,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 20,
+            "fp": 2,
+            "fn": 2,
+            "tn": 75,
+            "f1": 0.9090909090909091,
+            "auc": 0.9905548996458088,
+            "brier": 0.0456010101010101,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 16,
+            "fp": 6,
+            "fn": 1,
+            "tn": 76,
+            "f1": 0.8205128205128205,
+            "auc": 0.9827833572453372,
+            "brier": 0.0818626262626262,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 8,
+            "fp": 0,
+            "fn": 8,
+            "tn": 84,
+            "f1": 0.6666666666666666,
+            "auc": 0.9985119047619048,
+            "brier": 0.019462999999999994,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 23,
+            "fp": 7,
+            "fn": 0,
+            "tn": 66,
+            "f1": 0.8679245283018868,
+            "auc": 0.9871947587849911,
+            "brier": 0.15035833333333334,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 8,
+            "fp": 0,
+            "fn": 4,
+            "tn": 87,
+            "f1": 0.8,
+            "auc": 0.9990421455938697,
+            "brier": 0.012915151515151517,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 16,
+            "fp": 1,
+            "fn": 2,
+            "tn": 73,
+            "f1": 0.9142857142857143,
+            "auc": 0.9557057057057057,
+            "brier": 0.06324347826086957,
+            "threshold": 0.7
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 5,
+            "fp": 1,
+            "fn": 1,
+            "tn": 92,
+            "f1": 0.8333333333333334,
+            "auc": 0.9919354838709677,
+            "brier": 0.01724444444444442,
+            "threshold": 0.85
+          }
+        ],
+        "macroF1": 0.8402283042480353,
+        "microF1": 0.8535353535353535,
+        "macroAuc": 0.9848101370597608,
+        "brier": 0.05432960270622193,
+        "accuracy": 0.9457943925233645,
+        "exact": 0.59,
+        "reviewRate": 0.08691588785046729,
+        "latency": {
+          "p50": 258.1989,
+          "p95": 363.2632,
+          "mean": 264.707012
+        }
+      },
+      "sv": {
+        "model": "jev-1.13.0",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 20,
+            "fp": 1,
+            "fn": 6,
+            "tn": 67,
+            "f1": 0.851063829787234,
+            "auc": 0.9850113122171946,
+            "brier": 0.04960531914893618,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 24,
+            "fp": 0,
+            "fn": 6,
+            "tn": 65,
+            "f1": 0.8888888888888888,
+            "auc": 0.997948717948718,
+            "brier": 0.03010210526315789,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 19,
+            "fp": 1,
+            "fn": 5,
+            "tn": 72,
+            "f1": 0.8636363636363636,
+            "auc": 0.9560502283105022,
+            "brier": 0.07057835051546389,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 12,
+            "fp": 3,
+            "fn": 0,
+            "tn": 85,
+            "f1": 0.8888888888888888,
+            "auc": 0.9962121212121212,
+            "brier": 0.04966,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 19,
+            "fp": 0,
+            "fn": 3,
+            "tn": 77,
+            "f1": 0.926829268292683,
+            "auc": 0.9899645808736718,
+            "brier": 0.04910404040404038,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 16,
+            "fp": 8,
+            "fn": 1,
+            "tn": 74,
+            "f1": 0.7804878048780488,
+            "auc": 0.9759684361549498,
+            "brier": 0.09922929292929292,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 6,
+            "fp": 0,
+            "fn": 10,
+            "tn": 84,
+            "f1": 0.5454545454545454,
+            "auc": 0.9970238095238095,
+            "brier": 0.031497000000000004,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 20,
+            "fp": 5,
+            "fn": 3,
+            "tn": 68,
+            "f1": 0.8333333333333334,
+            "auc": 0.9752829064919595,
+            "brier": 0.1357125,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 7,
+            "fp": 0,
+            "fn": 5,
+            "tn": 87,
+            "f1": 0.7368421052631579,
+            "auc": 0.9961685823754789,
+            "brier": 0.02758282828282828,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 16,
+            "fp": 0,
+            "fn": 2,
+            "tn": 74,
+            "f1": 0.9411764705882353,
+            "auc": 0.9924924924924925,
+            "brier": 0.05709239130434785,
+            "threshold": 0.7
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 5,
+            "fp": 1,
+            "fn": 1,
+            "tn": 92,
+            "f1": 0.8333333333333334,
+            "auc": 0.9919354838709677,
+            "brier": 0.015920202020201984,
+            "threshold": 0.85
+          }
+        ],
+        "macroF1": 0.8263577120313375,
+        "microF1": 0.8431876606683805,
+        "macroAuc": 0.9867326064974423,
+        "brier": 0.05600763907893358,
+        "accuracy": 0.9429906542056075,
+        "exact": 0.57,
+        "reviewRate": 0.09532710280373832,
+        "latency": {
+          "p50": 253.0145,
+          "p95": 312.6984,
+          "mean": 260.82022600000005
+        }
+      }
+    },
+    {
+      "provider": "kevLocal",
+      "label": "Lokal Kev · äldre",
+      "en": {
+        "model": "kev-latest",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 18,
+            "fp": 26,
+            "fn": 8,
+            "tn": 42,
+            "f1": 0.5142857142857142,
+            "auc": 0.6883484162895928,
+            "brier": 0.3618094515957447,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 16,
+            "fp": 22,
+            "fn": 14,
+            "tn": 43,
+            "f1": 0.47058823529411764,
+            "auc": 0.6771794871794872,
+            "brier": 0.3178107255789475,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 16,
+            "fp": 21,
+            "fn": 8,
+            "tn": 52,
+            "f1": 0.5245901639344263,
+            "auc": 0.7514269406392694,
+            "brier": 0.30304128907216493,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 6,
+            "fp": 18,
+            "fn": 6,
+            "tn": 70,
+            "f1": 0.3333333333333333,
+            "auc": 0.7878787878787878,
+            "brier": 0.29784779930000005,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 4,
+            "fp": 6,
+            "fn": 18,
+            "tn": 71,
+            "f1": 0.25,
+            "auc": 0.6829988193624558,
+            "brier": 0.25669981444444456,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 7,
+            "fp": 10,
+            "fn": 10,
+            "tn": 72,
+            "f1": 0.4117647058823529,
+            "auc": 0.7754662840746055,
+            "brier": 0.2411645538383839,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 7,
+            "fp": 3,
+            "fn": 9,
+            "tn": 81,
+            "f1": 0.5384615384615384,
+            "auc": 0.8199404761904762,
+            "brier": 0.13414578559999998,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 11,
+            "fp": 13,
+            "fn": 12,
+            "tn": 60,
+            "f1": 0.46808510638297873,
+            "auc": 0.7421083978558666,
+            "brier": 0.2844211083333335,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 1,
+            "fp": 7,
+            "fn": 11,
+            "tn": 80,
+            "f1": 0.1,
+            "auc": 0.5124521072796935,
+            "brier": 0.22650486555555557,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 11,
+            "fp": 24,
+            "fn": 7,
+            "tn": 50,
+            "f1": 0.41509433962264153,
+            "auc": 0.7680180180180181,
+            "brier": 0.3050279542391306,
+            "threshold": 0.7
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 3,
+            "fp": 12,
+            "fn": 3,
+            "tn": 81,
+            "f1": 0.2857142857142857,
+            "auc": 0.8637992831541219,
+            "brier": 0.32365280505050514,
+            "threshold": 0.85
+          }
+        ],
+        "macroF1": 0.39199249299194444,
+        "microF1": 0.42735042735042733,
+        "macroAuc": 0.7336015470838522,
+        "brier": 0.2774660138734737,
+        "accuracy": 0.7495327102803738,
+        "exact": 0.11,
+        "reviewRate": 0.42990654205607476,
+        "latency": {
+          "p50": 2260.3204,
+          "p95": 2654.4506,
+          "mean": 2284.659881
+        }
+      },
+      "sv": {
+        "model": "kev-latest",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 11,
+            "fp": 19,
+            "fn": 15,
+            "tn": 49,
+            "f1": 0.39285714285714285,
+            "auc": 0.580316742081448,
+            "brier": 0.3227916074468084,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 0,
+            "fp": 1,
+            "fn": 30,
+            "tn": 64,
+            "f1": 0,
+            "auc": 0.4492307692307692,
+            "brier": 0.27008371031578937,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 8,
+            "fp": 13,
+            "fn": 16,
+            "tn": 60,
+            "f1": 0.35555555555555557,
+            "auc": 0.6575342465753424,
+            "brier": 0.29584705659793814,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 2,
+            "fp": 13,
+            "fn": 10,
+            "tn": 75,
+            "f1": 0.14814814814814814,
+            "auc": 0.5293560606060606,
+            "brier": 0.32083418220000004,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 0,
+            "fp": 1,
+            "fn": 22,
+            "tn": 76,
+            "f1": 0,
+            "auc": 0.38813459268004724,
+            "brier": 0.2200447591919192,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 0,
+            "fp": 3,
+            "fn": 17,
+            "tn": 79,
+            "f1": 0,
+            "auc": 0.725609756097561,
+            "brier": 0.2273878279797979,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 4,
+            "fp": 4,
+            "fn": 12,
+            "tn": 80,
+            "f1": 0.3333333333333333,
+            "auc": 0.6339285714285714,
+            "brier": 0.2098616958,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 0,
+            "fp": 3,
+            "fn": 23,
+            "tn": 70,
+            "f1": 0,
+            "auc": 0.593210244192972,
+            "brier": 0.22147162583333332,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 0,
+            "fp": 1,
+            "fn": 12,
+            "tn": 86,
+            "f1": 0,
+            "auc": 0.5498084291187739,
+            "brier": 0.16165827171717168,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 4,
+            "fp": 6,
+            "fn": 14,
+            "tn": 68,
+            "f1": 0.2857142857142857,
+            "auc": 0.5630630630630631,
+            "brier": 0.2184331581521739,
+            "threshold": 0.7
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 3,
+            "fp": 6,
+            "fn": 3,
+            "tn": 87,
+            "f1": 0.4,
+            "auc": 0.8584229390681004,
+            "brier": 0.31835986787878773,
+            "threshold": 0.85
+          }
+        ],
+        "macroF1": 0.17414622414622413,
+        "microF1": 0.2077922077922078,
+        "macroAuc": 0.5935104921947917,
+        "brier": 0.25334306937397444,
+        "accuracy": 0.77196261682243,
+        "exact": 0.08,
+        "reviewRate": 0.47289719626168225,
+        "latency": {
+          "p50": 4842.9664,
+          "p95": 5703.6726,
+          "mean": 4931.513119999998
+        }
+      }
+    },
+    {
+      "provider": "kev9b",
+      "label": "Kev-9B · Modal",
+      "en": {
+        "model": "kev-latest",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 24,
+            "fp": 2,
+            "fn": 2,
+            "tn": 66,
+            "f1": 0.9230769230769231,
+            "auc": 0.9886877828054299,
+            "brier": 0.04501888595744681,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 26,
+            "fp": 3,
+            "fn": 4,
+            "tn": 62,
+            "f1": 0.8813559322033898,
+            "auc": 0.9887179487179487,
+            "brier": 0.06461110105263157,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 16,
+            "fp": 5,
+            "fn": 8,
+            "tn": 68,
+            "f1": 0.7111111111111111,
+            "auc": 0.922945205479452,
+            "brier": 0.12360073979381446,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 10,
+            "fp": 2,
+            "fn": 2,
+            "tn": 86,
+            "f1": 0.8333333333333334,
+            "auc": 0.9895833333333334,
+            "brier": 0.07882173969999999,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 18,
+            "fp": 1,
+            "fn": 4,
+            "tn": 76,
+            "f1": 0.8780487804878049,
+            "auc": 0.9639905548996458,
+            "brier": 0.08953393030303025,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 17,
+            "fp": 6,
+            "fn": 0,
+            "tn": 76,
+            "f1": 0.85,
+            "auc": 0.9870875179340028,
+            "brier": 0.0772842039393939,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 8,
+            "fp": 0,
+            "fn": 8,
+            "tn": 84,
+            "f1": 0.6666666666666666,
+            "auc": 0.9940476190476191,
+            "brier": 0.028803835299999997,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 19,
+            "fp": 8,
+            "fn": 4,
+            "tn": 65,
+            "f1": 0.76,
+            "auc": 0.9428231089934485,
+            "brier": 0.21273034645833336,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 11,
+            "fp": 1,
+            "fn": 1,
+            "tn": 86,
+            "f1": 0.9166666666666666,
+            "auc": 0.9961685823754789,
+            "brier": 0.016267100101010103,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 17,
+            "fp": 12,
+            "fn": 1,
+            "tn": 62,
+            "f1": 0.723404255319149,
+            "auc": 0.9707207207207207,
+            "brier": 0.23043749565217395,
+            "threshold": 0.7
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 1,
+            "fp": 0,
+            "fn": 5,
+            "tn": 93,
+            "f1": 0.2857142857142857,
+            "auc": 0.9946236559139785,
+            "brier": 0.03567422515151513,
+            "threshold": 0.85
+          }
+        ],
+        "macroF1": 0.7663070867799392,
+        "microF1": 0.8087167070217918,
+        "macroAuc": 0.9763087300200962,
+        "brier": 0.09116214576448632,
+        "accuracy": 0.9261682242990654,
+        "exact": 0.52,
+        "reviewRate": 0.16261682242990655,
+        "latency": {
+          "p50": 416.3727,
+          "p95": 444.824,
+          "mean": 452.14775699999996
+        }
+      },
+      "sv": {
+        "model": "kev-latest",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 21,
+            "fp": 4,
+            "fn": 5,
+            "tn": 64,
+            "f1": 0.8235294117647058,
+            "auc": 0.9807692307692307,
+            "brier": 0.0535502964893617,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 23,
+            "fp": 4,
+            "fn": 7,
+            "tn": 61,
+            "f1": 0.8070175438596491,
+            "auc": 0.9661538461538461,
+            "brier": 0.07864578305263158,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 19,
+            "fp": 1,
+            "fn": 5,
+            "tn": 72,
+            "f1": 0.8636363636363636,
+            "auc": 0.9366438356164384,
+            "brier": 0.0919312970103093,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 11,
+            "fp": 2,
+            "fn": 1,
+            "tn": 86,
+            "f1": 0.88,
+            "auc": 0.9943181818181818,
+            "brier": 0.0713194897,
+            "threshold": 0.75
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 17,
+            "fp": 2,
+            "fn": 5,
+            "tn": 75,
+            "f1": 0.8292682926829268,
+            "auc": 0.9639905548996458,
+            "brier": 0.07500019181818178,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 13,
+            "fp": 6,
+            "fn": 4,
+            "tn": 76,
+            "f1": 0.7222222222222222,
+            "auc": 0.9634146341463414,
+            "brier": 0.10165366696969692,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 6,
+            "fp": 1,
+            "fn": 10,
+            "tn": 83,
+            "f1": 0.5217391304347826,
+            "auc": 0.9873511904761905,
+            "brier": 0.03286175050000001,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 19,
+            "fp": 7,
+            "fn": 4,
+            "tn": 66,
+            "f1": 0.7755102040816326,
+            "auc": 0.9326980345443716,
+            "brier": 0.15680450145833338,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 11,
+            "fp": 1,
+            "fn": 1,
+            "tn": 86,
+            "f1": 0.9166666666666666,
+            "auc": 0.9932950191570882,
+            "brier": 0.024415725858585858,
+            "threshold": 0.8
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 18,
+            "fp": 8,
+            "fn": 0,
+            "tn": 66,
+            "f1": 0.8181818181818182,
+            "auc": 0.978978978978979,
+            "brier": 0.17449213043478262,
+            "threshold": 0.7
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 2,
+            "fp": 1,
+            "fn": 4,
+            "tn": 92,
+            "f1": 0.4444444444444444,
+            "auc": 0.9874551971326165,
+            "brier": 0.0424785307070707,
+            "threshold": 0.85
+          }
+        ],
+        "macroF1": 0.7638378270886556,
+        "microF1": 0.794044665012407,
+        "macroAuc": 0.9713698821539029,
+        "brier": 0.08210485127263217,
+        "accuracy": 0.922429906542056,
+        "exact": 0.49,
+        "reviewRate": 0.14299065420560747,
+        "latency": {
+          "p50": 437.7476,
+          "p95": 448.428,
+          "mean": 438.1631659999998
+        }
+      }
+    },
+    {
+      "provider": "tev1",
+      "label": "Tev1 4B · lokal Ollama",
+      "en": {
+        "model": "tev1-4b-4096:latest",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 25,
+            "fp": 6,
+            "fn": 1,
+            "tn": 62,
+            "f1": 0.8771929824561403,
+            "auc": 0.9869909502262444,
+            "brier": 0.062192031783408,
+            "threshold": 0.53
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 30,
+            "fp": 1,
+            "fn": 0,
+            "tn": 64,
+            "f1": 0.9836065573770492,
+            "auc": 0.9994871794871795,
+            "brier": 0.05617634670784685,
+            "threshold": 0.81
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 18,
+            "fp": 9,
+            "fn": 6,
+            "tn": 64,
+            "f1": 0.7058823529411765,
+            "auc": 0.8949771689497716,
+            "brier": 0.11443359029090264,
+            "threshold": 0.62
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 7,
+            "fp": 3,
+            "fn": 5,
+            "tn": 85,
+            "f1": 0.6363636363636364,
+            "auc": 0.9450757575757576,
+            "brier": 0.09301258211464739,
+            "threshold": 0.84
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 20,
+            "fp": 6,
+            "fn": 2,
+            "tn": 71,
+            "f1": 0.8333333333333334,
+            "auc": 0.9510035419126328,
+            "brier": 0.12579226832688267,
+            "threshold": 0.77
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 16,
+            "fp": 9,
+            "fn": 1,
+            "tn": 73,
+            "f1": 0.7619047619047619,
+            "auc": 0.9526542324246772,
+            "brier": 0.12725529141122155,
+            "threshold": 0.88
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 15,
+            "fp": 1,
+            "fn": 1,
+            "tn": 83,
+            "f1": 0.9375,
+            "auc": 0.9970238095238095,
+            "brier": 0.02654389301120577,
+            "threshold": 0.4
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 17,
+            "fp": 6,
+            "fn": 6,
+            "tn": 67,
+            "f1": 0.7391304347826086,
+            "auc": 0.9154258487194759,
+            "brier": 0.12988807092570467,
+            "threshold": 0.74
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 11,
+            "fp": 5,
+            "fn": 1,
+            "tn": 82,
+            "f1": 0.7857142857142857,
+            "auc": 0.9789272030651341,
+            "brier": 0.08102562039174337,
+            "threshold": 0.85
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 18,
+            "fp": 5,
+            "fn": 0,
+            "tn": 69,
+            "f1": 0.8780487804878049,
+            "auc": 0.9894894894894894,
+            "brier": 0.21951532907673924,
+            "threshold": 0.83
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 5,
+            "fp": 1,
+            "fn": 1,
+            "tn": 92,
+            "f1": 0.8333333333333334,
+            "auc": 0.992831541218638,
+            "brier": 0.045178975611196916,
+            "threshold": 0.64
+          }
+        ],
+        "macroF1": 0.8156373144267391,
+        "microF1": 0.8272727272727273,
+        "macroAuc": 0.963989702053892,
+        "brier": 0.09827399996831808,
+        "accuracy": 0.9289719626168225,
+        "exact": 0.52,
+        "reviewRate": 0.1280373831775701,
+        "latency": {
+          "p50": 1340.186,
+          "p95": 1636.358,
+          "mean": 1407.9674089999999
+        }
+      },
+      "sv": {
+        "model": "tev1-4b-4096:latest",
+        "cases": 100,
+        "failures": 0,
+        "perGate": [
+          {
+            "gateId": "billing_problem",
+            "tp": 23,
+            "fp": 4,
+            "fn": 3,
+            "tn": 64,
+            "f1": 0.8679245283018868,
+            "auc": 0.9819004524886877,
+            "brier": 0.058221604684152606,
+            "threshold": 0.53
+          },
+          {
+            "gateId": "technical_problem",
+            "tp": 26,
+            "fp": 2,
+            "fn": 4,
+            "tn": 63,
+            "f1": 0.896551724137931,
+            "auc": 0.9794871794871794,
+            "brier": 0.07180622946575091,
+            "threshold": 0.81
+          },
+          {
+            "gateId": "contract_problem",
+            "tp": 18,
+            "fp": 8,
+            "fn": 6,
+            "tn": 65,
+            "f1": 0.72,
+            "auc": 0.9121004566210046,
+            "brier": 0.12162827061475319,
+            "threshold": 0.62
+          },
+          {
+            "gateId": "support_interaction_problem",
+            "tp": 10,
+            "fp": 2,
+            "fn": 2,
+            "tn": 86,
+            "f1": 0.8333333333333334,
+            "auc": 0.978219696969697,
+            "brier": 0.08088645947947133,
+            "threshold": 0.84
+          },
+          {
+            "gateId": "unresolved_issue",
+            "tp": 16,
+            "fp": 1,
+            "fn": 6,
+            "tn": 76,
+            "f1": 0.8205128205128205,
+            "auc": 0.9639905548996458,
+            "brier": 0.09810920799234259,
+            "threshold": 0.77
+          },
+          {
+            "gateId": "recurring_problem",
+            "tp": 16,
+            "fp": 7,
+            "fn": 1,
+            "tn": 75,
+            "f1": 0.8,
+            "auc": 0.9526542324246772,
+            "brier": 0.11449704876780456,
+            "threshold": 0.88
+          },
+          {
+            "gateId": "positive_support_experience",
+            "tp": 13,
+            "fp": 1,
+            "fn": 3,
+            "tn": 83,
+            "f1": 0.8666666666666667,
+            "auc": 0.9947916666666666,
+            "brier": 0.031996162394405114,
+            "threshold": 0.4
+          },
+          {
+            "gateId": "negative_support_experience",
+            "tp": 18,
+            "fp": 4,
+            "fn": 5,
+            "tn": 69,
+            "f1": 0.8,
+            "auc": 0.9231685527099464,
+            "brier": 0.12261277767699837,
+            "threshold": 0.74
+          },
+          {
+            "gateId": "competitor_consideration",
+            "tp": 9,
+            "fp": 4,
+            "fn": 3,
+            "tn": 83,
+            "f1": 0.72,
+            "auc": 0.9636015325670498,
+            "brier": 0.08220833309889623,
+            "threshold": 0.85
+          },
+          {
+            "gateId": "churn_risk",
+            "tp": 8,
+            "fp": 0,
+            "fn": 10,
+            "tn": 74,
+            "f1": 0.6153846153846154,
+            "auc": 0.9579579579579579,
+            "brier": 0.2036413896277949,
+            "threshold": 0.83
+          },
+          {
+            "gateId": "explicit_cancellation_intent",
+            "tp": 5,
+            "fp": 2,
+            "fn": 1,
+            "tn": 91,
+            "f1": 0.7692307692307693,
+            "auc": 0.9946236559139785,
+            "brier": 0.04180643822682628,
+            "threshold": 0.64
+          }
+        ],
+        "macroF1": 0.7917822234152748,
+        "microF1": 0.8039702233250621,
+        "macroAuc": 0.9638632671551357,
+        "brier": 0.09340126563901784,
+        "accuracy": 0.9261682242990654,
+        "exact": 0.48,
+        "reviewRate": 0.15514018691588785,
+        "latency": {
+          "p50": 1565.3192,
+          "p95": 1807.4066,
+          "mean": 1603.0688370000003
+        }
+      }
+    }
+  ]
+}

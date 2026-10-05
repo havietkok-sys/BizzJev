@@ -1,0 +1,14 @@
+{
+  "ceiling": 1000,
+  "consumed": 1,
+  "entries": [
+    {
+      "attempt": 1,
+      "runId": "task-07-ui-check",
+      "caseId": "dp-d01",
+      "note": "imported from LIVE_REQUEST_BUDGET.md (single live UI demonstration)",
+      "reservedUtc": "2026-09-21T21:27:00.0000000\u002B00:00",
+      "outcome": "success"
+    }
+  ]
+}

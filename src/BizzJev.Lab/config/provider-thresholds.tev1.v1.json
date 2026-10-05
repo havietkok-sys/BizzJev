@@ -1,0 +1,30 @@
+{
+  "languages": {
+    "en": {
+      "billing_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.53 },
+      "technical_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.81 },
+      "contract_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.62 },
+      "support_interaction_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.84 },
+      "unresolved_issue": { "reviewThreshold": 0.40, "acceptThreshold": 0.77 },
+      "recurring_problem": { "reviewThreshold": 0.40, "acceptThreshold": 0.88 },
+      "positive_support_experience": { "reviewThreshold": 0.40, "acceptThreshold": 0.40 },
+      "negative_support_experience": { "reviewThreshold": 0.40, "acceptThreshold": 0.74 },
+      "competitor_consideration": { "reviewThreshold": 0.40, "acceptThreshold": 0.85 },
+      "churn_risk": { "reviewThreshold": 0.30, "acceptThreshold": 0.83 },
+      "explicit_cancellation_intent": { "reviewThreshold": 0.45, "acceptThreshold": 0.64 }
+    },
+    "sv": {
+      "billing_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.53 },
+      "technical_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.81 },
+      "contract_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.62 },
+      "support_interaction_problem": { "reviewThreshold": 0.35, "acceptThreshold": 0.84 },
+      "unresolved_issue": { "reviewThreshold": 0.40, "acceptThreshold": 0.77 },
+      "recurring_problem": { "reviewThreshold": 0.40, "acceptThreshold": 0.88 },
+      "positive_support_experience": { "reviewThreshold": 0.40, "acceptThreshold": 0.40 },
+      "negative_support_experience": { "reviewThreshold": 0.40, "acceptThreshold": 0.74 },
+      "competitor_consideration": { "reviewThreshold": 0.40, "acceptThreshold": 0.85 },
+      "churn_risk": { "reviewThreshold": 0.30, "acceptThreshold": 0.83 },
+      "explicit_cancellation_intent": { "reviewThreshold": 0.45, "acceptThreshold": 0.64 }
+    }
+  }
+}

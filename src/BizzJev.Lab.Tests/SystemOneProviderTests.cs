@@ -55,6 +55,23 @@ public sealed class SystemOneProviderTests
         Assert.Equal("v1-sv", outcome.Result.GateSetVersion);
     }
 
+    [Fact]
+    public async Task Tev1AdapterUsesStringStateAndParsesNoul()
+    {
+        var handler = new CapturingHandler(_ => Json("""{"model":"tev1:4b","answers":{"access":{"type":"noul","noul":0.9951356113834892}}}"""));
+        ISystemOneProvider provider = new Tev1SystemOneProvider(
+            new JevGateClient(new HttpClient(handler), "tev1:4b", "http://ollama.example", stateAsString: true));
+
+        var outcome = await provider.EvaluateAsync("The customer is frustrated.", [Question("access", "Is this negative?")], "v1");
+
+        using var request = JsonDocument.Parse(handler.Body!);
+        Assert.Equal("http://ollama.example/v1/systemone", handler.Uri!.ToString());
+        Assert.Equal("The customer is frustrated.", request.RootElement.GetProperty("state").GetString());
+        Assert.Equal("tev1:4b", request.RootElement.GetProperty("model").GetString());
+        Assert.Equal(0.9951356113834892, outcome.Result.Signals.Single().Probability);
+        Assert.Null(handler.AuthorizationScheme);
+    }
+
     private static HttpResponseMessage Json(string body) => new(HttpStatusCode.OK)
     {
         Content = new StringContent(body, Encoding.UTF8, "application/json")

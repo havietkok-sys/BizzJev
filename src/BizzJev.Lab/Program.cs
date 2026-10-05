@@ -17,18 +17,26 @@ var dataDir = Environment.GetEnvironmentVariable("LAB_DATA_DIR")
         ? Path.Combine(Directory.GetCurrentDirectory(), "data", "lab")
         : Path.Combine(FindRepoRoot(), "data", "lab"));
 var defaultGateSet = config["DefaultGateSet"] ?? "v1";
+var testCaseSet = config["LAB_TESTCASE_SET"] ?? "v1";
+if (testCaseSet is not ("v1" or "emoji-v1"))
+    throw new InvalidOperationException("LAB_TESTCASE_SET must be 'v1' or 'emoji-v1'.");
 var systemOneProviderName = config["SYSTEMONE_PROVIDER"] ?? "jev";
-if (systemOneProviderName is not ("jev" or "kev"))
-    throw new InvalidOperationException("SYSTEMONE_PROVIDER must be 'jev' or 'kev'.");
+if (systemOneProviderName is not ("jev" or "kev" or "tev1"))
+    throw new InvalidOperationException("SYSTEMONE_PROVIDER must be 'jev', 'kev' or 'tev1'.");
 var useKev = systemOneProviderName == "kev";
-var systemOneUrl = useKev ? config["SYSTEMONE_URL"] ?? "http://localhost:8009" : "https://api.typesafe.ai";
+var useTev1 = systemOneProviderName == "tev1";
+var systemOneUrl = useKev ? config["SYSTEMONE_URL"] ?? "http://localhost:8009"
+    : useTev1 ? config["SYSTEMONE_URL"] ?? "http://localhost:11434"
+    : "https://api.typesafe.ai";
 // Disable Technical View in a production deployment by setting EnableTechnicalView=false.
 var enableTechnicalView = !bool.TryParse(config["EnableTechnicalView"], out var etv) || etv;
-var model = useKev ? config["SYSTEMONE_MODEL"] ?? "kev-latest" : config["TypeSafe:Model"] ?? "jev-1.13.0";
+var model = useKev ? config["SYSTEMONE_MODEL"] ?? "kev-latest"
+    : useTev1 ? config["SYSTEMONE_MODEL"] ?? "tev1:4b"
+    : config["TypeSafe:Model"] ?? "jev-1.13.0";
 var timeout = int.TryParse(config["TypeSafe:TimeoutSeconds"], out var t) && t is >= 1 and <= 300 ? t : 60;
 string? ResolveSystemOneApiKey() => useKev
     ? config["SYSTEMONE_API_KEY"]
-    : config["TYPESAFE_API_KEY"] ?? config["SYSTEMONE_API_KEY"];
+    : useTev1 ? null : config["TYPESAFE_API_KEY"] ?? config["SYSTEMONE_API_KEY"];
 Directory.CreateDirectory(dataDir);
 Directory.CreateDirectory(Path.Combine(dataDir, "evaluations"));
 
@@ -69,8 +77,9 @@ List<SemanticGateDefinition> LoadActiveGates(string language, out string gateSet
         gates[i] = local.Gate;
         overridden = true;
     }
-    var providerSuffix = useKev ? "+kev-v2" : "";
+    var providerSuffix = useKev ? "+kev-v2" : useTev1 ? "+tev1-v1" : "";
     gateSetVersion = overridden ? $"mixed-local{providerSuffix}" : $"{BaselineSet(language)}{providerSuffix}";
+    if (testCaseSet == "emoji-v1") gateSetVersion += "+emoji-v1";
     return gates;
 }
 
@@ -78,7 +87,7 @@ Dictionary<string, PolicyDefinition> LoadPolicies(List<SemanticGateDefinition> g
 {
     var overrides = ReadJson<Dictionary<string, ThresholdOverride>>(Path.Combine(dataDir, "policy-overrides.json")) ?? [];
     var custom = overrides.Count > 0;
-    var policyVersion = useKev ? "kev-v2" : "v1";
+    var policyVersion = useKev ? "kev-v2" : useTev1 ? "tev1-v1" : "v1";
     return gates.ToDictionary(
         g => g.GateId,
         g => overrides.TryGetValue(g.GateId, out var o)
@@ -88,7 +97,9 @@ Dictionary<string, PolicyDefinition> LoadPolicies(List<SemanticGateDefinition> g
 
 List<EvaluationCase> LoadSyntheticCases(string language)
 {
-    var file = language == "sv" ? "testcases.v1-sv.json" : "testcases.v1.json";
+    var file = testCaseSet == "emoji-v1"
+        ? language == "sv" ? "testcases.emoji.v1-sv.json" : "testcases.emoji.v1.json"
+        : language == "sv" ? "testcases.v1-sv.json" : "testcases.v1.json";
     var path = Path.Combine(AppContext.BaseDirectory, "config", file);
     using var doc = JsonDocument.Parse(File.ReadAllText(path));
     if (language == "sv" && (!doc.RootElement.TryGetProperty("language", out var datasetLanguage) || datasetLanguage.GetString() != "sv"))
@@ -130,9 +141,11 @@ ISystemOneProvider? systemOneProvider = null;
 ISystemOneProvider SystemOne()
 {
     var key = ResolveSystemOneApiKey();
-    if (string.IsNullOrWhiteSpace(key))
+    if (!useTev1 && string.IsNullOrWhiteSpace(key))
         throw new InvalidOperationException("SYSTEMONE_API_KEY missing (TYPESAFE_API_KEY remains supported).");
-    return systemOneProvider ??= new JevSystemOneProvider(new JevGateClient(key, model, timeout, systemOneUrl));
+    if (systemOneProvider is not null) return systemOneProvider;
+    var client = new JevGateClient(key ?? "", model, timeout, systemOneUrl, stateAsString: useTev1);
+    return systemOneProvider = useTev1 ? new Tev1SystemOneProvider(client) : new JevSystemOneProvider(client);
 }
 
 // ---------- endpoints ----------
@@ -488,9 +501,15 @@ internal static class ProviderThresholdDefaults
     {
         var result = gates.ToList();
         if (provider == "jev") return result;
-        if (provider != "kev") throw new InvalidOperationException("Unsupported System One provider.");
 
-        var path = Path.Combine(baseDirectory, "config", "provider-thresholds.kev.v2.json");
+        var fileName = provider switch
+        {
+            "kev" => "provider-thresholds.kev.v2.json",
+            "tev1" => "provider-thresholds.tev1.v1.json",
+            _ => throw new InvalidOperationException("Unsupported System One provider.")
+        };
+
+        var path = Path.Combine(baseDirectory, "config", fileName);
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
         var thresholds = doc.RootElement.GetProperty("languages").GetProperty(language);
         var configuredIds = thresholds.EnumerateObject().Select(item => item.Name).ToHashSet();

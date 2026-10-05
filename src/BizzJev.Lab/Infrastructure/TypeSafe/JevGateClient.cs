@@ -14,15 +14,17 @@ public sealed class JevGateClient
     private readonly HttpClient _client;
     private readonly string _model;
     private readonly Uri _endpoint;
+    private readonly bool _stateAsString;
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
-    public JevGateClient(string apiKey, string model, int timeoutSeconds, string baseUrl = "https://api.typesafe.ai")
-        : this(new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(timeoutSeconds) }, model, baseUrl, apiKey) { }
+    public JevGateClient(string apiKey, string model, int timeoutSeconds, string baseUrl = "https://api.typesafe.ai", bool stateAsString = false)
+        : this(new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(timeoutSeconds) }, model, baseUrl, apiKey, stateAsString) { }
 
-    internal JevGateClient(HttpClient client, string model, string baseUrl = "https://api.typesafe.ai", string? apiKey = null)
+    internal JevGateClient(HttpClient client, string model, string baseUrl = "https://api.typesafe.ai", string? apiKey = null, bool stateAsString = false)
     {
         _client = client;
         _model = model;
+        _stateAsString = stateAsString;
         _endpoint = new Uri($"{baseUrl.TrimEnd('/')}/v1/systemone", UriKind.Absolute);
         if (!string.IsNullOrWhiteSpace(apiKey))
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
@@ -42,7 +44,8 @@ public sealed class JevGateClient
         var questions = new Dictionary<string, object>();
         foreach (var gate in gates)
             questions[gate.GateId] = new { type = "noul", instructions = gate.Instructions, criteria = gate.Criteria };
-        var payload = new { model = _model, state = new { customerText }, questions };
+        object state = _stateAsString ? customerText : new { customerText };
+        var payload = new { model = _model, state, questions };
         // serialize once; the SAME string is sent and captured so Technical View shows the exact wire payload
         var payloadJson = JsonSerializer.Serialize(payload, Json);
         var content = new StringContent(payloadJson, Encoding.UTF8, "application/json");
